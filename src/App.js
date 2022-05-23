@@ -1,5 +1,5 @@
 import { useState, createContext } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Player from "./components/Player.js";
 import YT from "./components/YT.js";
 import styles from "./App.module.css";
@@ -29,32 +29,48 @@ function App() {
         setIsPlaying,
       }}
     >
-      <div
-        id={styles.container}
-        onContextMenu={(event) => event.preventDefault()}
-      >
-        <div id={styles.player}>
-          <Player />
-        </div>
-        <div id={styles.playLists}>PlayLists</div>
-        <div id={styles.main}>
-          <div className={showInfo ? styles.hide : null}>
-            <YT />
-          </div>
-          <Router>
-            <Switch>
-              <Route path="/yt">
-                <div>Other</div>
-              </Route>
-              <Route path="/">
-                <div>
-                  Search<Link to="/yt">LinkToYT</Link>
+      <Router>
+        <Switch>
+          <Route path="/yt">
+            <div
+              id={styles.container}
+              onContextMenu={(event) => event.preventDefault()}
+            >
+              <div id={styles.player}>
+                <Player />
+              </div>
+              <div id={styles.playLists}>PlayLists</div>
+              <div id={styles.main}>
+                <div className={showInfo ? styles.hide : null}>
+                  <YT />
                 </div>
-              </Route>
-            </Switch>
-          </Router>
-        </div>
-      </div>
+                <div>
+                  <div>Other</div>
+                </div>
+              </div>
+            </div>
+          </Route>
+          <Route path="/">
+            <div
+              id={styles.container}
+              onContextMenu={(event) => event.preventDefault()}
+            >
+              <div id={styles.player}>
+                <Player />
+              </div>
+              <div id={styles.playLists}>PlayLists</div>
+              <div id={styles.main}>
+                <div className={showInfo ? styles.hide : null}>
+                  <YT />
+                </div>
+                <div>
+                  <div>Search</div>
+                </div>
+              </div>
+            </div>
+          </Route>
+        </Switch>
+      </Router>
     </AppContext.Provider>
   );
 }

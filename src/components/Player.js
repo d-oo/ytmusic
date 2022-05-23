@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { AppContext } from "../App";
 import styles from "./Player.module.css";
+import { Link } from "react-router-dom";
 
 function Player() {
   const {
@@ -38,6 +39,8 @@ function Player() {
       <div id={styles.title} onClick={() => setShowInfo(!showInfo)}>
         {title}
       </div>
+      <Link to="/yt">LinkToYT</Link>
+      <Link to="/">LinkToYT</Link>
       <div>{videoOn ? null : <div>no youtube</div>}</div>
     </div>
   );
