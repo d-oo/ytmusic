@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AppContext } from "../App";
+import { AppContext } from "../Home";
 import styles from "./Player.module.css";
 import { Link } from "react-router-dom";
 
@@ -39,8 +39,12 @@ function Player() {
       <div id={styles.title} onClick={() => setShowInfo(!showInfo)}>
         {title}
       </div>
-      <Link to="/yt">LinkToYT</Link>
-      <Link to="/">LinkToYT</Link>
+      <div className={styles.Links}>
+        <Link to="/yt">
+          LinkToYT<br></br>
+        </Link>
+        <Link to="/">LinkToHome</Link>
+      </div>
       <div>{videoOn ? null : <div>no youtube</div>}</div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import YouTube from "react-youtube";
-import { AppContext } from "../App";
+import { AppContext } from "../Home";
 
 function Player() {
   const { videoId, setPlayer, videoOn, setTitle, setIsPlaying } =

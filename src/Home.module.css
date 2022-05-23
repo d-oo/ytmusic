@@ -2,13 +2,15 @@
   display: grid;
   grid-template-columns: 300px 900px;
   grid-template-rows: 300px 600px;
+  text-align: center;
+  justify-content: center;
 }
 #player {
   grid-column: 1/2;
   grid-row: 1/2;
   background-color: #37474f;
 }
-#playLists {
+#playlists {
   grid-column: 1/2;
   grid-row: 2/3;
   background-color: #455a64;
@@ -16,7 +18,17 @@
 #main {
   grid-column: 2/3;
   grid-row: 1/3;
-  background-color: rgb(95, 93, 139);
+  background-color: rgb(73, 81, 107);
+}
+#musicInfo {
+  position: fixed;
+  transition: all 0.3s;
+  width: 868px;
+  height: 600px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  text-align: center;
 }
 .hide {
   display: none;
