@@ -1,13 +1,10 @@
-import { useState } from "react";
+import { useContext } from "react";
 import YouTube from "react-youtube";
+import { AppContext } from "../App";
 
-function YT({ ytid }) {
-  const [isOn, setIsOn] = useState(false);
-  function fnccr(event) {
-    setIsOn(true);
-    console.log(ytid);
-    event.target.remove();
-  }
+function Player() {
+  const { videoId, setPlayer, videoOn, setTitle, setIsPlaying } =
+    useContext(AppContext);
   const opts = {
     width: "256", //320 384 256
     height: "144", //180 216 144
@@ -19,32 +16,33 @@ function YT({ ytid }) {
     },
   };
   function onPlayerReady(event) {
-    console.log("loaded");
+    setPlayer(event.target);
+    setTitle(event.target.getVideoData().title);
   }
   function onPlayerStateChange(event) {
-    if (event.data === 0) {
+    if (event.data === 1) {
+      setIsPlaying(true);
+    } else if (event.data === 2) {
+      setIsPlaying(false);
+    } else if (event.data === 0) {
       console.log("end");
     }
   }
 
   return (
-    <div onContextMenu={(event) => event.preventDefault()}>
-      <button onClick={fnccr}>Create</button>
-      <button>ChangeProps</button>
-      <div id="playerLayer">
-        {isOn ? (
-          <YouTube
-            videoId="jlwCOYs7OvE"
-            opts={opts}
-            onReady={onPlayerReady}
-            onStateChange={onPlayerStateChange}
-          />
-        ) : (
-          <p>yeah</p>
-        )}
-      </div>
+    <div>
+      {videoOn ? (
+        <YouTube
+          videoId={videoId}
+          opts={opts}
+          onReady={onPlayerReady}
+          onStateChange={onPlayerStateChange}
+        />
+      ) : (
+        <div>no youtube</div>
+      )}
     </div>
   );
 }
 
-export default YT;
+export default Player;
