@@ -1,0 +1,18 @@
+#musicInfo {
+  position: fixed;
+  transition: all 0.3s;
+  width: 868px;
+  height: 600px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  text-align: center;
+}
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+.notHidden {
+  opacity: 1;
+  transition: all 0.3s;
+}

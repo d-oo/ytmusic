@@ -1,6 +1,8 @@
 import { useState, createContext } from "react";
 import Player from "./components/Player";
-import YT from "./components/YT";
+import MusicInfo from "./components/MusicInfo";
+import AddMusic from "./components/AddMusic";
+
 import styles from "./Home.module.css";
 
 export const AppContext = createContext();
@@ -12,7 +14,13 @@ function Home({ component }) {
   const [videoOn, setVideoOn] = useState(false);
   const [title, setTitle] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
-  const components = { Search: <div>Search</div>, Other: <div>Other</div> };
+  const components = {
+    Search: <div>Search</div>,
+    Other: <div>Other</div>,
+    AddMusic: <AddMusic />,
+  };
+  //data
+
   return (
     <AppContext.Provider
       value={{
@@ -33,7 +41,7 @@ function Home({ component }) {
       <link
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet"
-      ></link>
+      />
       <div
         id={styles.container}
         onContextMenu={(event) => event.preventDefault()}
@@ -43,12 +51,7 @@ function Home({ component }) {
         </div>
         <div id={styles.playlists}>Playlists</div>
         <div id={styles.main}>
-          <div className={showInfo ? null : styles.hide} id={styles.musicInfo}>
-            <div>
-              MusicInfo
-              <YT />
-            </div>
-          </div>
+          <MusicInfo />
           <div>{components[component]}</div>
         </div>
       </div>

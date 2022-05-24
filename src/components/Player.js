@@ -16,13 +16,14 @@ function Player() {
     isPlaying,
   } = useContext(AppContext);
 
-  function create(event) {
+  function create() {
     setVideoId("jlwCOYs7OvE");
     setVideoOn(true);
   }
 
   function playOrPause() {
     if (isPlaying === true) {
+      console.log(player);
       player.pauseVideo();
     } else {
       player.playVideo();
@@ -36,16 +37,25 @@ function Player() {
       ) : (
         <button onClick={create}>Create</button>
       )}
+      <button onClick={() => setShowInfo(!showInfo)}>showInfoTmp</button>
       <div id={styles.title} onClick={() => setShowInfo(!showInfo)}>
-        {title}
+        {videoOn ? title : <div>no youtube</div>}
       </div>
       <div className={styles.Links}>
-        <Link to="/yt">
-          LinkToYT<br></br>
+        <Link to="/">
+          LinkToHome
+          <br />
         </Link>
-        <Link to="/">LinkToHome</Link>
+        <Link to="/other">
+          LinkToOther
+          <br />
+        </Link>
+
+        <Link to="/addmusic">
+          LinkToAddMusic
+          <br />
+        </Link>
       </div>
-      <div>{videoOn ? null : <div>no youtube</div>}</div>
     </div>
   );
 }
