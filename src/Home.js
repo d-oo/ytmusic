@@ -19,7 +19,6 @@ function Home({ component }) {
     Other: <div>Other</div>,
     AddMusic: <AddMusic />,
   };
-  //data
 
   return (
     <AppContext.Provider
