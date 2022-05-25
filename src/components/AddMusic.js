@@ -1,28 +1,33 @@
 import { useState } from "react";
+import LoadingMotion from "./LoadingMotion";
+import SearchResult from "./SearchResult";
+import styles from "./AddMusic.module.css";
 
 function AddMusic() {
-  const [loading, setLoading] = useState("");
+  const API_KEY = "AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY";
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
   const [emptyAlert, setEmptyAlert] = useState("-");
   const [searchResults, setSearchResults] = useState("");
   //Youtube Data API - Search
-  const searchReq = async (event) => {
-    setLoading("Loading...");
+  const searchReq = async () => {
+    setLoading(true);
     const str = title + " " + artist;
-    console.log(str);
     const json = await (
       await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=4&type=video&q=${str}&key=AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY`
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=4&type=video&q=${str}&key=${API_KEY}`
       )
     ).json();
-    console.log(event.target);
     setSearchResults(
       json.items.map((item, index) => (
-        <div key={index}>SearchResult Component{item.snippet.title}</div>
+        <span key={index} className={styles.searchResult}>
+          <SearchResult info={item.snippet} id={item.id.videoId} />
+        </span>
       ))
     );
-    setLoading("");
+    console.log(json.items[1]);
+    setLoading(false);
   };
 
   //IndexedDB
@@ -75,6 +80,7 @@ function AddMusic() {
   };
 
   const onSubmit = (event) => {
+    console.log("onSubmit");
     event.preventDefault();
     if (title === "") {
       setEmptyAlert("Title is Empty");
@@ -91,27 +97,28 @@ function AddMusic() {
 
   return (
     <div>
-      {loading}
+      <input
+        onChange={onTitleChange}
+        value={title}
+        type="text"
+        placeholder="title"
+      />
+      <div>-</div>
+      <input
+        onChange={onArtistChange}
+        value={artist}
+        type="text"
+        placeholder="artist"
+      />
+      <div>{emptyAlert}</div>
       <button onClick={searchReq}>Search</button>
-      <form onSubmit={onSubmit}>
-        <input
-          onChange={onTitleChange}
-          value={title}
-          type="text"
-          placeholder="title"
-        />
-        <div>-</div>
-        <input
-          onChange={onArtistChange}
-          value={artist}
-          type="text"
-          placeholder="artist"
-        />
-        <div>{emptyAlert}</div>
-        <button>Submit</button>
-      </form>
+      <button onClick={onSubmit}>Submit</button>
       <button onClick={deleteData}>Delete Something</button>
-      <div>Result: {searchResults}</div>
+      {loading ? (
+        <LoadingMotion />
+      ) : (
+        <div id={styles.bigContainer}>{searchResults}</div>
+      )}
     </div>
   );
 }

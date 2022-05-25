@@ -1,0 +1,11 @@
+#bigContainer {
+  display: grid;
+  color: aliceblue;
+  justify-content: center;
+  grid-template-columns: 320px 320px;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+}
+#bigContainer .searchResult {
+  margin-left: 20px;
+  margin-right: 20px;
+}

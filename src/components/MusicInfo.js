@@ -5,14 +5,22 @@ import YT from "./YT";
 import styles from "./MusicInfo.module.css";
 
 function MusicInfo({ musicId }) {
-  const { videoOn, showInfo } = useContext(AppContext);
+  const { videoOn, showInfo, videoId } = useContext(AppContext);
 
   return (
     <div
       className={showInfo ? styles.notHidden : styles.hidden}
       id={styles.musicInfo}
     >
-      {videoOn ? <YT /> : <div>thumbnail</div>}
+      {videoId === musicId ? (
+        videoOn ? (
+          <YT />
+        ) : (
+          <div>thumbnail</div>
+        )
+      ) : (
+        <div>thumbnail</div>
+      )}
       MusicInfoContent : {musicId}
     </div>
   );

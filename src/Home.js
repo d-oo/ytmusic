@@ -50,7 +50,7 @@ function Home({ component }) {
         </div>
         <div id={styles.playlists}>Playlists</div>
         <div id={styles.main}>
-          <MusicInfo />
+          <MusicInfo musicId={videoId} />
           <div>{components[component]}</div>
         </div>
       </div>

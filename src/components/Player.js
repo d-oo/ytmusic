@@ -1,13 +1,12 @@
 import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { AppContext } from "../Home";
 import styles from "./Player.module.css";
-import { Link } from "react-router-dom";
 
 function Player() {
   const {
     setVideoId,
     player,
-    //setPlayer,
     showInfo,
     setShowInfo,
     videoOn,
@@ -39,7 +38,7 @@ function Player() {
       )}
       <button onClick={() => setShowInfo(!showInfo)}>showInfoTmp</button>
       <div id={styles.title} onClick={() => setShowInfo(!showInfo)}>
-        {videoOn ? title : <div>no youtube</div>}
+        {videoOn ? <div>{title}</div> : <div>no youtube</div>}
       </div>
       <div className={styles.Links}>
         <Link to="/">
@@ -50,7 +49,6 @@ function Player() {
           LinkToOther
           <br />
         </Link>
-
         <Link to="/addmusic">
           LinkToAddMusic
           <br />
