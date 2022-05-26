@@ -44,10 +44,19 @@ function AddMusic() {
 
   dbReq.onupgradeneeded = (event) => {
     db = event.target.result;
-    let oldVersion = event.oldVersion;
-    if (oldVersion < 1) {
-      db.createObjectStore("music", { keyPath: "id", autoIncrement: true });
-      db.createObjectStore("playlist", { keyPath: "id", autoIncrement: true });
+    if (event.oldVersion < 1) {
+      let objStore = db.createObjectStore("music", {
+        keyPath: "id",
+        autoIncrement: true,
+      });
+      objStore.createIndex("title", "title", { unique: false });
+      //objStore.createIndex("title", "title", { unique: false });
+      //objStore.createIndex("title", "title", { unique: false });
+      objStore = db.createObjectStore("playlist", {
+        keyPath: "id",
+        autoIncrement: true,
+      });
+      objStore.createIndex("title", "title", { unique: true });
     }
   };
 
