@@ -1,11 +1,11 @@
-//import styles from "./SearchResult.module.css"
+import styles from "./SearchResult.module.css";
 
 function SearchResult({ info, id }) {
   return (
     <span>
       <img alt={id} src={info.thumbnails.medium.url} />
-      <div>{info.title}</div>
-      <div>{info.channelTitle}</div>
+      <div id={styles.title}>{info.title}</div>
+      <div id={styles.channel}>{info.channelTitle}</div>
     </span>
   );
 }

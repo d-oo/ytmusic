@@ -2,10 +2,21 @@
   display: grid;
   color: aliceblue;
   justify-content: center;
-  grid-template-columns: 320px 320px;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 360px 360px;
+  grid-template-rows: 1fr 1fr;
 }
-#bigContainer .searchResult {
-  margin-left: 20px;
-  margin-right: 20px;
+#search {
+  color: white;
+  cursor: pointer;
+}
+.searchResult {
+  margin: 20px;
+  margin-bottom: 0;
+}
+input[type="text"] {
+  width: 500px;
+  height: 30px;
+  border: 0;
+  border-radius: 5px;
+  margin-top: 20px;
 }

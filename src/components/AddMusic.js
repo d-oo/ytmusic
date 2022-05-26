@@ -21,9 +21,9 @@ function AddMusic() {
     ).json();
     setSearchResults(
       json.items.map((item, index) => (
-        <span key={index} className={styles.searchResult}>
+        <div key={index} className={styles.searchResult}>
           <SearchResult info={item.snippet} id={item.id.videoId} />
-        </span>
+        </div>
       ))
     );
     console.log(json.items[1]);
@@ -103,7 +103,6 @@ function AddMusic() {
         type="text"
         placeholder="title"
       />
-      <div>-</div>
       <input
         onChange={onArtistChange}
         value={artist}
@@ -111,7 +110,13 @@ function AddMusic() {
         placeholder="artist"
       />
       <div>{emptyAlert}</div>
-      <button onClick={searchReq}>Search</button>
+      <span
+        className="material-icons-round md-light"
+        id={styles.search}
+        onClick={searchReq}
+      >
+        search
+      </span>
       <button onClick={onSubmit}>Submit</button>
       <button onClick={deleteData}>Delete Something</button>
       {loading ? (

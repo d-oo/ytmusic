@@ -38,7 +38,7 @@ function Home({ component }) {
       }}
     >
       <link
-        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
         rel="stylesheet"
       />
       <div
