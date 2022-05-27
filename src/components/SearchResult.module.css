@@ -5,3 +5,10 @@
   font-size: 12px;
   color: darkgray;
 }
+.searchResult {
+  padding-top: 20px;
+}
+#selected {
+  padding-top: 20px;
+  background: darkcyan;
+}
