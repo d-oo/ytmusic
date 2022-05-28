@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import LoadingMotion from "./LoadingMotion";
 import SearchResult from "./SearchResult";
-import Genres from "./Genres";
 
 import styles from "./AddMusic.module.css";
 
@@ -10,24 +9,29 @@ function AddMusic() {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(""); //!=AppContext.~
   const [artist, setArtist] = useState("");
-  const [emptyAlert, setEmptyAlert] = useState("-");
   const [searchResults, setSearchResults] = useState("");
-  const [videoResult, setVideoResult] = useState("-");
+  const [videoResult, setVideoResult] = useState("UNDEFINED");
   const [videoId, setVideoId] = useState(""); //!=AppContext.~
-  const [genresOn, setGenresOn] = useState(false);
-  const [genre, setGenre] = useState("undefined");
+  const [category, setCategory] = useState("Song");
+  const [tag, setTag] = useState("");
+  const [videoDuration, setVideoDuration] = useState("");
 
-  //Youtube Data API - Search
+  //****************************************//
+  //
+  //Youtube Data API Search
+  //
+  //****************************************//
+
   useEffect(() => {
     async function videoReq() {
       if (videoId === "") {
-        setVideoResult("-");
+        setVideoResult("UNDEFINED");
         return;
       }
       setLoading(true);
       const json = await (
         await fetch(
-          `https://www.googleapis.com/youtube/v3/videos?part=snippet&type=video&id=${videoId}&key=${API_KEY}`
+          `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&type=video&id=${videoId}&key=${API_KEY}`
         )
       ).json();
       if (json.items[0] === undefined) {
@@ -37,12 +41,14 @@ function AddMusic() {
           <div className={styles.searchResult} id={styles.selected}>
             <SearchResult
               info={json.items[0].snippet}
-              id={"selected " + videoId}
+              id={videoId}
               setVideoResult={setVideoResult}
               setVideoId={setVideoId}
+              index={7}
             />
           </div>
         );
+        setVideoDuration(json.items[0].contentDetails.duration);
       }
       setLoading(false);
     }
@@ -65,6 +71,7 @@ function AddMusic() {
             id={item.id.videoId}
             setVideoResult={setVideoResult}
             setVideoId={setVideoId}
+            index={index}
           />
         </div>
       ))
@@ -75,7 +82,12 @@ function AddMusic() {
     setLoading(false);
   };
 
+  //****************************************//
+  //
   //IndexedDB
+  //
+  //****************************************//
+
   const dbReq = indexedDB.open("database", 1);
   let db;
   dbReq.onsuccess = (event) => {
@@ -107,93 +119,116 @@ function AddMusic() {
 
   const addData = () => {
     let store = db.transaction("music", "readwrite").objectStore("music");
+    const artistToArray = artist.split(",").map((str) => str.trim());
+    const tagToArray = tag.split(",").map((str) => str.trim());
     let addReq = store.add({
       title: title,
-      artist: artist,
+      artist: artistToArray,
+      videoId: videoId,
+      category: category,
+      tag: tagToArray,
+      duration: videoDuration,
+      playCount: 0,
     });
-    addReq.onsuccess = (event) => {
-      console.log(event);
-    };
+    // addReq.onsuccess = (event) => {
+    //   console.log(event);
+    // };
   };
 
   const deleteData = () => {
     let store = db.transaction("music", "readwrite").objectStore("music");
     let deleteReq = store.delete(Number(prompt("id?")));
-    deleteReq.onsuccess = (event) => console.log(event);
   };
 
+  //****************************************//
+  //
   //Event
-  const onTitleChange = (event) => {
-    setTitle(event.target.value);
-    setEmptyAlert("-");
-  };
-
-  const onArtistChange = (event) => {
-    setArtist(event.target.value);
-    setEmptyAlert("-");
-  };
-  const onVideoIdChange = (event) => {
-    setVideoId(event.target.value);
-    setEmptyAlert("-");
-  };
+  //
+  //****************************************//
 
   const onSubmit = (event) => {
-    console.log("onSubmit");
-    event.preventDefault();
-    if (title === "") {
-      setEmptyAlert("Title is Empty");
-      return;
-    }
-    if (artist === "") {
-      setEmptyAlert("Artist is Empty");
-      return;
-    }
     addData();
     setTitle("");
     setArtist("");
     setVideoId("");
+    setTag("");
   };
 
   return (
     <div>
-      {genresOn ? (
-        <Genres setGenresOn={setGenresOn} setGenre={setGenre} from="AddMusic" />
-      ) : null}
-      <p>{genre}</p>
+      <div className={styles.radioContainer}>
+        <div className={styles.radio}>
+          <input
+            type="radio"
+            name="kind"
+            value={category}
+            id="Song"
+            checked={category === "Song"}
+            onChange={() => setCategory("Song")}
+          />
+          <label htmlFor="Song" id={styles.Song}>
+            Song
+          </label>
+        </div>
+        <div className={styles.radio}>
+          <input
+            type="radio"
+            name="kind"
+            value={category}
+            id="Inst"
+            checked={category === "Inst"}
+            onChange={() => setCategory("Inst")}
+          />
+          <label htmlFor="Inst" id={styles.Inst}>
+            Instrumental
+          </label>
+        </div>
+      </div>
       <input
-        onChange={onTitleChange}
+        onChange={(event) => setTitle(event.target.value)}
         value={title}
         type="text"
         placeholder="Title"
       />
       <input
-        onChange={onArtistChange}
+        onChange={(event) => setArtist(event.target.value)}
         value={artist}
         type="text"
-        placeholder="Artist"
+        placeholder="Artist (아티스트가 없다면 none을 입력)"
       />
       <input
-        onChange={onVideoIdChange}
+        onChange={(event) => setVideoId(event.target.value)}
         value={videoId}
         type="text"
         placeholder="Video ID"
       />
-      <div>{emptyAlert}</div>
-      <span
-        className="material-icons-round"
-        id={styles.search}
-        onClick={searchReq}
-      >
-        search
-      </span>
-      <button onClick={onSubmit}>Submit</button>
-      <button onClick={deleteData}>Delete Something</button>
-      <button onClick={() => setGenresOn(true)}>Genres</button>
+      <input
+        onChange={(event) => setTag(event.target.value)}
+        value={tag}
+        type="text"
+        placeholder="Tag"
+      />
+      <div>
+        <span
+          className="material-icons-round"
+          id={styles.search}
+          onClick={searchReq}
+        >
+          search
+        </span>
+        <button onClick={deleteData}>Delete Something</button>
+      </div>
       {loading ? <LoadingMotion /> : null}
       <div id={styles.bigContainer}>
         {videoResult}
         {searchResults}
       </div>
+      <button
+        onClick={onSubmit}
+        disabled={title === "" || artist === "" || videoResult === "UNDEFINED"}
+      >
+        Submit
+      </button>
     </div>
   );
 }

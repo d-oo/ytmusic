@@ -7,8 +7,8 @@
 }
 .searchResult {
   padding-top: 20px;
+  cursor: pointer;
 }
 #selected {
-  padding-top: 20px;
   background: darkcyan;
 }

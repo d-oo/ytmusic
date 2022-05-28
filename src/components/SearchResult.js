@@ -1,9 +1,15 @@
 import styles from "./SearchResult.module.css";
 
-function SearchResult({ info, id, setVideoResult, setVideoId }) {
+function SearchResult({ info, id, setVideoResult, setVideoId, index }) {
   return (
     <div className={styles.searchResult}>
-      <img alt={id} src={info.thumbnails.medium.url} />
+      <a
+        href={`https://www.youtube.com/watch?v=${id}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img alt={index} src={info.thumbnails.medium.url} />
+      </a>
       <div
         id={styles.title}
         onClick={() => {
@@ -11,9 +17,10 @@ function SearchResult({ info, id, setVideoResult, setVideoId }) {
             <div id={styles.selected}>
               <SearchResult
                 info={info}
-                id={"selected " + id}
+                id={id}
                 setVideoResult={setVideoResult}
                 setVideoId={setVideoId}
+                index={7}
               />
             </div>
           );
