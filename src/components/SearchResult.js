@@ -3,33 +3,21 @@ import styles from "./SearchResult.module.css";
 function SearchResult({ info, id, setVideoResult, setVideoId, index }) {
   return (
     <div className={styles.searchResult}>
+      <img
+        alt={index}
+        src={info.thumbnails.medium.url}
+        onClick={() => {
+          setVideoId(id);
+        }}
+      />
       <a
         href={`https://www.youtube.com/watch?v=${id}`}
         target="_blank"
         rel="noreferrer"
       >
-        <img alt={index} src={info.thumbnails.medium.url} />
+        <div id={styles.title}>{info.title}</div>
+        <div id={styles.channel}>{info.channelTitle}</div>
       </a>
-      <div
-        id={styles.title}
-        onClick={() => {
-          setVideoResult(
-            <div id={styles.selected}>
-              <SearchResult
-                info={info}
-                id={id}
-                setVideoResult={setVideoResult}
-                setVideoId={setVideoId}
-                index={7}
-              />
-            </div>
-          );
-          setVideoId(id);
-        }}
-      >
-        {info.title}
-      </div>
-      <div id={styles.channel}>{info.channelTitle}</div>
     </div>
   );
 }

@@ -12,3 +12,7 @@
 #selected {
   background: darkcyan;
 }
+a {
+  color: aliceblue;
+  text-decoration: none;
+}

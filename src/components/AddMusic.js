@@ -31,7 +31,7 @@ function AddMusic() {
       setLoading(true);
       const json = await (
         await fetch(
-          `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&type=video&id=${videoId}&key=${API_KEY}`
+          `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&fields=items(snippet(thumbnails,title,channelTitle),contentDetails/duration)&type=video&id=${videoId}&key=${API_KEY}`
         )
       ).json();
       if (json.items[0] === undefined) {
@@ -48,7 +48,29 @@ function AddMusic() {
             />
           </div>
         );
-        setVideoDuration(json.items[0].contentDetails.duration);
+
+        //videoDuration converting
+        const durationStr = json.items[0].contentDetails.duration;
+        let tmpStr = durationStr.replace("PT", "");
+        let h, m, s;
+        if (!tmpStr.includes("H")) {
+          h = 0;
+        } else {
+          h = Number(tmpStr.split("H")[0]);
+          tmpStr = tmpStr.split("H")[1];
+        }
+        if (!tmpStr.includes("M")) {
+          m = 0;
+        } else {
+          m = Number(tmpStr.split("M")[0]);
+          tmpStr = tmpStr.split("M")[1];
+        }
+        if (!tmpStr.includes("S")) {
+          s = 0;
+        } else {
+          s = Number(tmpStr.split("S")[0]);
+        }
+        setVideoDuration(h * 3600 + m * 60 + s);
       }
       setLoading(false);
     }
@@ -60,7 +82,7 @@ function AddMusic() {
     const str = title + " " + artist;
     const json = await (
       await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&type=video&q=${str}&key=${API_KEY}`
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id/videoId,snippet(thumbnails,title,channelTitle))&maxResults=5&type=video&q=${str}&key=${API_KEY}`
       )
     ).json();
     setSearchResults(
@@ -152,10 +174,12 @@ function AddMusic() {
     setArtist("");
     setVideoId("");
     setTag("");
+    setSearchResults("");
+    setVideoDuration("");
   };
 
   return (
-    <div>
+    <div id={styles.bigContainer}>
       <div className={styles.radioContainer}>
         <div className={styles.radio}>
           <input
@@ -219,7 +243,7 @@ function AddMusic() {
         <button onClick={deleteData}>Delete Something</button>
       </div>
       {loading ? <LoadingMotion /> : null}
-      <div id={styles.bigContainer}>
+      <div id={styles.smallContainer}>
         {videoResult}
         {searchResults}
       </div>

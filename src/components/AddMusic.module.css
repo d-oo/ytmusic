@@ -1,4 +1,12 @@
-#bigContainer {
+/* #bigContainer {
+  transition: all 0.3s;
+  width: 868px;
+  height: 600px;
+  padding: 16px;
+  background: red;
+  border-radius: 10px;
+} */
+#smallContainer {
   display: grid;
   color: aliceblue;
   justify-content: center;
@@ -30,6 +38,7 @@ input[type="text"] {
 }
 .radio label {
   display: flex;
+  background: gainsboro;
   width: 120px;
   height: 50px;
   cursor: pointer;
@@ -39,10 +48,14 @@ input[type="text"] {
 .radio #Song {
   border: 1px solid black;
   border-right: 0px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 .radio #Inst {
   border: 1px solid black;
   border-left: 0px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .radio input:checked + label {
   background: darkcyan;
