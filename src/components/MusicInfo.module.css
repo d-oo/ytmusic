@@ -1,11 +1,15 @@
 #musicInfo {
   position: fixed;
-  transition: all 0.3s;
-  width: 868px;
-  height: 600px;
+  transition: all 0.5s;
+  width: 900px;
+  height: 100vh;
+  box-sizing: border-box;
   padding: 16px;
+  z-index: 20;
   background: white;
   border-radius: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
   text-align: center;
 }
 .hidden {
@@ -14,5 +18,22 @@
 }
 .notHidden {
   opacity: 1;
-  transition: all 0.5s;
+}
+#musicInfo::-webkit-scrollbar {
+  width: 5px;
+}
+#musicInfo::-webkit-scrollbar-track {
+  background-color: white;
+}
+#musicInfo::-webkit-scrollbar-thumb {
+  background: darkgray;
+}
+#musicInfo::-webkit-scrollbar-thumb:hover {
+  background: gray;
+}
+#musicInfo::-webkit-scrollbar-thumb:active {
+  background: black;
+}
+#musicInfo::-webkit-scrollbar-button {
+  display: none;
 }

@@ -12,11 +12,8 @@ function App() {
         <Route path="/other">
           <Home component="Other" />
         </Route>
-        <Route path="/addmusic">
-          <Home component="AddMusic" />
-        </Route>
         <Route path="/">
-          <Home component="Search" />
+          <Home component="SearchMusic" />
         </Route>
       </Switch>
     </Router>

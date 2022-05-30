@@ -1,7 +1,7 @@
 import { useState, createContext } from "react";
 import Player from "./components/Player";
 import MusicInfo from "./components/MusicInfo";
-import AddMusic from "./components/AddMusic";
+import SearchMusic from "./components/SearchMusic";
 
 import styles from "./Home.module.css";
 
@@ -15,9 +15,8 @@ function Home({ component }) {
   const [title, setTitle] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const components = {
-    Search: <div>Search</div>,
+    SearchMusic: <SearchMusic />,
     Other: <div>Other</div>,
-    AddMusic: <AddMusic />,
   };
 
   return (

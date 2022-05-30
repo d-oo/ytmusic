@@ -1,7 +1,8 @@
 #container {
   display: grid;
+  height: 100vh;
   grid-template-columns: 300px 900px;
-  grid-template-rows: 300px 900px;
+  grid-template-rows: 300px 1fr;
   text-align: center;
   justify-content: center;
 }

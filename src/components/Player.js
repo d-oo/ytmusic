@@ -49,10 +49,6 @@ function Player() {
           LinkToOther
           <br />
         </Link>
-        <Link to="/addmusic">
-          LinkToAddMusic
-          <br />
-        </Link>
       </div>
     </div>
   );

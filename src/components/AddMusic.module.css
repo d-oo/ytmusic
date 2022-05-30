@@ -1,11 +1,42 @@
-/* #bigContainer {
-  transition: all 0.3s;
-  width: 868px;
-  height: 600px;
+#bigContainer {
+  position: fixed;
+  top: 0%;
+  transition: all 0.5s;
+  width: 900px;
+  height: 100vh;
+  box-sizing: border-box;
   padding: 16px;
-  background: red;
+  z-index: 10;
+  background: cornflowerblue;
   border-radius: 10px;
-} */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#bigContainer::-webkit-scrollbar {
+  width: 5px;
+}
+#bigContainer::-webkit-scrollbar-track {
+  background-color: cornflowerblue;
+}
+#bigContainer::-webkit-scrollbar-thumb {
+  background: white;
+}
+#bigContainer::-webkit-scrollbar-thumb:hover {
+  background: darkgray;
+}
+#bigContainer::-webkit-scrollbar-thumb:active {
+  background: gray;
+}
+#bigContainer::-webkit-scrollbar-button {
+  display: none;
+}
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+.notHidden {
+  opacity: 1;
+}
 #smallContainer {
   display: grid;
   color: aliceblue;
@@ -14,9 +45,23 @@
   grid-template-rows: 1fr 1fr;
   margin-top: 20px;
 }
-#search {
+#closeButton {
   color: white;
   cursor: pointer;
+}
+#searchButton {
+  color: white;
+  cursor: pointer;
+}
+#searchDisabled {
+  color: gray;
+}
+#doneButton {
+  color: white;
+  cursor: pointer;
+}
+#doneDisabled {
+  color: gray;
 }
 #selected {
   background: darkcyan;

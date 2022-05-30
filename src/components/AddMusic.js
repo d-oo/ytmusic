@@ -4,7 +4,7 @@ import SearchResult from "./SearchResult";
 
 import styles from "./AddMusic.module.css";
 
-function AddMusic() {
+function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   const API_KEY = "AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY";
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(""); //!=AppContext.~
@@ -15,10 +15,11 @@ function AddMusic() {
   const [category, setCategory] = useState("Song");
   const [tag, setTag] = useState("");
   const [videoDuration, setVideoDuration] = useState("");
+  const [isArtistNone, setIsArtistNone] = useState(false);
 
   //****************************************//
   //
-  //Youtube Data API Search
+  //Youtube Data API: Videos & Search
   //
   //****************************************//
 
@@ -26,6 +27,7 @@ function AddMusic() {
     async function videoReq() {
       if (videoId === "") {
         setVideoResult("UNDEFINED");
+        setVideoDuration("");
         return;
       }
       setLoading(true);
@@ -42,7 +44,6 @@ function AddMusic() {
             <SearchResult
               info={json.items[0].snippet}
               id={videoId}
-              setVideoResult={setVideoResult}
               setVideoId={setVideoId}
               index={7}
             />
@@ -91,7 +92,6 @@ function AddMusic() {
           <SearchResult
             info={item.snippet}
             id={item.id.videoId}
-            setVideoResult={setVideoResult}
             setVideoId={setVideoId}
             index={index}
           />
@@ -152,34 +152,52 @@ function AddMusic() {
       duration: videoDuration,
       playCount: 0,
     });
-    // addReq.onsuccess = (event) => {
-    //   console.log(event);
-    // };
-  };
-
-  const deleteData = () => {
-    let store = db.transaction("music", "readwrite").objectStore("music");
-    let deleteReq = store.delete(Number(prompt("id?")));
+    addReq.onsuccess = (event) => {
+      console.log(event);
+      console.log("succefully added!");
+      //이 부분에 추가 완료 알림창 띄움
+    };
   };
 
   //****************************************//
   //
-  //Event
+  //Event & Return
   //
   //****************************************//
 
-  const onSubmit = (event) => {
-    addData();
+  const reset = () => {
     setTitle("");
     setArtist("");
     setVideoId("");
     setTag("");
-    setSearchResults("");
-    setVideoDuration("");
+    setIsArtistNone(false);
   };
 
+  const onSubmit = () => {
+    addData();
+    reset();
+  };
+
+  const closeAddMusic = () => {
+    reset();
+    setCategory("Song");
+    setIsAddMusicOn(false);
+  };
+
+  useEffect(() => setSearchResults(""), [title, artist]);
+
   return (
-    <div id={styles.bigContainer}>
+    <div
+      id={styles.bigContainer}
+      className={isAddMusicOn ? styles.notHidden : styles.hidden}
+    >
+      <span
+        className="material-icons-round"
+        id={styles.closeButton}
+        onClick={closeAddMusic}
+      >
+        close
+      </span>
       <div className={styles.radioContainer}>
         <div className={styles.radio}>
           <input
@@ -209,50 +227,90 @@ function AddMusic() {
         </div>
       </div>
       <input
-        onChange={(event) => setTitle(event.target.value)}
+        onChange={(event) => {
+          setTitle(event.target.value);
+        }}
         value={title}
         type="text"
         placeholder="Title"
+        spellcheck="false"
       />
       <input
-        onChange={(event) => setArtist(event.target.value)}
+        onChange={(event) => {
+          setArtist(event.target.value);
+        }}
         value={artist}
         type="text"
-        placeholder="Artist (아티스트가 없다면 none을 입력)"
+        placeholder="Artist"
+        spellcheck="false"
+        disabled={isArtistNone}
       />
+      <div>
+        {category === "Inst" ? (
+          <label>
+            <input
+              type="checkbox"
+              value={isArtistNone}
+              onChange={() => {
+                if (!isArtistNone) {
+                  setArtist("None");
+                } else {
+                  setArtist("");
+                }
+                setIsArtistNone((prev) => !prev);
+              }}
+            />
+            None
+          </label>
+        ) : null}
+      </div>
       <input
         onChange={(event) => setVideoId(event.target.value)}
         value={videoId}
         type="text"
         placeholder="Video ID"
+        spellcheck="false"
       />
       <input
         onChange={(event) => setTag(event.target.value)}
         value={tag}
         type="text"
         placeholder="Tag"
+        spellcheck="false"
       />
       <div>
         <span
           className="material-icons-round"
-          id={styles.search}
-          onClick={searchReq}
+          id={
+            title === "" || artist === ""
+              ? styles.searchDisabled
+              : styles.searchButton
+          }
+          onClick={title === "" || artist === "" ? null : searchReq}
         >
           search
         </span>
-        <button onClick={deleteData}>Delete Something</button>
       </div>
       {loading ? <LoadingMotion /> : null}
       <div id={styles.smallContainer}>
         {videoResult}
         {searchResults}
       </div>
-      <button
-        onClick={onSubmit}
-        disabled={title === "" || artist === "" || videoResult === "UNDEFINED"}
+      <span
+        className="material-icons-round"
+        id={
+          title === "" || artist === "" || videoResult === "UNDEFINED"
+            ? styles.doneDisabled
+            : styles.doneButton
+        }
+        onClick={
+          title === "" || artist === "" || videoResult === "UNDEFINED"
+            ? null
+            : onSubmit
+        }
       >
-        Submit
-      </button>
+        done
+      </span>
     </div>
   );
 }

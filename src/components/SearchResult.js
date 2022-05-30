@@ -1,6 +1,6 @@
 import styles from "./SearchResult.module.css";
 
-function SearchResult({ info, id, setVideoResult, setVideoId, index }) {
+function SearchResult({ info, id, setVideoId, index }) {
   return (
     <div className={styles.searchResult}>
       <img
