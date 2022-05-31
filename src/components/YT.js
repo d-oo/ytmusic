@@ -2,7 +2,7 @@ import { useContext } from "react";
 import YouTube from "react-youtube";
 import { AppContext } from "../Home";
 
-function YT() {
+export default function YT() {
   const { videoId, setPlayer, videoOn, setTitle, setIsPlaying } =
     useContext(AppContext);
   const opts = {
@@ -44,5 +44,3 @@ function YT() {
     </div>
   );
 }
-
-export default YT;

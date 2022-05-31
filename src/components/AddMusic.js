@@ -4,7 +4,7 @@ import SearchResult from "./SearchResult";
 
 import styles from "./AddMusic.module.css";
 
-function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
+export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   const API_KEY = "AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY";
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(""); //!=AppContext.~
@@ -233,7 +233,7 @@ function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         value={title}
         type="text"
         placeholder="Title"
-        spellcheck="false"
+        spellCheck="false"
       />
       <input
         onChange={(event) => {
@@ -242,7 +242,7 @@ function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         value={artist}
         type="text"
         placeholder="Artist"
-        spellcheck="false"
+        spellCheck="false"
         disabled={isArtistNone}
       />
       <div>
@@ -269,14 +269,14 @@ function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         value={videoId}
         type="text"
         placeholder="Video ID"
-        spellcheck="false"
+        spellCheck="false"
       />
       <input
         onChange={(event) => setTag(event.target.value)}
         value={tag}
         type="text"
         placeholder="Tag"
-        spellcheck="false"
+        spellCheck="false"
       />
       <div>
         <span
@@ -314,5 +314,3 @@ function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
     </div>
   );
 }
-
-export default AddMusic;

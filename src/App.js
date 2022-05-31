@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Home from "./Home";
 
-function App() {
+export default function App() {
   if (!window.indexedDB) {
     window.alert("IndexedDB not available");
   }
@@ -19,5 +19,3 @@ function App() {
     </Router>
   );
 }
-
-export default App;

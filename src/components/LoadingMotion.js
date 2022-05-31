@@ -1,6 +1,6 @@
 import styles from "./LoadingMotion.module.css";
 
-function LoadingMotion() {
+export default function LoadingMotion() {
   return (
     <div className={styles.scalingdots}>
       <div className={styles.waveform__bar}></div>
@@ -11,5 +11,3 @@ function LoadingMotion() {
     </div>
   );
 }
-
-export default LoadingMotion;

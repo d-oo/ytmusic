@@ -4,7 +4,7 @@ import YT from "./YT";
 
 import styles from "./MusicInfo.module.css";
 
-function MusicInfo({ musicId }) {
+export default function MusicInfo({ musicId }) {
   const { videoOn, showInfo, videoId } = useContext(AppContext);
 
   return (
@@ -25,5 +25,3 @@ function MusicInfo({ musicId }) {
     </div>
   );
 }
-
-export default MusicInfo;

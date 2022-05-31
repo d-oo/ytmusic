@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { AppContext } from "../Home";
 import styles from "./Player.module.css";
 
-function Player() {
+export default function Player() {
   const {
     setVideoId,
     player,
@@ -53,5 +53,3 @@ function Player() {
     </div>
   );
 }
-
-export default Player;

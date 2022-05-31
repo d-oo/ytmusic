@@ -7,7 +7,7 @@ import styles from "./Home.module.css";
 
 export const AppContext = createContext();
 
-function Home({ component }) {
+export default function Home({ component }) {
   const [videoId, setVideoId] = useState("");
   const [player, setPlayer] = useState({});
   const [showInfo, setShowInfo] = useState(false);
@@ -56,5 +56,3 @@ function Home({ component }) {
     </AppContext.Provider>
   );
 }
-
-export default Home;

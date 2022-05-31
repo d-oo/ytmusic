@@ -1,6 +1,6 @@
 import styles from "./SearchResult.module.css";
 
-function SearchResult({ info, id, setVideoId, index }) {
+export default function SearchResult({ info, id, setVideoId, index }) {
   return (
     <div className={styles.searchResult}>
       <img
@@ -21,5 +21,3 @@ function SearchResult({ info, id, setVideoId, index }) {
     </div>
   );
 }
-
-export default SearchResult;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import AddMusic from "./AddMusic";
 import styles from "./SearchMusic.module.css";
 
-function SearchMusic() {
+export default function SearchMusic() {
   const [isAddMusicOn, setIsAddMusicOn] = useState(false);
   const AddMusicOn = () => setIsAddMusicOn(true);
   return (
@@ -24,5 +24,3 @@ function SearchMusic() {
     </div>
   );
 }
-
-export default SearchMusic;
