@@ -16,6 +16,8 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   const [tag, setTag] = useState("");
   const [videoDuration, setVideoDuration] = useState("");
   const [isArtistNone, setIsArtistNone] = useState(false);
+  const [recommendedArtist, setRecommendedArtist] = useState([]);
+  const [db, setDb] = useState({});
 
   //****************************************//
   //
@@ -111,9 +113,8 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   //****************************************//
 
   const dbReq = indexedDB.open("database", 1);
-  let db;
   dbReq.onsuccess = (event) => {
-    db = event.target.result;
+    setDb(event.target.result);
   };
 
   dbReq.onerror = (event) => {
@@ -122,15 +123,20 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   };
 
   dbReq.onupgradeneeded = (event) => {
-    db = event.target.result;
+    setDb(event.target.result);
     if (event.oldVersion < 1) {
       let objStore = db.createObjectStore("music", {
         keyPath: "id",
         autoIncrement: true,
       });
-      objStore.createIndex("title", "title", { unique: false });
-      //objStore.createIndex("title", "title", { unique: false });
-      //objStore.createIndex("title", "title", { unique: false });
+      objStore.createIndex("artist", "artist", {
+        multiEntry: true,
+      });
+      objStore.createIndex("videoId", "videoId", { unique: true });
+      objStore.createIndex("category", "category");
+      objStore.createIndex("tag", "tag", { multiEntry: true });
+      objStore.createIndex("playCount", "playCount");
+      objStore.createIndex("recentPlay", "recentPlay");
       objStore = db.createObjectStore("playlist", {
         keyPath: "id",
         autoIncrement: true,
@@ -151,11 +157,28 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
       tag: tagToArray,
       duration: videoDuration,
       playCount: 0,
+      recentPlay: 0,
     });
     addReq.onsuccess = (event) => {
       console.log(event);
       console.log("succefully added!");
       //이 부분에 추가 완료 알림창 띄움
+      reset();
+    };
+    addReq.onerror = (event) => {
+      if (addReq.error.name === "ConstraintError") {
+        console.log("already existing video ID");
+        //이 부분에 해당 비디오를 사용하는 음악이 이미 존재한다는 알림창 띄움
+      }
+    };
+  };
+
+  const getData = () => {
+    let store = db.transaction("music", "readonly").objectStore("music");
+    let index = store.index("artist");
+    let getReq = index.getAll("태연");
+    getReq.onsuccess = () => {
+      console.log(getReq.result);
     };
   };
 
@@ -175,7 +198,6 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
 
   const onSubmit = () => {
     addData();
-    reset();
   };
 
   const closeAddMusic = () => {
@@ -184,7 +206,46 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
     setIsAddMusicOn(false);
   };
 
-  useEffect(() => setSearchResults(""), [title, artist]);
+  useEffect(() => setSearchResults(""), [title]);
+
+  useEffect(() => {
+    function recommendArtists() {
+      setSearchResults("");
+      setRecommendedArtist([]);
+      if (artist === "") {
+        return;
+      }
+      let artistArray = artist
+        .split(",")
+        .map((str) => str.trim())
+        .map((item) => item.replace(/\./g, "").replace(/ /g, ""));
+      let store = db.transaction("music", "readwrite").objectStore("music");
+      let index = store.index("artist");
+      let getReq = index.openCursor(null, "nextunique");
+      let count = 0;
+      getReq.onsuccess = () => {
+        let cursor = getReq.result;
+        if (cursor) {
+          let dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
+          artistArray.forEach((artistItem, artistIndex) => {
+            if (dbStr.includes(artistItem)) {
+              setRecommendedArtist((prev) => [
+                ...prev,
+                { aI: artistIndex, cs: cursor.key },
+              ]);
+              count = count + 1;
+            }
+          });
+          if (count < 5) {
+            cursor.continue();
+          }
+        } else {
+          console.log("end");
+        }
+      };
+    }
+    recommendArtists();
+  }, [artist]);
 
   return (
     <div
@@ -198,6 +259,16 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
       >
         close
       </span>
+      <button onClick={getData}>get?</button>
+      <div>
+        {recommendedArtist.map((item, index) => (
+          <div key={"a" + index}>{item.aI}</div>
+        ))}
+        :
+        {recommendedArtist.map((item, index) => (
+          <div key={"b" + index}>{item.cs}</div>
+        ))}
+      </div>
       <div className={styles.radioContainer}>
         <div className={styles.radio}>
           <input
