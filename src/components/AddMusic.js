@@ -113,7 +113,7 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   //****************************************//
 
   useEffect(() => {
-    console.log("rendered");
+    console.log("first rendered");
     const dbReq = indexedDB.open("database", 1);
     dbReq.onsuccess = (event) => {
       setDb(event.target.result);
