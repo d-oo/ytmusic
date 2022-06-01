@@ -105,3 +105,14 @@ input[type="text"] {
 .radio input:checked + label {
   background: darkcyan;
 }
+
+#recommendContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.recommend {
+  cursor: pointer;
+  padding-left: 10px;
+  padding-right: 10px;
+}

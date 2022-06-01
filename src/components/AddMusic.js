@@ -112,38 +112,41 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   //
   //****************************************//
 
-  const dbReq = indexedDB.open("database", 1);
-  dbReq.onsuccess = (event) => {
-    setDb(event.target.result);
-  };
+  useEffect(() => {
+    console.log("rendered");
+    const dbReq = indexedDB.open("database", 1);
+    dbReq.onsuccess = (event) => {
+      setDb(event.target.result);
+    };
 
-  dbReq.onerror = (event) => {
-    const error = event.target.error;
-    console.log("error", error.name);
-  };
+    dbReq.onerror = (event) => {
+      const error = event.target.error;
+      console.log("error", error.name);
+    };
 
-  dbReq.onupgradeneeded = (event) => {
-    setDb(event.target.result);
-    if (event.oldVersion < 1) {
-      let objStore = db.createObjectStore("music", {
-        keyPath: "id",
-        autoIncrement: true,
-      });
-      objStore.createIndex("artist", "artist", {
-        multiEntry: true,
-      });
-      objStore.createIndex("videoId", "videoId", { unique: true });
-      objStore.createIndex("category", "category");
-      objStore.createIndex("tag", "tag", { multiEntry: true });
-      objStore.createIndex("playCount", "playCount");
-      objStore.createIndex("recentPlay", "recentPlay");
-      objStore = db.createObjectStore("playlist", {
-        keyPath: "id",
-        autoIncrement: true,
-      });
-      objStore.createIndex("title", "title", { unique: true });
-    }
-  };
+    dbReq.onupgradeneeded = (event) => {
+      setDb(event.target.result);
+      if (event.oldVersion < 1) {
+        let objStore = db.createObjectStore("music", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+        objStore.createIndex("artist", "artist", {
+          multiEntry: true,
+        });
+        objStore.createIndex("videoId", "videoId", { unique: true });
+        objStore.createIndex("category", "category");
+        objStore.createIndex("tag", "tag", { multiEntry: true });
+        objStore.createIndex("playCount", "playCount");
+        objStore.createIndex("recentPlay", "recentPlay");
+        objStore = db.createObjectStore("playlist", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+        objStore.createIndex("title", "title", { unique: true });
+      }
+    };
+  }, []);
 
   const addData = () => {
     let store = db.transaction("music", "readwrite").objectStore("music");
@@ -159,28 +162,59 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
       playCount: 0,
       recentPlay: 0,
     });
-    addReq.onsuccess = (event) => {
-      console.log(event);
+    addReq.onsuccess = () => {
       console.log("succefully added!");
       //이 부분에 추가 완료 알림창 띄움
       reset();
     };
-    addReq.onerror = (event) => {
+    addReq.onerror = () => {
       if (addReq.error.name === "ConstraintError") {
         console.log("already existing video ID");
         //이 부분에 해당 비디오를 사용하는 음악이 이미 존재한다는 알림창 띄움
+      } else {
+        console.log(addReq.error);
       }
     };
   };
 
-  const getData = () => {
-    let store = db.transaction("music", "readonly").objectStore("music");
-    let index = store.index("artist");
-    let getReq = index.getAll("태연");
-    getReq.onsuccess = () => {
-      console.log(getReq.result);
+  useEffect(() => {
+    const recommendArtists = () => {
+      setSearchResults("");
+      setRecommendedArtist([]);
+      if (artist === "") {
+        return;
+      }
+      let artistArr = artist.split(",");
+      let artistArray = artistArr.map((item) =>
+        item.replace(/\./g, "").replace(/ /g, "")
+      );
+      let store = db.transaction("music", "readwrite").objectStore("music");
+      let index = store.index("artist");
+      let cursorReq = index.openCursor(null, "nextunique");
+      cursorReq.onsuccess = () => {
+        let cursor = cursorReq.result;
+        if (cursor) {
+          let dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
+          let lastArtist = artistArray[artistArray.length - 1];
+          if (
+            dbStr.includes(lastArtist) &&
+            dbStr !== artistArr[artistArr.length - 1] &&
+            lastArtist !== ""
+          ) {
+            setRecommendedArtist((prev) => [...prev, cursor.key]);
+          }
+          if (recommendedArtist.length < 5) {
+            cursor.continue();
+          }
+        } else {
+          console.log("end");
+        }
+      };
     };
-  };
+    recommendArtists();
+  }, [artist]);
+
+  // useEffect(recommendArtists, [artist]);
 
   //****************************************//
   //
@@ -208,45 +242,6 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
 
   useEffect(() => setSearchResults(""), [title]);
 
-  useEffect(() => {
-    function recommendArtists() {
-      setSearchResults("");
-      setRecommendedArtist([]);
-      if (artist === "") {
-        return;
-      }
-      let artistArray = artist
-        .split(",")
-        .map((str) => str.trim())
-        .map((item) => item.replace(/\./g, "").replace(/ /g, ""));
-      let store = db.transaction("music", "readwrite").objectStore("music");
-      let index = store.index("artist");
-      let getReq = index.openCursor(null, "nextunique");
-      let count = 0;
-      getReq.onsuccess = () => {
-        let cursor = getReq.result;
-        if (cursor) {
-          let dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
-          artistArray.forEach((artistItem, artistIndex) => {
-            if (dbStr.includes(artistItem)) {
-              setRecommendedArtist((prev) => [
-                ...prev,
-                { aI: artistIndex, cs: cursor.key },
-              ]);
-              count = count + 1;
-            }
-          });
-          if (count < 5) {
-            cursor.continue();
-          }
-        } else {
-          console.log("end");
-        }
-      };
-    }
-    recommendArtists();
-  }, [artist]);
-
   return (
     <div
       id={styles.bigContainer}
@@ -259,16 +254,6 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
       >
         close
       </span>
-      <button onClick={getData}>get?</button>
-      <div>
-        {recommendedArtist.map((item, index) => (
-          <div key={"a" + index}>{item.aI}</div>
-        ))}
-        :
-        {recommendedArtist.map((item, index) => (
-          <div key={"b" + index}>{item.cs}</div>
-        ))}
-      </div>
       <div className={styles.radioContainer}>
         <div className={styles.radio}>
           <input
@@ -335,6 +320,21 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
           </label>
         ) : null}
       </div>
+      <div id={styles.recommendContainer}>
+        {recommendedArtist.map((item, index) => (
+          <div
+            key={"new" + index}
+            className={styles.recommend}
+            onClick={() => {
+              const artistArray = artist.split(",");
+              artistArray[artistArray.length - 1] = item;
+              setArtist(artistArray.join(","));
+            }}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
       <input
         onChange={(event) => setVideoId(event.target.value)}
         value={videoId}
@@ -353,11 +353,13 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         <span
           className="material-icons-round"
           id={
-            title === "" || artist === ""
+            title.trim() === "" || artist.trim() === ""
               ? styles.searchDisabled
               : styles.searchButton
           }
-          onClick={title === "" || artist === "" ? null : searchReq}
+          onClick={
+            title.trim() === "" || artist.trim() === "" ? null : searchReq
+          }
         >
           search
         </span>
@@ -370,12 +372,16 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
       <span
         className="material-icons-round"
         id={
-          title === "" || artist === "" || videoResult === "UNDEFINED"
+          title.trim() === "" ||
+          artist.trim() === "" ||
+          videoResult === "UNDEFINED"
             ? styles.doneDisabled
             : styles.doneButton
         }
         onClick={
-          title === "" || artist === "" || videoResult === "UNDEFINED"
+          title.trim() === "" ||
+          artist.trim() === "" ||
+          videoResult === "UNDEFINED"
             ? null
             : onSubmit
         }
