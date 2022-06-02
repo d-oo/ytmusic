@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import LoadingMotion from "./LoadingMotion";
 import SearchResult from "./SearchResult";
 
@@ -17,7 +17,7 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   const [videoDuration, setVideoDuration] = useState("");
   const [isArtistNone, setIsArtistNone] = useState(false);
   const [recommendedArtist, setRecommendedArtist] = useState([]);
-  const [db, setDb] = useState({});
+  const db = useRef();
 
   //****************************************//
   //
@@ -113,10 +113,9 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   //****************************************//
 
   useEffect(() => {
-    console.log("first rendered");
     const dbReq = indexedDB.open("database", 1);
     dbReq.onsuccess = (event) => {
-      setDb(event.target.result);
+      db.current = event.target.result;
     };
 
     dbReq.onerror = (event) => {
@@ -125,9 +124,9 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
     };
 
     dbReq.onupgradeneeded = (event) => {
-      setDb(event.target.result);
+      db.current = event.target.result;
       if (event.oldVersion < 1) {
-        let objStore = db.createObjectStore("music", {
+        let objStore = db.current.createObjectStore("music", {
           keyPath: "id",
           autoIncrement: true,
         });
@@ -139,7 +138,7 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         objStore.createIndex("tag", "tag", { multiEntry: true });
         objStore.createIndex("playCount", "playCount");
         objStore.createIndex("recentPlay", "recentPlay");
-        objStore = db.createObjectStore("playlist", {
+        objStore = db.current.createObjectStore("playlist", {
           keyPath: "id",
           autoIncrement: true,
         });
@@ -149,10 +148,12 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   }, []);
 
   const addData = () => {
-    let store = db.transaction("music", "readwrite").objectStore("music");
+    const store = db.current
+      .transaction("music", "readwrite")
+      .objectStore("music");
     const artistToArray = artist.split(",").map((str) => str.trim());
     const tagToArray = tag.split(",").map((str) => str.trim());
-    let addReq = store.add({
+    const addReq = store.add({
       title: title,
       artist: artistToArray,
       videoId: videoId,
@@ -184,26 +185,29 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
       if (artist === "") {
         return;
       }
-      let artistArr = artist.split(",");
-      let artistArray = artistArr.map((item) =>
+      let count = 0;
+      const artistArr = artist.split(",");
+      const artistArray = artistArr.map((item) =>
         item.replace(/\./g, "").replace(/ /g, "")
       );
-      let store = db.transaction("music", "readwrite").objectStore("music");
-      let index = store.index("artist");
-      let cursorReq = index.openCursor(null, "nextunique");
+      const store = db.current
+        .transaction("music", "readwrite")
+        .objectStore("music");
+      const cursorReq = store.index("artist").openCursor(null, "nextunique");
       cursorReq.onsuccess = () => {
-        let cursor = cursorReq.result;
+        const cursor = cursorReq.result;
         if (cursor) {
-          let dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
-          let lastArtist = artistArray[artistArray.length - 1];
+          const dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
+          const lastArtist = artistArray[artistArray.length - 1];
           if (
             dbStr.includes(lastArtist) &&
             dbStr !== artistArr[artistArr.length - 1] &&
             lastArtist !== ""
           ) {
             setRecommendedArtist((prev) => [...prev, cursor.key]);
+            count += 1;
           }
-          if (recommendedArtist.length < 5) {
+          if (count < 5) {
             cursor.continue();
           }
         } else {
@@ -213,8 +217,6 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
     };
     recommendArtists();
   }, [artist]);
-
-  // useEffect(recommendArtists, [artist]);
 
   //****************************************//
   //
