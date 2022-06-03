@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, createContext } from "react";
 import Player from "./components/Player";
+import YT from "./components/YT";
 import MusicInfo from "./components/MusicInfo";
 import SearchMusic from "./components/SearchMusic";
 
@@ -69,6 +70,8 @@ export default function Home({ component }) {
         setPlayer,
         showInfo,
         setShowInfo,
+        infoId,
+        setInfoId,
         videoOn,
         setVideoOn,
         title,
@@ -76,8 +79,6 @@ export default function Home({ component }) {
         isPlaying,
         setIsPlaying,
         dbState,
-        infoId,
-        setInfoId,
       }}
     >
       <link
@@ -93,7 +94,8 @@ export default function Home({ component }) {
         </div>
         <div id={styles.playlists}>Playlists</div>
         <div id={styles.main}>
-          <MusicInfo key="playing" musicId={videoId} />
+          <YT />
+          <MusicInfo musicId={infoId} />
           <div>{components[component]}</div>
         </div>
       </div>

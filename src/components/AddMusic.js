@@ -119,9 +119,6 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   //****************************************//
 
   const addData = () => {
-    const store = db.current
-      .transaction("music", "readwrite")
-      .objectStore("music");
     const artistArray = [
       ...new Set(
         artist.split(",").map((str) => str.trim().replace(/ +(?= )/g, ""))
@@ -132,16 +129,19 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         tag.split(",").map((str) => str.trim().replace(/ +(?= )/g, ""))
       ),
     ];
-    const addReq = store.add({
-      title: title,
-      artist: artistArray,
-      videoId: videoId,
-      category: category,
-      tag: tagArray,
-      duration: videoDuration,
-      playCount: 0,
-      recentPlay: 0,
-    });
+    const addReq = db.current
+      .transaction("music", "readwrite")
+      .objectStore("music")
+      .add({
+        title: title,
+        artist: artistArray,
+        videoId: videoId,
+        category: category,
+        tag: tagArray,
+        duration: videoDuration,
+        playCount: 0,
+        recentPlay: 0,
+      });
     addReq.onsuccess = () => {
       console.log("succefully added!");
       //이 부분에 추가 완료 알림창 띄움

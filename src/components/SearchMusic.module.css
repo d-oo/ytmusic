@@ -29,7 +29,8 @@
 #addButton {
   position: fixed;
   bottom: 3vh;
-  right: 30vh;
+  right: 13vw;
+  z-index: 19;
   color: white;
   background: violet;
   border-radius: 100%;

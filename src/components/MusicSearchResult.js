@@ -3,10 +3,16 @@ import { AppContext } from "../Home";
 import styles from "./MusicSearchResult.module.css";
 
 export default function MusicSearchResult({ info, index }) {
-  const { setShowInfo, setInfoId } = useContext(AppContext);
+  const { setShowInfo, setInfoId, setVideoId, setVideoOn, setTitle } =
+    useContext(AppContext);
 
   return (
     <div className={styles.tmp}>
+      <img
+        alt={index}
+        src={`https://i.ytimg.com/vi/${info.videoId}/default.jpg`}
+      />
+      {info.title} by {info.artist.join(", ")}
       <button
         onClick={() => {
           setInfoId(info.videoId);
@@ -15,7 +21,15 @@ export default function MusicSearchResult({ info, index }) {
       >
         Info
       </button>
-      {info.title} by {info.artist.join(", ")}
+      <button
+        onClick={() => {
+          setVideoId(info.videoId);
+          setVideoOn(true);
+          setTitle(info.title);
+        }}
+      >
+        Play
+      </button>
     </div>
   );
 }

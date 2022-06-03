@@ -6,9 +6,7 @@ export default function VideoSearchResult({ info, id, setVideoId, index }) {
       <img
         alt={index}
         src={info.thumbnails.medium.url}
-        onClick={() => {
-          setVideoId(id);
-        }}
+        onClick={() => setVideoId(id)}
       />
       <a
         href={`https://www.youtube.com/watch?v=${id}`}

@@ -4,25 +4,11 @@ import { AppContext } from "../Home";
 import styles from "./Player.module.css";
 
 export default function Player() {
-  const {
-    setVideoId,
-    player,
-    showInfo,
-    setShowInfo,
-    videoOn,
-    setVideoOn,
-    title,
-    isPlaying,
-  } = useContext(AppContext);
-
-  function create() {
-    setVideoId("jlwCOYs7OvE");
-    setVideoOn(true);
-  }
+  const { videoId, player, setShowInfo, videoOn, title, isPlaying, setInfoId } =
+    useContext(AppContext);
 
   function playOrPause() {
     if (isPlaying === true) {
-      console.log(player);
       player.pauseVideo();
     } else {
       player.playVideo();
@@ -33,17 +19,15 @@ export default function Player() {
     <div>
       {videoOn ? (
         <button onClick={playOrPause}>{isPlaying ? "Pause" : "Play"}</button>
-      ) : (
-        <button onClick={create}>Create</button>
-      )}
-      <button onClick={() => setShowInfo(!showInfo)}>showInfoTmp</button>
+      ) : null}
       <div
         id={styles.title}
         onClick={() => {
-          setShowInfo(!showInfo);
+          setInfoId(videoId);
+          setShowInfo(true);
         }}
       >
-        {videoOn ? <div>{title}</div> : <div>no youtube</div>}
+        {videoOn ? <div>{title}</div> : null}
       </div>
       <div className={styles.Links}>
         <Link to="/">

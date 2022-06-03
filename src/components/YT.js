@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import YouTube from "react-youtube";
 import { AppContext } from "../Home";
+import styles from "./YT.module.css";
 
 export default function YT() {
-  const { videoId, setPlayer, videoOn, setTitle, setIsPlaying } =
-    useContext(AppContext);
+  const { videoId, setPlayer, videoOn, setIsPlaying } = useContext(AppContext);
   const opts = {
-    width: "256", //320 384 256
-    height: "144", //180 216 144
+    width: "320", //320 384 256
+    height: "180", //180 216 144
     playerVars: {
       autoplay: 1,
       controls: 0,
@@ -17,7 +17,6 @@ export default function YT() {
   };
   function onPlayerReady(event) {
     setPlayer(event.target);
-    setTitle(event.target.getVideoData().title);
   }
   function onPlayerStateChange(event) {
     if (event.data === 1) {
@@ -30,7 +29,7 @@ export default function YT() {
   }
 
   return (
-    <div>
+    <div id={styles.yt}>
       {videoOn ? (
         <YouTube
           videoId={videoId}
@@ -38,9 +37,7 @@ export default function YT() {
           onReady={onPlayerReady}
           onStateChange={onPlayerStateChange}
         />
-      ) : (
-        <div>no youtube</div>
-      )}
+      ) : null}
     </div>
   );
 }

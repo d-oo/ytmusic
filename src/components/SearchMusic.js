@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { AppContext } from "../Home";
 import AddMusic from "./AddMusic";
 import MusicSearchResult from "./MusicSearchResult";
-import MusicInfo from "./MusicInfo";
 import styles from "./SearchMusic.module.css";
 
 export default function SearchMusic() {
@@ -10,7 +9,7 @@ export default function SearchMusic() {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState([]);
   const db = useRef();
-  const { infoId, dbState } = useContext(AppContext);
+  const { dbState } = useContext(AppContext);
 
   useEffect(() => {
     if (dbState === undefined) {
@@ -45,7 +44,6 @@ export default function SearchMusic() {
           ))}
         </div>
       )}
-      <MusicInfo musicId={infoId} />
       <span
         className="material-icons-round"
         id={styles.addButton}

@@ -38,3 +38,7 @@
 #musicInfo::-webkit-scrollbar-button {
   display: none;
 }
+#closeButton {
+  color: black;
+  cursor: pointer;
+}
