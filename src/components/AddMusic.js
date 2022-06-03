@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { AppContext } from "../Home";
 import LoadingMotion from "./LoadingMotion";
-import SearchResult from "./SearchResult";
+import VideoSearchResult from "./VideoSearchResult";
 
 import styles from "./AddMusic.module.css";
 
@@ -19,6 +20,11 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   const [recommendedArtist, setRecommendedArtist] = useState([]);
   const [recommendedTag, setRecommendedTag] = useState([]);
   const db = useRef();
+  const { dbState } = useContext(AppContext);
+
+  useEffect(() => {
+    db.current = dbState;
+  }, [dbState]);
 
   //****************************************//
   //
@@ -43,8 +49,8 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         setVideoResult("UNDEFINED");
       } else {
         setVideoResult(
-          <div className={styles.searchResult} id={styles.selected}>
-            <SearchResult
+          <div id={styles.selected}>
+            <VideoSearchResult
               info={json.items[0].snippet}
               id={videoId}
               setVideoId={setVideoId}
@@ -91,14 +97,13 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
     ).json();
     setSearchResults(
       json.items.map((item, index) => (
-        <div key={index} className={styles.searchResult}>
-          <SearchResult
-            info={item.snippet}
-            id={item.id.videoId}
-            setVideoId={setVideoId}
-            index={index}
-          />
-        </div>
+        <VideoSearchResult
+          key={index}
+          info={item.snippet}
+          id={item.id.videoId}
+          setVideoId={setVideoId}
+          index={index}
+        />
       ))
     );
     if (videoId === "") {
@@ -112,41 +117,6 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   //IndexedDB
   //
   //****************************************//
-
-  useEffect(() => {
-    const dbReq = indexedDB.open("database", 1);
-    dbReq.onsuccess = (event) => {
-      db.current = event.target.result;
-    };
-
-    dbReq.onerror = (event) => {
-      const error = event.target.error;
-      console.log("error", error.name);
-    };
-
-    dbReq.onupgradeneeded = (event) => {
-      db.current = event.target.result;
-      if (event.oldVersion < 1) {
-        let objStore = db.current.createObjectStore("music", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-        objStore.createIndex("artist", "artist", {
-          multiEntry: true,
-        });
-        objStore.createIndex("videoId", "videoId", { unique: true });
-        objStore.createIndex("category", "category");
-        objStore.createIndex("tag", "tag", { multiEntry: true });
-        objStore.createIndex("playCount", "playCount");
-        objStore.createIndex("recentPlay", "recentPlay");
-        objStore = db.current.createObjectStore("playlist", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-        objStore.createIndex("title", "title", { unique: true });
-      }
-    };
-  }, []);
 
   const addData = () => {
     const store = db.current
@@ -188,80 +158,72 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   };
 
   useEffect(() => {
-    const recommendArtists = () => {
-      setSearchResults("");
-      setRecommendedArtist([]);
-      if (artist === "") {
-        return;
-      }
-      let count = 0;
-      const artistArr = artist.split(",");
-      const artistArray = artistArr.map((item) =>
-        item.replace(/\./g, "").replace(/ /g, "")
-      );
-      const store = db.current
-        .transaction("music", "readonly")
-        .objectStore("music");
-      const cursorReq = store.index("artist").openCursor(null, "nextunique");
-      cursorReq.onsuccess = () => {
-        const cursor = cursorReq.result;
-        if (cursor) {
-          const dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
-          const lastArtist = artistArray[artistArray.length - 1];
-          if (
-            dbStr.includes(lastArtist) &&
-            dbStr !== artistArr[artistArr.length - 1] &&
-            lastArtist !== ""
-          ) {
-            setRecommendedArtist((prev) => [...prev, cursor.key]);
-            count += 1;
-          }
-          if (count < 5) {
-            cursor.continue();
-          }
+    setSearchResults("");
+    setRecommendedArtist([]);
+    if (artist === "") {
+      return;
+    }
+    let count = 0;
+    const artistArr = artist.split(",");
+    const artistArray = artistArr.map((item) =>
+      item.replace(/\./g, "").replace(/ /g, "")
+    );
+    const store = db.current
+      .transaction("music", "readonly")
+      .objectStore("music");
+    const cursorReq = store.index("artist").openCursor(null, "nextunique");
+    cursorReq.onsuccess = () => {
+      const cursor = cursorReq.result;
+      if (cursor) {
+        const dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
+        const lastArtist = artistArray[artistArray.length - 1];
+        if (
+          dbStr.includes(lastArtist) &&
+          dbStr !== artistArr[artistArr.length - 1] &&
+          lastArtist !== ""
+        ) {
+          setRecommendedArtist((prev) => [...prev, cursor.key]);
+          count += 1;
         }
-      };
+        if (count < 5) {
+          cursor.continue();
+        }
+      }
     };
-    recommendArtists();
   }, [artist]);
 
   useEffect(() => {
-    const recommendTags = () => {
-      setRecommendedTag([]);
-      if (tag === "") {
-        return;
-      }
-      let count = 0;
-      const tagArr = tag.split(",");
-      const tagArray = tagArr.map((item) =>
-        item.replace(/\./g, "").replace(/ /g, "")
-      );
-      const store = db.current
-        .transaction("music", "readonly")
-        .objectStore("music");
-      const cursorReq = store.index("tag").openCursor(null, "nextunique");
-      cursorReq.onsuccess = () => {
-        const cursor = cursorReq.result;
-        if (cursor) {
-          const dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
-          const lastTag = tagArray[tagArray.length - 1];
-          if (
-            dbStr.includes(lastTag) &&
-            dbStr !== tagArr[tagArr.length - 1] &&
-            lastTag !== ""
-          ) {
-            setRecommendedTag((prev) => [...prev, cursor.key]);
-            count += 1;
-          }
-          if (count < 5) {
-            cursor.continue();
-          }
-        } else {
-          console.log("end");
+    setRecommendedTag([]);
+    if (tag === "") {
+      return;
+    }
+    let count = 0;
+    const tagArr = tag.split(",");
+    const tagArray = tagArr.map((item) =>
+      item.replace(/\./g, "").replace(/ /g, "")
+    );
+    const store = db.current
+      .transaction("music", "readonly")
+      .objectStore("music");
+    const cursorReq = store.index("tag").openCursor(null, "nextunique");
+    cursorReq.onsuccess = () => {
+      const cursor = cursorReq.result;
+      if (cursor) {
+        const dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
+        const lastTag = tagArray[tagArray.length - 1];
+        if (
+          dbStr.includes(lastTag) &&
+          dbStr !== tagArr[tagArr.length - 1] &&
+          lastTag !== ""
+        ) {
+          setRecommendedTag((prev) => [...prev, cursor.key]);
+          count += 1;
         }
-      };
+        if (count < 5) {
+          cursor.continue();
+        }
+      }
     };
-    recommendTags();
   }, [tag]);
 
   //****************************************//

@@ -1,6 +1,7 @@
 #musicInfo {
   position: fixed;
   transition: all 0.5s;
+  top: 0%;
   width: 900px;
   height: 100vh;
   box-sizing: border-box;

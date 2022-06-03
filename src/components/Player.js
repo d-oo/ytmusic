@@ -37,7 +37,12 @@ export default function Player() {
         <button onClick={create}>Create</button>
       )}
       <button onClick={() => setShowInfo(!showInfo)}>showInfoTmp</button>
-      <div id={styles.title} onClick={() => setShowInfo(!showInfo)}>
+      <div
+        id={styles.title}
+        onClick={() => {
+          setShowInfo(!showInfo);
+        }}
+      >
         {videoOn ? <div>{title}</div> : <div>no youtube</div>}
       </div>
       <div className={styles.Links}>

@@ -1,13 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { AppContext } from "../Home";
 import AddMusic from "./AddMusic";
+import MusicSearchResult from "./MusicSearchResult";
+import MusicInfo from "./MusicInfo";
 import styles from "./SearchMusic.module.css";
 
 export default function SearchMusic() {
   const [isAddMusicOn, setIsAddMusicOn] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [result, setResult] = useState([]);
+  const db = useRef();
+  const { infoId, dbState } = useContext(AppContext);
+
+  useEffect(() => {
+    if (dbState === undefined) {
+      return;
+    }
+    db.current = dbState;
+    setResult([]);
+    const cursorReq = db.current
+      .transaction("music", "readonly")
+      .objectStore("music")
+      .openCursor();
+    cursorReq.onsuccess = () => {
+      const cursor = cursorReq.result;
+      if (cursor) {
+        setResult((prev) => [...prev, cursor.value]);
+        cursor.continue();
+      }
+    };
+    setLoading(false);
+  }, [dbState]);
+
   const AddMusicOn = () => setIsAddMusicOn(true);
+
   return (
     <div id={styles.bigContainer}>
-      <br />
+      {loading ? (
+        "Loading..."
+      ) : (
+        <div>
+          {result.map((item, index) => (
+            <MusicSearchResult key={index} info={item} index={index} />
+          ))}
+        </div>
+      )}
+      <MusicInfo musicId={infoId} />
       <span
         className="material-icons-round"
         id={styles.addButton}
@@ -15,7 +53,6 @@ export default function SearchMusic() {
       >
         add
       </span>
-      <div>asdf</div>
       <AddMusic
         from="SearchMusic"
         isAddMusicOn={isAddMusicOn}

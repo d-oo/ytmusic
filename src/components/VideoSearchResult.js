@@ -1,6 +1,6 @@
-import styles from "./SearchResult.module.css";
+import styles from "./VideoSearchResult.module.css";
 
-export default function SearchResult({ info, id, setVideoId, index }) {
+export default function VideoSearchResult({ info, id, setVideoId, index }) {
   return (
     <div className={styles.searchResult}>
       <img
