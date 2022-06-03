@@ -1,4 +1,38 @@
+#bigContainer {
+  width: 900px;
+  height: 100vh;
+  box-sizing: border-box;
+  background: wheat;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#bigContainer::-webkit-scrollbar {
+  display: block;
+  width: 5px;
+}
+#bigContainer::-webkit-scrollbar-track {
+  background-color: black;
+}
+#bigContainer::-webkit-scrollbar-thumb {
+  background: white;
+}
+#bigContainer::-webkit-scrollbar-thumb:hover {
+  background: darkgray;
+}
+#bigContainer::-webkit-scrollbar-thumb:active {
+  background: gray;
+}
+#bigContainer::-webkit-scrollbar-button {
+  display: none;
+}
+
 #addButton {
+  position: fixed;
+  bottom: 3vh;
+  right: 30vh;
   color: white;
+  background: violet;
+  border-radius: 100%;
+  padding: 10px;
   cursor: pointer;
 }

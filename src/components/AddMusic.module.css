@@ -6,13 +6,13 @@
   height: 100vh;
   box-sizing: border-box;
   padding: 16px;
-  z-index: 10;
   background: cornflowerblue;
   border-radius: 10px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 #bigContainer::-webkit-scrollbar {
+  display: block;
   width: 5px;
 }
 #bigContainer::-webkit-scrollbar-track {
@@ -106,7 +106,7 @@ input[type="text"] {
   background: darkcyan;
 }
 
-#recommendContainer {
+.recommendContainer {
   display: flex;
   justify-content: center;
 }

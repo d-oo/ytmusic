@@ -17,6 +17,7 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   const [videoDuration, setVideoDuration] = useState("");
   const [isArtistNone, setIsArtistNone] = useState(false);
   const [recommendedArtist, setRecommendedArtist] = useState([]);
+  const [recommendedTag, setRecommendedTag] = useState([]);
   const db = useRef();
 
   //****************************************//
@@ -151,14 +152,22 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
     const store = db.current
       .transaction("music", "readwrite")
       .objectStore("music");
-    const artistToArray = artist.split(",").map((str) => str.trim());
-    const tagToArray = tag.split(",").map((str) => str.trim());
+    const artistArray = [
+      ...new Set(
+        artist.split(",").map((str) => str.trim().replace(/ +(?= )/g, ""))
+      ),
+    ];
+    const tagArray = [
+      ...new Set(
+        tag.split(",").map((str) => str.trim().replace(/ +(?= )/g, ""))
+      ),
+    ];
     const addReq = store.add({
       title: title,
-      artist: artistToArray,
+      artist: artistArray,
       videoId: videoId,
       category: category,
-      tag: tagToArray,
+      tag: tagArray,
       duration: videoDuration,
       playCount: 0,
       recentPlay: 0,
@@ -191,7 +200,7 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         item.replace(/\./g, "").replace(/ /g, "")
       );
       const store = db.current
-        .transaction("music", "readwrite")
+        .transaction("music", "readonly")
         .objectStore("music");
       const cursorReq = store.index("artist").openCursor(null, "nextunique");
       cursorReq.onsuccess = () => {
@@ -210,13 +219,50 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
           if (count < 5) {
             cursor.continue();
           }
-        } else {
-          console.log("end");
         }
       };
     };
     recommendArtists();
   }, [artist]);
+
+  useEffect(() => {
+    const recommendTags = () => {
+      setRecommendedTag([]);
+      if (tag === "") {
+        return;
+      }
+      let count = 0;
+      const tagArr = tag.split(",");
+      const tagArray = tagArr.map((item) =>
+        item.replace(/\./g, "").replace(/ /g, "")
+      );
+      const store = db.current
+        .transaction("music", "readonly")
+        .objectStore("music");
+      const cursorReq = store.index("tag").openCursor(null, "nextunique");
+      cursorReq.onsuccess = () => {
+        const cursor = cursorReq.result;
+        if (cursor) {
+          const dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
+          const lastTag = tagArray[tagArray.length - 1];
+          if (
+            dbStr.includes(lastTag) &&
+            dbStr !== tagArr[tagArr.length - 1] &&
+            lastTag !== ""
+          ) {
+            setRecommendedTag((prev) => [...prev, cursor.key]);
+            count += 1;
+          }
+          if (count < 5) {
+            cursor.continue();
+          }
+        } else {
+          console.log("end");
+        }
+      };
+    };
+    recommendTags();
+  }, [tag]);
 
   //****************************************//
   //
@@ -322,7 +368,7 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
           </label>
         ) : null}
       </div>
-      <div id={styles.recommendContainer}>
+      <div className={styles.recommendContainer}>
         {recommendedArtist.map((item, index) => (
           <div
             key={"new" + index}
@@ -351,6 +397,21 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
         placeholder="Tag"
         spellCheck="false"
       />
+      <div className={styles.recommendContainer}>
+        {recommendedTag.map((item, index) => (
+          <div
+            key={"new" + index}
+            className={styles.recommend}
+            onClick={() => {
+              const tagArray = tag.split(",");
+              tagArray[tagArray.length - 1] = item;
+              setTag(tagArray.join(","));
+            }}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
       <div>
         <span
           className="material-icons-round"

@@ -6,8 +6,7 @@ export default function SearchMusic() {
   const [isAddMusicOn, setIsAddMusicOn] = useState(false);
   const AddMusicOn = () => setIsAddMusicOn(true);
   return (
-    <div>
-      SearchMusic
+    <div id={styles.bigContainer}>
       <br />
       <span
         className="material-icons-round"
@@ -16,6 +15,7 @@ export default function SearchMusic() {
       >
         add
       </span>
+      <div>asdf</div>
       <AddMusic
         from="SearchMusic"
         isAddMusicOn={isAddMusicOn}
