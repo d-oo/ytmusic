@@ -7,7 +7,8 @@
   box-sizing: border-box;
   z-index: 20;
   background: white;
-  border-radius: 10px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
   overflow-y: auto;
   overflow-x: hidden;
   text-align: center;
@@ -22,20 +23,15 @@
 #musicInfo::-webkit-scrollbar {
   width: 5px;
 }
-#musicInfo::-webkit-scrollbar-track {
-  background-color: white;
-}
 #musicInfo::-webkit-scrollbar-thumb {
   background: darkgray;
+  border-radius: 10px;
 }
 #musicInfo::-webkit-scrollbar-thumb:hover {
   background: gray;
 }
 #musicInfo::-webkit-scrollbar-thumb:active {
   background: black;
-}
-#musicInfo::-webkit-scrollbar-button {
-  display: none;
 }
 #closeButton {
   color: black;

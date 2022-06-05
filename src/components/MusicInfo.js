@@ -1,16 +1,30 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { AppContext } from "../Home";
+import AddMusic from "./AddMusic";
 
 import styles from "./MusicInfo.module.css";
 
 export default function MusicInfo({ musicId }) {
-  const { showInfo, setShowInfo, videoId, dbState } = useContext(AppContext);
+  const {
+    showInfo,
+    setShowInfo,
+    videoId,
+    setVideoId,
+    setVideoOn,
+    setTitle,
+    dbState,
+  } = useContext(AppContext);
   const [info, setInfo] = useState("");
   const [infoAvailable, setInfoAvailable] = useState(false);
+  const [isAddMusicOn, setIsAddMusicOn] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(true);
   const db = useRef();
 
   useEffect(() => {
     console.log("musicInfo rendered");
+    if (!isUpdated) {
+      return;
+    }
     setInfoAvailable(false);
     if (dbState === undefined || musicId === "") {
       return;
@@ -24,8 +38,9 @@ export default function MusicInfo({ musicId }) {
     infoReq.onsuccess = () => {
       setInfo(infoReq.result);
       setInfoAvailable(true);
+      setIsUpdated(false);
     };
-  }, [dbState, musicId]);
+  }, [dbState, musicId, isUpdated]);
 
   return (
     <div
@@ -58,6 +73,23 @@ export default function MusicInfo({ musicId }) {
           <div>
             {info.title} - {info.artist.join(", ")}
           </div>
+          <button
+            onClick={() => {
+              setVideoId(info.videoId);
+              setVideoOn(true);
+              setTitle(info.title);
+            }}
+          >
+            Play
+          </button>
+          <button onClick={() => setIsAddMusicOn(true)}>Edit Music</button>
+          <AddMusic
+            from="MusicInfo"
+            isAddMusicOn={isAddMusicOn}
+            setIsAddMusicOn={setIsAddMusicOn}
+            setIsUpdated={setIsUpdated}
+            musicInfo={info}
+          />
         </div>
       ) : null}
     </div>

@@ -5,7 +5,13 @@ import VideoSearchResult from "./VideoSearchResult";
 
 import styles from "./AddMusic.module.css";
 
-export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
+export default function AddMusic({
+  from,
+  isAddMusicOn,
+  setIsAddMusicOn,
+  setIsUpdated,
+  musicInfo,
+}) {
   const API_KEY = "AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY";
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(""); //!=AppContext.~
@@ -25,6 +31,15 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   useEffect(() => {
     db.current = dbState;
   }, [dbState]);
+
+  useEffect(() => {
+    if (from === "MusicInfo" && isAddMusicOn) {
+      setTitle(musicInfo.title);
+      setArtist(musicInfo.artist.join(","));
+      setVideoId(musicInfo.videoId);
+      setTag(musicInfo.tag.join(","));
+    }
+  }, [from, musicInfo, isAddMusicOn]);
 
   //****************************************//
   //
@@ -157,6 +172,47 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
     };
   };
 
+  const updateData = () => {
+    const artistArray = [
+      ...new Set(
+        artist.split(",").map((str) => str.trim().replace(/ +(?= )/g, ""))
+      ),
+    ];
+    const tagArray = [
+      ...new Set(
+        tag.split(",").map((str) => str.trim().replace(/ +(?= )/g, ""))
+      ),
+    ];
+    const putReq = db.current
+      .transaction("music", "readwrite")
+      .objectStore("music")
+      .put({
+        id: musicInfo.id,
+        title: title,
+        artist: artistArray,
+        videoId: videoId,
+        category: category,
+        tag: tagArray,
+        duration: videoDuration,
+        playCount: musicInfo.playCount,
+        recentPlay: musicInfo.recentPlay,
+      });
+    putReq.onsuccess = () => {
+      setIsUpdated(true);
+      console.log("succefully updated!");
+      //이 부분에 업데이트 완료 알림창 띄움
+      closeAddMusic();
+    };
+    putReq.onerror = () => {
+      if (putReq.error.name === "ConstraintError") {
+        console.log("already existing video ID");
+        //이 부분에 해당 비디오를 사용하는 음악이 이미 존재한다는 알림창 띄움
+      } else {
+        console.log(putReq.error);
+      }
+    };
+  };
+
   useEffect(() => {
     setSearchResults("");
     setRecommendedArtist([]);
@@ -241,7 +297,11 @@ export default function AddMusic({ from, isAddMusicOn, setIsAddMusicOn }) {
   };
 
   const onSubmit = () => {
-    addData();
+    if (from === "MusicInfo") {
+      updateData();
+    } else {
+      addData();
+    }
   };
 
   const closeAddMusic = () => {

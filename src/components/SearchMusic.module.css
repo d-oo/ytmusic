@@ -11,19 +11,17 @@
   width: 5px;
 }
 #bigContainer::-webkit-scrollbar-track {
-  background-color: black;
+  display: none;
 }
 #bigContainer::-webkit-scrollbar-thumb {
   background: white;
+  border-radius: 10px;
 }
 #bigContainer::-webkit-scrollbar-thumb:hover {
   background: darkgray;
 }
 #bigContainer::-webkit-scrollbar-thumb:active {
   background: gray;
-}
-#bigContainer::-webkit-scrollbar-button {
-  display: none;
 }
 
 #addButton {

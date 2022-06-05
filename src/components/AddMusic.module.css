@@ -7,7 +7,8 @@
   box-sizing: border-box;
   padding: 16px;
   background: cornflowerblue;
-  border-radius: 10px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -15,20 +16,15 @@
   display: block;
   width: 5px;
 }
-#bigContainer::-webkit-scrollbar-track {
-  background-color: cornflowerblue;
-}
 #bigContainer::-webkit-scrollbar-thumb {
   background: white;
+  border-radius: 10px;
 }
 #bigContainer::-webkit-scrollbar-thumb:hover {
   background: darkgray;
 }
 #bigContainer::-webkit-scrollbar-thumb:active {
   background: gray;
-}
-#bigContainer::-webkit-scrollbar-button {
-  display: none;
 }
 .hidden {
   visibility: hidden;
