@@ -1,11 +1,10 @@
 #musicInfo {
   position: fixed;
-  transition: all 0.5s;
   top: 0%;
+  transition: all 0.5s;
   width: 900px;
   height: 100vh;
   box-sizing: border-box;
-  padding: 16px;
   z-index: 20;
   background: white;
   border-radius: 10px;

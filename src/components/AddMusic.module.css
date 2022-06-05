@@ -42,7 +42,7 @@
   color: aliceblue;
   justify-content: center;
   grid-template-columns: 360px 360px;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
   margin-top: 20px;
 }
 #closeButton {
