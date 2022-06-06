@@ -360,6 +360,7 @@ export default function AddMusic({
         type="text"
         placeholder="Title"
         spellCheck="false"
+        autoComplete="off"
       />
       <input
         onChange={(event) => {
@@ -370,6 +371,7 @@ export default function AddMusic({
         placeholder="Artist"
         spellCheck="false"
         disabled={isArtistNone}
+        autoComplete="off"
       />
       <div>
         {category === "Inst" ? (
@@ -377,6 +379,7 @@ export default function AddMusic({
             <input
               type="checkbox"
               value={isArtistNone}
+              autoComplete="off"
               onChange={() => {
                 if (!isArtistNone) {
                   setArtist("None");
@@ -411,6 +414,7 @@ export default function AddMusic({
         type="text"
         placeholder="Video ID"
         spellCheck="false"
+        autoComplete="off"
       />
       <input
         onChange={(event) => setTag(event.target.value)}
@@ -418,6 +422,7 @@ export default function AddMusic({
         type="text"
         placeholder="Tag"
         spellCheck="false"
+        autoComplete="off"
       />
       <div className={styles.recommendContainer}>
         {recommendedTag.map((item, index) => (

@@ -1,6 +1,14 @@
 #yt {
   position: fixed;
-  z-index: 20;
+  transition: all 0.5s;
+  z-index: 21;
   bottom: 0;
   right: 11vw;
+}
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+.notHidden {
+  opacity: 1;
 }

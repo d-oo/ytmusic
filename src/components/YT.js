@@ -4,7 +4,8 @@ import { AppContext } from "../Home";
 import styles from "./YT.module.css";
 
 export default function YT() {
-  const { videoId, setPlayer, videoOn, setIsPlaying } = useContext(AppContext);
+  const { videoId, setPlayer, videoOn, setIsPlaying, showYT } =
+    useContext(AppContext);
   const opts = {
     width: "320", //320 384 256
     height: "180", //180 216 144
@@ -29,7 +30,7 @@ export default function YT() {
   }
 
   return (
-    <div id={styles.yt}>
+    <div className={showYT ? styles.notHidden : styles.hidden} id={styles.yt}>
       {videoOn ? (
         <YouTube
           videoId={videoId}

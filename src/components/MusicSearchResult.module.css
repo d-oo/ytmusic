@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.container button {
+  height: 40px;
+}
+#results {
+  position: absolute;
+}
+#result {
+  background: beige;
+  border: 1px solid black;
+  cursor: pointer;
+}

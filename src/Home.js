@@ -3,6 +3,8 @@ import Player from "./components/Player";
 import YT from "./components/YT";
 import MusicInfo from "./components/MusicInfo";
 import SearchMusic from "./components/SearchMusic";
+import Playlists from "./components/Playlists";
+import PlaylistInfo from "./components/PlaylistInfo";
 
 import styles from "./Home.module.css";
 
@@ -12,10 +14,13 @@ export default function Home({ component }) {
   const [videoId, setVideoId] = useState("");
   const [player, setPlayer] = useState({});
   const [showInfo, setShowInfo] = useState(false);
+  const [showYT, setShowYT] = useState(false);
+  const [showPlaylist, setShowPlaylist] = useState(false);
   const [videoOn, setVideoOn] = useState(false);
   const [title, setTitle] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [infoId, setInfoId] = useState("");
+  const [playlistId, setPlaylistId] = useState("");
   const [dbState, setDbState] = useState();
   const db = useRef();
 
@@ -61,6 +66,14 @@ export default function Home({ component }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (infoId === videoId && showInfo) {
+      setShowYT(true);
+    } else {
+      setShowYT(false);
+    }
+  }, [infoId, videoId, showInfo]);
+
   return (
     <AppContext.Provider
       value={{
@@ -70,8 +83,14 @@ export default function Home({ component }) {
         setPlayer,
         showInfo,
         setShowInfo,
+        showYT,
+        setShowYT,
+        showPlaylist,
+        setShowPlaylist,
         infoId,
         setInfoId,
+        playlistId,
+        setPlaylistId,
         videoOn,
         setVideoOn,
         title,
@@ -92,11 +111,14 @@ export default function Home({ component }) {
         <div id={styles.player}>
           <Player />
         </div>
-        <div id={styles.playlists}>Playlists</div>
+        <div id={styles.playlists}>
+          <Playlists />
+        </div>
         <div id={styles.main}>
           <YT />
           <MusicInfo musicId={infoId} />
-          <div>{components[component]}</div>
+          <PlaylistInfo playlistId={playlistId} />
+          {components[component]}
         </div>
       </div>
     </AppContext.Provider>

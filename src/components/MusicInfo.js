@@ -21,7 +21,6 @@ export default function MusicInfo({ musicId }) {
   const db = useRef();
 
   useEffect(() => {
-    console.log("musicInfo rendered");
     if (!isUpdated) {
       return;
     }

@@ -62,7 +62,7 @@
 #selected {
   background: darkcyan;
 }
-input[type="text"] {
+#bigContainer input[type="text"] {
   width: 500px;
   height: 30px;
   border: 0;
