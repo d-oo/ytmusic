@@ -23,7 +23,32 @@
 #bigContainer::-webkit-scrollbar-thumb:active {
   background: gray;
 }
-
+#flexContainer {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid darkkhaki;
+}
+#imgDiv {
+  width: 128px;
+}
+#titleDiv {
+  width: 266px;
+}
+#artistDiv {
+  width: 266px;
+}
+#infoDiv {
+  width: 80px;
+}
+#playDiv {
+  width: 80px;
+}
+#addToDiv {
+  width: 80px;
+}
+#emptyArea {
+  height: 100px;
+}
 #addButton {
   position: fixed;
   bottom: 3vh;

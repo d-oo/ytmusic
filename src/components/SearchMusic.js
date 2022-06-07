@@ -35,6 +35,14 @@ export default function SearchMusic() {
 
   return (
     <div id={styles.bigContainer}>
+      <div id={styles.flexContainer}>
+        <div id={styles.imgDiv}></div>
+        <div id={styles.titleDiv}>Title</div>
+        <div id={styles.artistDiv}>Artist</div>
+        <div id={styles.infoDiv}>Info</div>
+        <div id={styles.playDiv}>Play</div>
+        <div id={styles.addToDiv}>Add To</div>
+      </div>
       {loading ? (
         "Loading..."
       ) : (
@@ -44,6 +52,7 @@ export default function SearchMusic() {
           ))}
         </div>
       )}
+      <div id={styles.emptyArea}></div>
       <span
         className="material-icons-round"
         id={styles.addButton}

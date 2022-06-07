@@ -106,7 +106,7 @@ export default function Home({ component }) {
       />
       <div
         id={styles.container}
-        onContextMenu={(event) => event.preventDefault()}
+        // onContextMenu={(event) => event.preventDefault()}
       >
         <div id={styles.player}>
           <Player />

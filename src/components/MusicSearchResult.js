@@ -6,102 +6,116 @@ export default function MusicSearchResult({ info, index }) {
   const { setShowInfo, setInfoId, setVideoId, setVideoOn, setTitle, dbState } =
     useContext(AppContext);
   const [result, setResult] = useState([]);
-  const [position, setPosition] = useState([0, 0]);
-  const selectStyle = useRef();
   const db = useRef();
+  const resultRef = useRef();
 
   useEffect(() => {
     db.current = dbState;
   }, [dbState]);
 
-  const addToPlaylist = () => {
-    setResult([]);
-    db.current = dbState;
-    const cursorReq = db.current
-      .transaction("playlist", "readonly")
-      .objectStore("playlist")
-      .openCursor();
-    cursorReq.onsuccess = () => {
-      const cursor = cursorReq.result;
-      if (cursor) {
-        setResult((prev) => [...prev, cursor.value]);
-        cursor.continue();
-      }
-    };
-    // const addReq = db.current
-    //   .transaction("music", "readwrite")
-    //   .objectStore("music")
-    //   .add({
-    //     title: title,
-    //     artist: artistArray,
-    //     videoId: videoId,
-    //     category: category,
-    //     tag: tagArray,
-    //     duration: videoDuration,
-    //     playCount: 0,
-    //     recentPlay: 0,
-    //   });
-    // addReq.onsuccess = () => {
-    //   console.log("succefully added!");
-    //   //이 부분에 추가 완료 알림창 띄움
-    //   reset();
-    // };
-    // addReq.onerror = () => {
-    //   if (addReq.error.name === "ConstraintError") {
-    //     console.log("already existing video ID");
-    //     //이 부분에 해당 비디오를 사용하는 음악이 이미 존재한다는 알림창 띄움
-    //   } else {
-    //     console.log(addReq.error);
-    //   }
-    // };
+  const onClickOutside = (event) => {
+    if (result.length !== 0 && !resultRef.current.contains(event.target)) {
+      setResult([]);
+    }
   };
 
   useEffect(() => {
-    if (position[0] === 0) {
+    if (result.length === 0) {
       return;
     }
-    selectStyle.current.style.top = `${position[1]}px`;
-    selectStyle.current.style.left = `${position[0]}px`;
-  }, [position]);
+    window.addEventListener("click", onClickOutside);
+    return () => {
+      window.removeEventListener("click", onClickOutside);
+    };
+  });
+
+  const getPlaylists = () => {
+    const getAllReq = db.current
+      .transaction("playlist", "readonly")
+      .objectStore("playlist")
+      .getAll();
+    getAllReq.onsuccess = () => {
+      setResult(getAllReq.result);
+    };
+  };
+
+  const addToPlaylist = (playlistInfo) => {
+    const updateReq = db.current
+      .transaction("playlist", "readwrite")
+      .objectStore("playlist")
+      .put({
+        title: playlistInfo.title,
+        musicId: [...playlistInfo.musicId, info.videoId],
+        totalDuration: playlistInfo.totalDuration,
+        videoCount: playlistInfo.videoCount,
+        id: playlistInfo.id,
+      });
+    updateReq.onsuccess = () => {
+      console.log("succefully updated!");
+      setResult([]);
+    };
+  };
 
   return (
-    <div className={styles.container}>
-      <img
-        alt={index}
-        src={`https://i.ytimg.com/vi/${info.videoId}/default.jpg`}
-      />
-      {info.title} by {info.artist.join(", ")}
-      <button
-        onClick={() => {
-          setInfoId(info.videoId);
-          setShowInfo(true);
-        }}
-      >
-        Info
-      </button>
-      <button
-        onClick={() => {
-          setVideoId(info.videoId);
-          setVideoOn(true);
-          setTitle(info.title);
-        }}
-      >
-        Play
-      </button>
-      <button
-        onClick={(event) => {
-          setPosition([event.clientX, event.clientY]);
-          addToPlaylist();
-        }}
-      >
-        AddToPlaylist
-      </button>
-      <div id={styles.results} ref={selectStyle}>
-        {result.map((item, index) => (
-          <div key={index} id={styles.result}>
-            {item.title}
+    <div>
+      <div id={styles.flexContainer}>
+        <img
+          alt={index}
+          src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
+          width="128"
+          height="72"
+        />
+        <div id={styles.titleDiv}>{info.title}</div>
+        <div id={styles.artistDiv}>{info.artist.join(", ")}</div>
+        <div id={styles.infoDiv}>
+          <span
+            className="material-icons-round"
+            onClick={() => {
+              setInfoId(info.videoId);
+              setShowInfo(true);
+            }}
+          >
+            info_outline
+          </span>
+        </div>
+        <div id={styles.playDiv}>
+          <span
+            className="material-icons-round"
+            onClick={() => {
+              setVideoId(info.videoId);
+              setVideoOn(true);
+              setTitle(info.title);
+            }}
+          >
+            play_arrow
+          </span>
+        </div>
+        <div id={styles.addToDiv}>
+          <span
+            className="material-icons-round"
+            onClick={() => {
+              if (result.length !== 0) {
+                return;
+              }
+              getPlaylists();
+            }}
+          >
+            playlist_add
+          </span>
+          <div id={styles.wrapper} ref={resultRef}>
+            <div id={styles.results}>
+              {result.map((item, index) => (
+                <div
+                  key={index}
+                  className={styles.result}
+                  onClick={() => addToPlaylist(item)}
+                >
+                  {item.title}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

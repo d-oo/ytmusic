@@ -1,16 +1,43 @@
-.container {
+#flexContainer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid darkkhaki;
 }
-.container button {
-  height: 40px;
+#flexContainer span {
+  cursor: pointer;
+}
+#titleDiv {
+  width: 266px;
+}
+#artistDiv {
+  width: 266px;
+}
+#infoDiv {
+  width: 80px;
+}
+#playDiv {
+  width: 80px;
+}
+#addToDiv {
+  width: 80px;
+}
+#emptyArea {
+  height: 100px;
+}
+#wrapper {
+  position: relative;
 }
 #results {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 500px;
+  right: 0px;
+  border: 1px solid red;
 }
-#result {
+.result {
   background: beige;
-  border: 1px solid black;
+  width: 200px;
   cursor: pointer;
 }

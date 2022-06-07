@@ -16,18 +16,13 @@ export default function Playlists() {
     }
     setResult([]);
     db.current = dbState;
-    const cursorReq = db.current
+    const getAllReq = db.current
       .transaction("playlist", "readonly")
       .objectStore("playlist")
-      .openCursor();
-    cursorReq.onsuccess = () => {
-      const cursor = cursorReq.result;
-      if (cursor) {
-        setResult((prev) => [...prev, cursor.value]);
-        cursor.continue();
-      } else {
-        setIsUpdated(false);
-      }
+      .getAll();
+    getAllReq.onsuccess = () => {
+      setResult(getAllReq.result);
+      setIsUpdated(false);
     };
   }, [dbState, isUpdated]);
 

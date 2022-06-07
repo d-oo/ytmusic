@@ -187,7 +187,6 @@ export default function AddMusic({
       .transaction("music", "readwrite")
       .objectStore("music")
       .put({
-        id: musicInfo.id,
         title: title,
         artist: artistArray,
         videoId: videoId,
@@ -196,6 +195,7 @@ export default function AddMusic({
         duration: videoDuration,
         playCount: musicInfo.playCount,
         recentPlay: musicInfo.recentPlay,
+        id: musicInfo.id,
       });
     putReq.onsuccess = () => {
       setIsUpdated(true);
