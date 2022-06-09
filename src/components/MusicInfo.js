@@ -12,22 +12,22 @@ export default function MusicInfo({ musicId }) {
     setVideoId,
     setVideoOn,
     setTitle,
+    isUpdated,
+    setIsUpdated,
     dbState,
   } = useContext(AppContext);
   const [info, setInfo] = useState("");
   const [infoAvailable, setInfoAvailable] = useState(false);
   const [isAddMusicOn, setIsAddMusicOn] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(true);
   const db = useRef();
 
   useEffect(() => {
-    if (!isUpdated) {
-      return;
-    }
+    console.log("musicInfoA");
     setInfoAvailable(false);
     if (dbState === undefined || musicId === "") {
       return;
     }
+    console.log("musicInfoB");
     db.current = dbState;
     const infoReq = db.current
       .transaction("music", "readonly")
@@ -39,7 +39,7 @@ export default function MusicInfo({ musicId }) {
       setInfoAvailable(true);
       setIsUpdated(false);
     };
-  }, [dbState, musicId, isUpdated]);
+  }, [dbState, musicId, isUpdated, setIsUpdated]);
 
   return (
     <div
@@ -86,7 +86,6 @@ export default function MusicInfo({ musicId }) {
             from="MusicInfo"
             isAddMusicOn={isAddMusicOn}
             setIsAddMusicOn={setIsAddMusicOn}
-            setIsUpdated={setIsUpdated}
             musicInfo={info}
           />
         </div>

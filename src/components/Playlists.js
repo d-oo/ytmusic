@@ -3,28 +3,35 @@ import { AppContext } from "../Home";
 import styles from "./Playlists.module.css";
 
 export default function Playlists() {
-  const { dbState, setShowPlaylist, setPlaylistId } = useContext(AppContext);
+  const {
+    dbState,
+    setShowPlaylist,
+    setPlaylistId,
+    playlistResult,
+    setPlaylistResult,
+    isUpdated,
+    setIsUpdated,
+  } = useContext(AppContext);
   const [newTitle, setNewTitle] = useState("");
   const [addNew, setAddNew] = useState(false);
-  const [result, setResult] = useState([]);
-  const [isUpdated, setIsUpdated] = useState(true);
   const db = useRef();
 
   useEffect(() => {
     if (dbState === undefined || !isUpdated) {
       return;
     }
-    setResult([]);
+    console.log("effect");
+    setPlaylistResult([]);
     db.current = dbState;
     const getAllReq = db.current
       .transaction("playlist", "readonly")
       .objectStore("playlist")
       .getAll();
     getAllReq.onsuccess = () => {
-      setResult(getAllReq.result);
+      setPlaylistResult(getAllReq.result);
       setIsUpdated(false);
     };
-  }, [dbState, isUpdated]);
+  }, [dbState, isUpdated, setPlaylistResult, setIsUpdated]);
 
   const addData = () => {
     const newTitleStr = newTitle.trim();
@@ -106,7 +113,7 @@ export default function Playlists() {
         </div>
       ) : null}
       <div>
-        {result.map((item, index) => (
+        {playlistResult.map((item, index) => (
           <div key={index}>
             {item.title} : {item.videoCount}
             <button

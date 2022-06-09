@@ -6,13 +6,12 @@ import styles from "./SearchMusic.module.css";
 
 export default function SearchMusic() {
   const [isAddMusicOn, setIsAddMusicOn] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [result, setResult] = useState([]);
   const db = useRef();
-  const { dbState } = useContext(AppContext);
+  const { dbState, isUpdated, setIsUpdated } = useContext(AppContext);
 
   useEffect(() => {
-    if (dbState === undefined) {
+    if (dbState === undefined || !isUpdated) {
       return;
     }
     db.current = dbState;
@@ -26,10 +25,11 @@ export default function SearchMusic() {
       if (cursor) {
         setResult((prev) => [...prev, cursor.value]);
         cursor.continue();
+      } else {
+        setIsUpdated(false);
       }
     };
-    setLoading(false);
-  }, [dbState]);
+  }, [dbState, isUpdated, setIsUpdated]);
 
   const AddMusicOn = () => setIsAddMusicOn(true);
 
@@ -43,15 +43,11 @@ export default function SearchMusic() {
         <div id={styles.playDiv}>Play</div>
         <div id={styles.addToDiv}>Add To</div>
       </div>
-      {loading ? (
-        "Loading..."
-      ) : (
-        <div>
-          {result.map((item, index) => (
-            <MusicSearchResult key={index} info={item} index={index} />
-          ))}
-        </div>
-      )}
+      <div>
+        {result.map((item, index) => (
+          <MusicSearchResult key={index} info={item} index={index} />
+        ))}
+      </div>
       <div id={styles.emptyArea}></div>
       <span
         className="material-icons-round"

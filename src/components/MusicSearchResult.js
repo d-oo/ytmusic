@@ -1,11 +1,19 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { AppContext } from "../Home";
 import styles from "./MusicSearchResult.module.css";
+//start
 
 export default function MusicSearchResult({ info, index }) {
-  const { setShowInfo, setInfoId, setVideoId, setVideoOn, setTitle, dbState } =
-    useContext(AppContext);
-  const [result, setResult] = useState([]);
+  const {
+    setShowInfo,
+    setInfoId,
+    setVideoId,
+    setVideoOn,
+    setTitle,
+    playlistResult,
+    dbState,
+  } = useContext(AppContext);
+  const [showResult, setShowResult] = useState(false);
   const db = useRef();
   const resultRef = useRef();
 
@@ -13,31 +21,20 @@ export default function MusicSearchResult({ info, index }) {
     db.current = dbState;
   }, [dbState]);
 
-  const onClickOutside = (event) => {
-    if (result.length !== 0 && !resultRef.current.contains(event.target)) {
-      setResult([]);
-    }
-  };
-
   useEffect(() => {
-    if (result.length === 0) {
+    if (!showResult) {
       return;
     }
-    window.addEventListener("click", onClickOutside);
+    const onClickOutside = (event) => {
+      if (showResult && !resultRef.current.contains(event.target)) {
+        setShowResult(false);
+      }
+    };
+    setTimeout(() => window.addEventListener("click", onClickOutside), 0);
     return () => {
       window.removeEventListener("click", onClickOutside);
     };
-  });
-
-  const getPlaylists = () => {
-    const getAllReq = db.current
-      .transaction("playlist", "readonly")
-      .objectStore("playlist")
-      .getAll();
-    getAllReq.onsuccess = () => {
-      setResult(getAllReq.result);
-    };
-  };
+  }, [showResult]);
 
   const addToPlaylist = (playlistInfo) => {
     const updateReq = db.current
@@ -52,7 +49,8 @@ export default function MusicSearchResult({ info, index }) {
       });
     updateReq.onsuccess = () => {
       console.log("succefully updated!");
-      setResult([]);
+      //업데이트 완료 창
+      setShowResult(false);
     };
   };
 
@@ -94,26 +92,28 @@ export default function MusicSearchResult({ info, index }) {
           <span
             className="material-icons-round"
             onClick={() => {
-              if (result.length !== 0) {
+              if (showResult) {
                 return;
               }
-              getPlaylists();
+              setShowResult(true);
             }}
           >
             playlist_add
           </span>
           <div id={styles.wrapper} ref={resultRef}>
-            <div id={styles.results}>
-              {result.map((item, index) => (
-                <div
-                  key={index}
-                  className={styles.result}
-                  onClick={() => addToPlaylist(item)}
-                >
-                  {item.title}
-                </div>
-              ))}
-            </div>
+            {showResult ? (
+              <div id={styles.results}>
+                {playlistResult.map((item, index) => (
+                  <div
+                    key={index}
+                    className={styles.result}
+                    onClick={() => addToPlaylist(item)}
+                  >
+                    {item.title}
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

@@ -9,7 +9,6 @@ export default function AddMusic({
   from,
   isAddMusicOn,
   setIsAddMusicOn,
-  setIsUpdated,
   musicInfo,
 }) {
   const API_KEY = "AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY";
@@ -26,7 +25,7 @@ export default function AddMusic({
   const [recommendedArtist, setRecommendedArtist] = useState([]);
   const [recommendedTag, setRecommendedTag] = useState([]);
   const db = useRef();
-  const { dbState } = useContext(AppContext);
+  const { dbState, setIsUpdated } = useContext(AppContext);
 
   useEffect(() => {
     db.current = dbState;
@@ -158,6 +157,7 @@ export default function AddMusic({
         recentPlay: 0,
       });
     addReq.onsuccess = () => {
+      setIsUpdated(true);
       console.log("succefully added!");
       //이 부분에 추가 완료 알림창 띄움
       reset();

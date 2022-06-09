@@ -4,7 +4,8 @@ import { AppContext } from "../Home.js";
 import styles from "./PlaylistInfo.module.css";
 
 export default function PlaylistInfo({ playlistId }) {
-  const { showPlaylist, setShowPlaylist, dbState } = useContext(AppContext);
+  const { showPlaylist, setShowPlaylist, isUpdated, setIsUpdated, dbState } =
+    useContext(AppContext);
   const [info, setInfo] = useState("");
   const [infoAvailable, setInfoAvailable] = useState(false);
   const db = useRef();
@@ -22,8 +23,9 @@ export default function PlaylistInfo({ playlistId }) {
     infoReq.onsuccess = () => {
       setInfo(infoReq.result);
       setInfoAvailable(true);
+      setIsUpdated(false);
     };
-  }, [dbState, playlistId]);
+  }, [dbState, playlistId, isUpdated, setIsUpdated]);
 
   return (
     <div

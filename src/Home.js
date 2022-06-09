@@ -11,16 +11,21 @@ import styles from "./Home.module.css";
 export const AppContext = createContext();
 
 export default function Home({ component }) {
+  //player
   const [videoId, setVideoId] = useState("");
+  const [title, setTitle] = useState("");
   const [player, setPlayer] = useState({});
+  const [videoOn, setVideoOn] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  //modal handle
   const [showInfo, setShowInfo] = useState(false);
   const [showYT, setShowYT] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(false);
-  const [videoOn, setVideoOn] = useState(false);
-  const [title, setTitle] = useState("");
-  const [isPlaying, setIsPlaying] = useState(false);
   const [infoId, setInfoId] = useState("");
-  const [playlistId, setPlaylistId] = useState("");
+  const [playlistId, setPlaylistId] = useState(""); //playlistInfoId
+  const [playlistResult, setPlaylistResult] = useState([]);
+  //db
+  const [isUpdated, setIsUpdated] = useState(true); //false or true?
   const [dbState, setDbState] = useState();
   const db = useRef();
 
@@ -97,6 +102,10 @@ export default function Home({ component }) {
         setTitle,
         isPlaying,
         setIsPlaying,
+        playlistResult,
+        setPlaylistResult,
+        isUpdated,
+        setIsUpdated,
         dbState,
       }}
     >
