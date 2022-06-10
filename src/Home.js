@@ -18,11 +18,11 @@ export default function Home({ component }) {
   const [videoOn, setVideoOn] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   //modal handle
-  const [showInfo, setShowInfo] = useState(false);
+  const [showMusicInfo, setShowMusicInfo] = useState(() => {});
   const [showYT, setShowYT] = useState(false);
-  const [showPlaylist, setShowPlaylist] = useState(false);
+  const [showPlaylist, setShowPlaylist] = useState(() => {});
   const [infoId, setInfoId] = useState("");
-  const [playlistId, setPlaylistId] = useState(""); //playlistInfoId
+  const [playlistInfoId, setPlaylistInfoId] = useState("");
   const [playlistResult, setPlaylistResult] = useState([]);
   //db
   const [isUpdated, setIsUpdated] = useState(true); //false or true?
@@ -71,13 +71,14 @@ export default function Home({ component }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (infoId === videoId && showInfo) {
-      setShowYT(true);
-    } else {
-      setShowYT(false);
-    }
-  }, [infoId, videoId, showInfo]);
+  // useEffect(() => {
+  //   if (infoId === videoId && showInfo) {
+  //     setShowYT(true);
+  //   } else {
+  //     setShowYT(false);
+  //   }
+  // }, [infoId, videoId, showInfo]);
+  // info와 yt를 같이 보이게 하는 코드
 
   return (
     <AppContext.Provider
@@ -86,16 +87,16 @@ export default function Home({ component }) {
         setVideoId,
         player,
         setPlayer,
-        showInfo,
-        setShowInfo,
+        showMusicInfo,
+        setShowMusicInfo,
         showYT,
         setShowYT,
         showPlaylist,
         setShowPlaylist,
         infoId,
         setInfoId,
-        playlistId,
-        setPlaylistId,
+        playlistInfoId,
+        setPlaylistInfoId,
         videoOn,
         setVideoOn,
         title,
@@ -125,8 +126,8 @@ export default function Home({ component }) {
         </div>
         <div id={styles.main}>
           <YT />
-          <MusicInfo musicId={infoId} />
-          <PlaylistInfo playlistId={playlistId} />
+          <MusicInfo />
+          <PlaylistInfo />
           {components[component]}
         </div>
       </div>

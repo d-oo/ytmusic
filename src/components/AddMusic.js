@@ -2,13 +2,14 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { AppContext } from "../Home";
 import LoadingMotion from "./LoadingMotion";
 import VideoSearchResult from "./VideoSearchResult";
+import Modal from "./Modal";
 
 import styles from "./AddMusic.module.css";
 
 export default function AddMusic({
   from,
-  isAddMusicOn,
-  setIsAddMusicOn,
+  showAddMusic,
+  setShowAddMusic,
   musicInfo,
 }) {
   const API_KEY = "AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY";
@@ -32,13 +33,13 @@ export default function AddMusic({
   }, [dbState]);
 
   useEffect(() => {
-    if (from === "MusicInfo" && isAddMusicOn) {
+    if (from === "MusicInfo") {
       setTitle(musicInfo.title);
       setArtist(musicInfo.artist.join(","));
       setVideoId(musicInfo.videoId);
       setTag(musicInfo.tag.join(","));
     }
-  }, [from, musicInfo, isAddMusicOn]);
+  }, [from, musicInfo]);
 
   //****************************************//
   //
@@ -289,11 +290,24 @@ export default function AddMusic({
   //****************************************//
 
   const reset = () => {
-    setTitle("");
-    setArtist("");
-    setVideoId("");
-    setTag("");
-    setIsArtistNone(false);
+    if (from === "MusicInfo") {
+      setTitle(musicInfo.title);
+      setArtist(musicInfo.artist.join(","));
+      setVideoId(musicInfo.videoId);
+      setTag(musicInfo.tag.join(","));
+    } else {
+      setTitle("");
+      setArtist("");
+      setVideoId("");
+      setTag("");
+      setIsArtistNone(false);
+    }
+  };
+
+  const closeAddMusic = () => {
+    reset();
+    setCategory("Song");
+    showAddMusic(false);
   };
 
   const onSubmit = () => {
@@ -304,180 +318,173 @@ export default function AddMusic({
     }
   };
 
-  const closeAddMusic = () => {
-    reset();
-    setCategory("Song");
-    setIsAddMusicOn(false);
-  };
-
   useEffect(() => setSearchResults(""), [title]);
 
   return (
-    <div
-      id={styles.bigContainer}
-      className={isAddMusicOn ? styles.notHidden : styles.hidden}
-    >
-      <span
-        className="material-icons-round"
-        id={styles.closeButton}
-        onClick={closeAddMusic}
-      >
-        close
-      </span>
-      <div className={styles.radioContainer}>
-        <div className={styles.radio}>
-          <input
-            type="radio"
-            name="kind"
-            value={category}
-            id="Song"
-            checked={category === "Song"}
-            onChange={() => setCategory("Song")}
-          />
-          <label htmlFor="Song" id={styles.Song}>
-            Song
-          </label>
-        </div>
-        <div className={styles.radio}>
-          <input
-            type="radio"
-            name="kind"
-            value={category}
-            id="Inst"
-            checked={category === "Inst"}
-            onChange={() => setCategory("Inst")}
-          />
-          <label htmlFor="Inst" id={styles.Inst}>
-            Instrumental
-          </label>
-        </div>
-      </div>
-      <input
-        onChange={(event) => {
-          setTitle(event.target.value);
-        }}
-        value={title}
-        type="text"
-        placeholder="Title"
-        spellCheck="false"
-        autoComplete="off"
-      />
-      <input
-        onChange={(event) => {
-          setArtist(event.target.value);
-        }}
-        value={artist}
-        type="text"
-        placeholder="Artist"
-        spellCheck="false"
-        disabled={isArtistNone}
-        autoComplete="off"
-      />
-      <div>
-        {category === "Inst" ? (
-          <label>
+    <Modal setHandleFunction={setShowAddMusic}>
+      <div id={styles.bigContainer}>
+        <span
+          className="material-icons-round"
+          id={styles.closeButton}
+          onClick={() => closeAddMusic()}
+        >
+          close
+        </span>
+        <div className={styles.radioContainer}>
+          <div className={styles.radio}>
             <input
-              type="checkbox"
-              value={isArtistNone}
-              autoComplete="off"
-              onChange={() => {
-                if (!isArtistNone) {
-                  setArtist("None");
-                } else {
-                  setArtist("");
-                }
-                setIsArtistNone((prev) => !prev);
-              }}
+              type="radio"
+              name="kind"
+              value={category}
+              id="Song"
+              checked={category === "Song"}
+              onChange={() => setCategory("Song")}
             />
-            None
-          </label>
-        ) : null}
-      </div>
-      <div className={styles.recommendContainer}>
-        {recommendedArtist.map((item, index) => (
-          <div
-            key={"new" + index}
-            className={styles.recommend}
-            onClick={() => {
-              const artistArray = artist.split(",");
-              artistArray[artistArray.length - 1] = item;
-              setArtist(artistArray.join(","));
-            }}
-          >
-            {item}
+            <label htmlFor="Song" id={styles.Song}>
+              Song
+            </label>
           </div>
-        ))}
-      </div>
-      <input
-        onChange={(event) => setVideoId(event.target.value)}
-        value={videoId}
-        type="text"
-        placeholder="Video ID"
-        spellCheck="false"
-        autoComplete="off"
-      />
-      <input
-        onChange={(event) => setTag(event.target.value)}
-        value={tag}
-        type="text"
-        placeholder="Tag"
-        spellCheck="false"
-        autoComplete="off"
-      />
-      <div className={styles.recommendContainer}>
-        {recommendedTag.map((item, index) => (
-          <div
-            key={"new" + index}
-            className={styles.recommend}
-            onClick={() => {
-              const tagArray = tag.split(",");
-              tagArray[tagArray.length - 1] = item;
-              setTag(tagArray.join(","));
-            }}
-          >
-            {item}
+          <div className={styles.radio}>
+            <input
+              type="radio"
+              name="kind"
+              value={category}
+              id="Inst"
+              checked={category === "Inst"}
+              onChange={() => setCategory("Inst")}
+            />
+            <label htmlFor="Inst" id={styles.Inst}>
+              Instrumental
+            </label>
           </div>
-        ))}
-      </div>
-      <div>
+        </div>
+        <input
+          onChange={(event) => {
+            setTitle(event.target.value);
+          }}
+          value={title}
+          type="text"
+          placeholder="Title"
+          spellCheck="false"
+          autoComplete="off"
+        />
+        <input
+          onChange={(event) => {
+            setArtist(event.target.value);
+          }}
+          value={artist}
+          type="text"
+          placeholder="Artist"
+          spellCheck="false"
+          disabled={isArtistNone}
+          autoComplete="off"
+        />
+        <div>
+          {category === "Inst" ? (
+            <label>
+              <input
+                type="checkbox"
+                value={isArtistNone}
+                autoComplete="off"
+                onChange={() => {
+                  if (!isArtistNone) {
+                    setArtist("None");
+                  } else {
+                    setArtist("");
+                  }
+                  setIsArtistNone((prev) => !prev);
+                }}
+              />
+              None
+            </label>
+          ) : null}
+        </div>
+        <div className={styles.recommendContainer}>
+          {recommendedArtist.map((item, index) => (
+            <div
+              key={"new" + index}
+              className={styles.recommend}
+              onClick={() => {
+                const artistArray = artist.split(",");
+                artistArray[artistArray.length - 1] = item;
+                setArtist(artistArray.join(","));
+              }}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+        <input
+          onChange={(event) => setVideoId(event.target.value)}
+          value={videoId}
+          type="text"
+          placeholder="Video ID"
+          spellCheck="false"
+          autoComplete="off"
+        />
+        <input
+          onChange={(event) => setTag(event.target.value)}
+          value={tag}
+          type="text"
+          placeholder="Tag"
+          spellCheck="false"
+          autoComplete="off"
+        />
+        <div className={styles.recommendContainer}>
+          {recommendedTag.map((item, index) => (
+            <div
+              key={"new" + index}
+              className={styles.recommend}
+              onClick={() => {
+                const tagArray = tag.split(",");
+                tagArray[tagArray.length - 1] = item;
+                setTag(tagArray.join(","));
+              }}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+        <div>
+          <span
+            className="material-icons-round"
+            id={
+              title.trim() === "" || artist.trim() === ""
+                ? styles.searchDisabled
+                : styles.searchButton
+            }
+            onClick={
+              title.trim() === "" || artist.trim() === "" ? null : searchReq
+            }
+          >
+            search
+          </span>
+        </div>
+        {loading ? <LoadingMotion /> : null}
+        <div id={styles.smallContainer}>
+          {videoResult}
+          {searchResults}
+        </div>
         <span
           className="material-icons-round"
           id={
-            title.trim() === "" || artist.trim() === ""
-              ? styles.searchDisabled
-              : styles.searchButton
+            title.trim() === "" ||
+            artist.trim() === "" ||
+            videoResult === "UNDEFINED"
+              ? styles.doneDisabled
+              : styles.doneButton
           }
           onClick={
-            title.trim() === "" || artist.trim() === "" ? null : searchReq
+            title.trim() === "" ||
+            artist.trim() === "" ||
+            videoResult === "UNDEFINED"
+              ? null
+              : onSubmit
           }
         >
-          search
+          done
         </span>
       </div>
-      {loading ? <LoadingMotion /> : null}
-      <div id={styles.smallContainer}>
-        {videoResult}
-        {searchResults}
-      </div>
-      <span
-        className="material-icons-round"
-        id={
-          title.trim() === "" ||
-          artist.trim() === "" ||
-          videoResult === "UNDEFINED"
-            ? styles.doneDisabled
-            : styles.doneButton
-        }
-        onClick={
-          title.trim() === "" ||
-          artist.trim() === "" ||
-          videoResult === "UNDEFINED"
-            ? null
-            : onSubmit
-        }
-      >
-        done
-      </span>
-    </div>
+    </Modal>
   );
 }

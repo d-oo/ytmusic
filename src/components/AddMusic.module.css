@@ -26,13 +26,6 @@
 #bigContainer::-webkit-scrollbar-thumb:active {
   background: gray;
 }
-.hidden {
-  visibility: hidden;
-  opacity: 0;
-}
-.notHidden {
-  opacity: 1;
-}
 #smallContainer {
   display: grid;
   color: aliceblue;

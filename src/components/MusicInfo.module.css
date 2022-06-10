@@ -13,13 +13,6 @@
   overflow-x: hidden;
   text-align: center;
 }
-.hidden {
-  visibility: hidden;
-  opacity: 0;
-}
-.notHidden {
-  opacity: 1;
-}
 #musicInfo::-webkit-scrollbar {
   width: 5px;
 }

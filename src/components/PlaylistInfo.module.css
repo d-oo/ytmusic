@@ -1,7 +1,5 @@
 #playlistInfo {
-  position: fixed;
   top: 0%;
-  transition: all 0.5s;
   width: 900px;
   height: 100vh;
   box-sizing: border-box;
@@ -13,12 +11,19 @@
   overflow-x: hidden;
   text-align: center;
 }
-.hidden {
-  visibility: hidden;
-  opacity: 0;
+#playlistInfo::-webkit-scrollbar {
+  display: block;
+  width: 5px;
 }
-.notHidden {
-  opacity: 1;
+#playlistInfo::-webkit-scrollbar-thumb {
+  background: darkgray;
+  border-radius: 10px;
+}
+#playlistInfo::-webkit-scrollbar-thumb:hover {
+  background: gray;
+}
+#playlistInfo::-webkit-scrollbar-thumb:active {
+  background: black;
 }
 #closeButton {
   color: black;

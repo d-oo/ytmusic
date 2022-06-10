@@ -4,8 +4,15 @@ import { AppContext } from "../Home";
 import styles from "./Player.module.css";
 
 export default function Player() {
-  const { videoId, player, setShowInfo, videoOn, title, isPlaying, setInfoId } =
-    useContext(AppContext);
+  const {
+    videoId,
+    player,
+    showMusicInfo,
+    videoOn,
+    title,
+    isPlaying,
+    setInfoId,
+  } = useContext(AppContext);
 
   function playOrPause() {
     if (isPlaying === true) {
@@ -24,7 +31,7 @@ export default function Player() {
         id={styles.title}
         onClick={() => {
           setInfoId(videoId);
-          setShowInfo(true);
+          showMusicInfo(true);
         }}
       >
         {videoOn ? <div>{title}</div> : null}

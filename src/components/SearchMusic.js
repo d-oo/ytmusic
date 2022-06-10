@@ -5,7 +5,7 @@ import MusicSearchResult from "./MusicSearchResult";
 import styles from "./SearchMusic.module.css";
 
 export default function SearchMusic() {
-  const [isAddMusicOn, setIsAddMusicOn] = useState(false);
+  const [showAddMusic, setShowAddMusic] = useState(() => {});
   const [result, setResult] = useState([]);
   const db = useRef();
   const { dbState, isUpdated, setIsUpdated } = useContext(AppContext);
@@ -31,8 +31,6 @@ export default function SearchMusic() {
     };
   }, [dbState, isUpdated, setIsUpdated]);
 
-  const AddMusicOn = () => setIsAddMusicOn(true);
-
   return (
     <div id={styles.bigContainer}>
       <div id={styles.flexContainer}>
@@ -52,14 +50,14 @@ export default function SearchMusic() {
       <span
         className="material-icons-round"
         id={styles.addButton}
-        onClick={AddMusicOn}
+        onClick={() => showAddMusic(true)}
       >
         add
       </span>
       <AddMusic
         from="SearchMusic"
-        isAddMusicOn={isAddMusicOn}
-        setIsAddMusicOn={setIsAddMusicOn}
+        showAddMusic={showAddMusic}
+        setShowAddMusic={setShowAddMusic}
       />
     </div>
   );

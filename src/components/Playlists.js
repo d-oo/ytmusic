@@ -5,8 +5,8 @@ import styles from "./Playlists.module.css";
 export default function Playlists() {
   const {
     dbState,
-    setShowPlaylist,
-    setPlaylistId,
+    showPlaylist,
+    setPlaylistInfoId,
     playlistResult,
     setPlaylistResult,
     isUpdated,
@@ -118,8 +118,8 @@ export default function Playlists() {
             {item.title} : {item.videoCount}
             <button
               onClick={() => {
-                setShowPlaylist(true);
-                setPlaylistId(item.id);
+                showPlaylist(true);
+                setPlaylistInfoId(item.id);
               }}
             >
               View

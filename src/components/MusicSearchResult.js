@@ -5,7 +5,7 @@ import styles from "./MusicSearchResult.module.css";
 
 export default function MusicSearchResult({ info, index }) {
   const {
-    setShowInfo,
+    showMusicInfo,
     setInfoId,
     setVideoId,
     setVideoOn,
@@ -70,7 +70,7 @@ export default function MusicSearchResult({ info, index }) {
             className="material-icons-round"
             onClick={() => {
               setInfoId(info.videoId);
-              setShowInfo(true);
+              showMusicInfo(true);
             }}
           >
             info_outline
