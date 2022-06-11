@@ -2,7 +2,6 @@
   opacity: 1;
 }
 .close {
-  visibility: hidden;
   opacity: 0;
 }
 #modal {

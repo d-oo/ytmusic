@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Home from "./Home";
 
@@ -8,14 +8,10 @@ export default function App() {
   }
   return (
     <Router>
-      <Switch>
-        <Route path="/other">
-          <Home component="Other" />
-        </Route>
-        <Route path="/">
-          <Home component="SearchMusic" />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path="/other" element={<Home component="Other" />} />
+        <Route path="/" element={<Home component="SearchMusic" />} />
+      </Routes>
     </Router>
   );
 }
