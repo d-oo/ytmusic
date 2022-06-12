@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MusicInfo from "./components/MusicInfo";
+import PlaylistInfo from "./components/PlaylistInfo";
+import SearchMusic from "./components/SearchMusic";
 
 import Home from "./Home";
 
@@ -9,8 +12,12 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/other" element={<Home component="Other" />} />
-        <Route path="/" element={<Home component="SearchMusic" />} />
+        <Route path="/" element={<Home />}>
+          <Route path="/" element={<SearchMusic />} />
+          <Route path="/music/:musicId" element={<MusicInfo />} />
+          <Route path="/playlist/:playlistId" element={<PlaylistInfo />} />
+        </Route>
+        <Route path="*" element={<div>Not Found Component</div>} />
       </Routes>
     </Router>
   );

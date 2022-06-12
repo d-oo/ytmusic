@@ -1,18 +1,11 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
 import styles from "./Player.module.css";
 
 export default function Player() {
-  const {
-    videoId,
-    player,
-    showMusicInfo,
-    videoOn,
-    title,
-    isPlaying,
-    setInfoId,
-  } = useContext(AppContext);
+  const { videoId, player, videoOn, title, isPlaying } = useContext(AppContext);
+  const navigate = useNavigate();
 
   function playOrPause() {
     if (isPlaying === true) {
@@ -27,25 +20,11 @@ export default function Player() {
       {videoOn ? (
         <button onClick={playOrPause}>{isPlaying ? "Pause" : "Play"}</button>
       ) : null}
-      <div
-        id={styles.title}
-        onClick={() => {
-          setInfoId(videoId);
-          showMusicInfo(true);
-        }}
-      >
-        {videoOn ? <div>{title}</div> : null}
-      </div>
-      <div className={styles.Links}>
-        <Link to="/">
-          LinkToHome
-          <br />
-        </Link>
-        <Link to="/other">
-          LinkToOther
-          <br />
-        </Link>
-      </div>
+      {videoOn ? (
+        <div id={styles.title} onClick={() => navigate(`/music/${videoId}`)}>
+          {title}
+        </div>
+      ) : null}
     </div>
   );
 }

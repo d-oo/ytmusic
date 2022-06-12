@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
 import styles from "./Playlists.module.css";
 
 export default function Playlists() {
   const {
     dbState,
-    showPlaylist,
-    setPlaylistInfoId,
     playlistResult,
     setPlaylistResult,
     isUpdated,
@@ -15,6 +14,7 @@ export default function Playlists() {
   const [newTitle, setNewTitle] = useState("");
   const [addNew, setAddNew] = useState(false);
   const db = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (dbState === undefined || !isUpdated) {
@@ -116,14 +116,14 @@ export default function Playlists() {
         {playlistResult.map((item, index) => (
           <div key={index}>
             {item.title} : {item.videoCount}
-            <button
+            <span
+              className="material-icons-round"
               onClick={() => {
-                showPlaylist(true);
-                setPlaylistInfoId(item.id);
+                navigate(`/playlist/${item.id}`);
               }}
             >
-              View
-            </button>
+              info_outline
+            </span>
           </div>
         ))}
       </div>

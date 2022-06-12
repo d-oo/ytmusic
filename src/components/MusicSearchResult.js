@@ -1,21 +1,16 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
 import styles from "./MusicSearchResult.module.css";
 //start
 
 export default function MusicSearchResult({ info, index }) {
-  const {
-    showMusicInfo,
-    setInfoId,
-    setVideoId,
-    setVideoOn,
-    setTitle,
-    playlistResult,
-    dbState,
-  } = useContext(AppContext);
+  const { setVideoId, setVideoOn, setTitle, playlistResult, dbState } =
+    useContext(AppContext);
   const [showResult, setShowResult] = useState(false);
   const db = useRef();
-  const resultRef = useRef();
+  const resultRef = useRef(); //DOM Ref
+  const navigate = useNavigate();
 
   useEffect(() => {
     db.current = dbState;
@@ -69,8 +64,7 @@ export default function MusicSearchResult({ info, index }) {
           <span
             className="material-icons-round"
             onClick={() => {
-              setInfoId(info.videoId);
-              showMusicInfo(true);
+              navigate(`/music/${info.videoId}`);
             }}
           >
             info_outline

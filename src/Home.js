@@ -1,16 +1,14 @@
 import { useState, useEffect, useRef, createContext } from "react";
+import { Outlet } from "react-router-dom";
 import Player from "./components/Player";
 import YT from "./components/YT";
-import MusicInfo from "./components/MusicInfo";
-import SearchMusic from "./components/SearchMusic";
 import Playlists from "./components/Playlists";
-import PlaylistInfo from "./components/PlaylistInfo";
 
 import styles from "./Home.module.css";
 
 export const AppContext = createContext();
 
-export default function Home({ component }) {
+export default function Home() {
   //player
   const [videoId, setVideoId] = useState("");
   const [title, setTitle] = useState("");
@@ -18,21 +16,12 @@ export default function Home({ component }) {
   const [videoOn, setVideoOn] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   //modal handle
-  const [showMusicInfo, setShowMusicInfo] = useState(() => {});
-  const [showYT, setShowYT] = useState(false);
-  const [showPlaylist, setShowPlaylist] = useState(() => {});
-  const [infoId, setInfoId] = useState("");
-  const [playlistInfoId, setPlaylistInfoId] = useState("");
+  const [showYT, setShowYT] = useState(false); //false
   const [playlistResult, setPlaylistResult] = useState([]);
   //db
   const [isUpdated, setIsUpdated] = useState(true); //false or true?
   const [dbState, setDbState] = useState();
   const db = useRef();
-
-  const components = {
-    SearchMusic: <SearchMusic />,
-    Other: <div>Other</div>,
-  };
 
   useEffect(() => {
     const dbReq = indexedDB.open("database", 1);
@@ -87,16 +76,8 @@ export default function Home({ component }) {
         setVideoId,
         player,
         setPlayer,
-        showMusicInfo,
-        setShowMusicInfo,
         showYT,
         setShowYT,
-        showPlaylist,
-        setShowPlaylist,
-        infoId,
-        setInfoId,
-        playlistInfoId,
-        setPlaylistInfoId,
         videoOn,
         setVideoOn,
         title,
@@ -126,9 +107,7 @@ export default function Home({ component }) {
         </div>
         <div id={styles.main}>
           <YT />
-          <MusicInfo />
-          <PlaylistInfo />
-          {components[component]}
+          <Outlet />
         </div>
       </div>
     </AppContext.Provider>

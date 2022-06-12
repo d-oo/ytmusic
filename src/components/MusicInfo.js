@@ -1,15 +1,12 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../Home";
 import AddMusic from "./AddMusic";
-import Modal from "./Modal";
 
 import styles from "./MusicInfo.module.css";
 
 export default function MusicInfo() {
   const {
-    showMusicInfo,
-    setShowMusicInfo,
-    infoId,
     videoId,
     setVideoId,
     setVideoOn,
@@ -22,11 +19,13 @@ export default function MusicInfo() {
   const [infoAvailable, setInfoAvailable] = useState(false);
   const [showAddMusic, setShowAddMusic] = useState(() => {});
   const db = useRef();
+  const { musicId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("musicInfoA");
     setInfoAvailable(false);
-    if (dbState === undefined || infoId === "") {
+    if (dbState === undefined || musicId === "") {
       return;
     }
     console.log("musicInfoB");
@@ -35,62 +34,60 @@ export default function MusicInfo() {
       .transaction("music", "readonly")
       .objectStore("music")
       .index("videoId")
-      .get(infoId);
+      .get(musicId);
     infoReq.onsuccess = () => {
       setInfo(infoReq.result);
       setInfoAvailable(true);
       setIsUpdated(false);
     };
-  }, [dbState, infoId, isUpdated, setIsUpdated]);
+  }, [dbState, musicId, isUpdated, setIsUpdated]);
 
   return (
-    <Modal setHandleFunction={setShowMusicInfo}>
-      <div id={styles.musicInfo}>
-        <span
-          className="material-icons-round"
-          id={styles.closeButton}
-          onClick={() => showMusicInfo(false)}
-        >
-          close
-        </span>
-        <div>
-          {infoId === "" ? null : (
-            <img
-              alt={infoId}
-              src={`https://i.ytimg.com/vi/${infoId}/mqdefault.jpg`}
-            />
-          )}
-        </div>
-        {videoId === infoId ? (
-          <div>This is playing</div>
-        ) : (
-          <div>Not playing</div>
+    <div id={styles.musicInfo}>
+      <span
+        className="material-icons-round"
+        id={styles.backButton}
+        onClick={() => navigate(-1)}
+      >
+        arrow_back
+      </span>
+      <div>
+        {musicId === "" ? null : (
+          <img
+            alt={`musicInfo${musicId}`}
+            src={`https://i.ytimg.com/vi/${musicId}/mqdefault.jpg`}
+          />
         )}
-        {infoAvailable ? (
-          <div>
-            <div>id : {infoId}</div>
-            <div>
-              {info.title} - {info.artist.join(", ")}
-            </div>
-            <button
-              onClick={() => {
-                setVideoId(info.videoId);
-                setVideoOn(true);
-                setTitle(info.title);
-              }}
-            >
-              Play
-            </button>
-            <button onClick={() => showAddMusic(true)}>Edit Music</button>
-            <AddMusic
-              from="MusicInfo"
-              showAddMusic={showAddMusic}
-              setShowAddMusic={setShowAddMusic}
-              musicInfo={info}
-            />
-          </div>
-        ) : null}
       </div>
-    </Modal>
+      {videoId === musicId ? (
+        <div>This is playing</div>
+      ) : (
+        <div>Not playing</div>
+      )}
+      {infoAvailable ? (
+        <div>
+          <div>id : {musicId}</div>
+          <div>
+            {info.title} - {info.artist.join(", ")}
+          </div>
+          <button
+            onClick={() => {
+              setVideoId(info.videoId);
+              setVideoOn(true);
+              setTitle(info.title);
+            }}
+          >
+            Play
+          </button>
+          <button onClick={() => showAddMusic(true)}>Edit Music</button>
+          <AddMusic
+            from="MusicInfo"
+            showAddMusic={showAddMusic}
+            setShowAddMusic={setShowAddMusic}
+            musicInfo={info}
+          />
+        </div>
+      ) : null}
+    </div>
   );
 }

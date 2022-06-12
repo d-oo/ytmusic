@@ -25,7 +25,6 @@
 #playlistInfo::-webkit-scrollbar-thumb:active {
   background: black;
 }
-#closeButton {
-  color: black;
+span {
   cursor: pointer;
 }

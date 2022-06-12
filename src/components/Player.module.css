@@ -1,7 +1,4 @@
-.Links a {
-  color: aliceblue;
-  text-decoration: none;
-}
 #title {
+  color: aliceblue;
   cursor: pointer;
 }
