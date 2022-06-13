@@ -5,8 +5,14 @@ import styles from "./MusicSearchResult.module.css";
 //start
 
 export default function MusicSearchResult({ info, index }) {
-  const { setVideoId, setVideoOn, setTitle, playlistResult, dbState } =
-    useContext(AppContext);
+  const {
+    setPlayingMusicId,
+    setPlayingVideoId,
+    setVideoOn,
+    setTitle,
+    playlistResult,
+    dbState,
+  } = useContext(AppContext);
   const [showResult, setShowResult] = useState(false);
   const db = useRef();
   const resultRef = useRef(); //DOM Ref
@@ -64,7 +70,7 @@ export default function MusicSearchResult({ info, index }) {
           <span
             className="material-icons-round"
             onClick={() => {
-              navigate(`/music/${info.videoId}`);
+              navigate(`/music/${info.id}`);
             }}
           >
             info_outline
@@ -74,7 +80,8 @@ export default function MusicSearchResult({ info, index }) {
           <span
             className="material-icons-round"
             onClick={() => {
-              setVideoId(info.videoId);
+              setPlayingVideoId(info.videoId);
+              setPlayingMusicId(String(info.id));
               setVideoOn(true);
               setTitle(info.title);
             }}

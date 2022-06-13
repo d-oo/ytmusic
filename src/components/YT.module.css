@@ -1,14 +1,8 @@
 #yt {
-  position: fixed;
-  transition: all 0.5s;
+  position: absolute;
+  top: 30px;
   z-index: 21;
-  bottom: 0;
-  right: 11vw;
 }
 .hidden {
-  visibility: hidden;
-  opacity: 0;
-}
-.notHidden {
-  opacity: 1;
+  display: none;
 }

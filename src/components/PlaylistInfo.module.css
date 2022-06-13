@@ -5,8 +5,6 @@
   box-sizing: border-box;
   z-index: 20;
   background: white;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
   overflow-y: auto;
   overflow-x: hidden;
   text-align: center;

@@ -7,8 +7,9 @@ import styles from "./MusicInfo.module.css";
 
 export default function MusicInfo() {
   const {
-    videoId,
-    setVideoId,
+    setShowYT,
+    setPlayingMusicId,
+    setPlayingVideoId,
     setVideoOn,
     setTitle,
     isUpdated,
@@ -33,14 +34,17 @@ export default function MusicInfo() {
     const infoReq = db.current
       .transaction("music", "readonly")
       .objectStore("music")
-      .index("videoId")
-      .get(musicId);
+      .get(Number(musicId));
     infoReq.onsuccess = () => {
+      console.log(infoReq);
+      console.log(infoReq.result.title);
       setInfo(infoReq.result);
       setInfoAvailable(true);
       setIsUpdated(false);
     };
   }, [dbState, musicId, isUpdated, setIsUpdated]);
+
+  // useEffect(() => setShowYT((prev) => !prev), [setShowYT, showAddMusic]);
 
   return (
     <div id={styles.musicInfo}>
@@ -51,28 +55,25 @@ export default function MusicInfo() {
       >
         arrow_back
       </span>
-      <div>
-        {musicId === "" ? null : (
-          <img
-            alt={`musicInfo${musicId}`}
-            src={`https://i.ytimg.com/vi/${musicId}/mqdefault.jpg`}
-          />
-        )}
-      </div>
-      {videoId === musicId ? (
-        <div>This is playing</div>
-      ) : (
-        <div>Not playing</div>
-      )}
+
       {infoAvailable ? (
         <div>
+          <div>
+            {musicId === "" ? null : (
+              <img
+                alt={`musicInfo${musicId}`}
+                src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
+              />
+            )}
+          </div>
           <div>id : {musicId}</div>
           <div>
             {info.title} - {info.artist.join(", ")}
           </div>
           <button
             onClick={() => {
-              setVideoId(info.videoId);
+              setPlayingMusicId(musicId);
+              setPlayingVideoId(info.videoId);
               setVideoOn(true);
               setTitle(info.title);
             }}

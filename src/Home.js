@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, createContext } from "react";
-import { Outlet } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 import Player from "./components/Player";
 import YT from "./components/YT";
 import Playlists from "./components/Playlists";
@@ -10,14 +10,16 @@ export const AppContext = createContext();
 
 export default function Home() {
   //player
-  const [videoId, setVideoId] = useState("");
+  const [playingMusicId, setPlayingMusicId] = useState("");
+  const [playingVideoId, setPlayingVideoId] = useState("");
   const [title, setTitle] = useState("");
   const [player, setPlayer] = useState({});
   const [videoOn, setVideoOn] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  //modal handle
+  //showHandle
   const [showYT, setShowYT] = useState(false); //false
   const [playlistResult, setPlaylistResult] = useState([]);
+  const location = useLocation();
   //db
   const [isUpdated, setIsUpdated] = useState(true); //false or true?
   const [dbState, setDbState] = useState();
@@ -60,20 +62,22 @@ export default function Home() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (infoId === videoId && showInfo) {
-  //     setShowYT(true);
-  //   } else {
-  //     setShowYT(false);
-  //   }
-  // }, [infoId, videoId, showInfo]);
-  // info와 yt를 같이 보이게 하는 코드
+  useEffect(() => {
+    const urlArr = location.pathname.split("/");
+    if (urlArr[1] === "music" && playingMusicId === urlArr[2]) {
+      setShowYT(true);
+    } else {
+      setShowYT(false);
+    }
+  }, [location, playingMusicId]);
 
   return (
     <AppContext.Provider
       value={{
-        videoId,
-        setVideoId,
+        playingMusicId,
+        setPlayingMusicId,
+        playingVideoId,
+        setPlayingVideoId,
         player,
         setPlayer,
         showYT,
@@ -105,7 +109,7 @@ export default function Home() {
         <div id={styles.playlists}>
           <Playlists />
         </div>
-        <div id={styles.main}>
+        <div id={styles.mainContent}>
           <YT />
           <Outlet />
         </div>

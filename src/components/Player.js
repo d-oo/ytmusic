@@ -4,7 +4,8 @@ import { AppContext } from "../Home";
 import styles from "./Player.module.css";
 
 export default function Player() {
-  const { videoId, player, videoOn, title, isPlaying } = useContext(AppContext);
+  const { playingMusicId, player, videoOn, title, isPlaying } =
+    useContext(AppContext);
   const navigate = useNavigate();
 
   function playOrPause() {
@@ -21,7 +22,10 @@ export default function Player() {
         <button onClick={playOrPause}>{isPlaying ? "Pause" : "Play"}</button>
       ) : null}
       {videoOn ? (
-        <div id={styles.title} onClick={() => navigate(`/music/${videoId}`)}>
+        <div
+          id={styles.title}
+          onClick={() => navigate(`/music/${playingMusicId}`)}
+        >
           {title}
         </div>
       ) : null}
