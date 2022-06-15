@@ -6,7 +6,6 @@ export default function Modal({ children, setHandleFunction }) {
   const [showAni, setShowAni] = useState(false);
 
   useEffect(() => {
-    console.log("A");
     const handleShowModal = (isOpen) => {
       if (isOpen) {
         setShowModal(true);

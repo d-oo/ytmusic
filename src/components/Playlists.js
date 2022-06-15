@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
 import styles from "./Playlists.module.css";
 
@@ -15,12 +15,12 @@ export default function Playlists() {
   const [addNew, setAddNew] = useState(false);
   const db = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (dbState === undefined || !isUpdated) {
       return;
     }
-    console.log("effect");
     setPlaylistResult([]);
     db.current = dbState;
     const getAllReq = db.current
@@ -119,7 +119,9 @@ export default function Playlists() {
             <span
               className="material-icons-round"
               onClick={() => {
-                navigate(`/playlist/${item.id}`);
+                navigate(`/playlist/${item.id}`, {
+                  replace: location.pathname === `/playlist/${item.id}`,
+                });
               }}
             >
               info_outline

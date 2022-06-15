@@ -11,6 +11,7 @@ export default function SearchMusic() {
   const { dbState, isUpdated, setIsUpdated } = useContext(AppContext);
 
   useEffect(() => {
+    console.log("SearchMusicEffect");
     if (dbState === undefined || !isUpdated) {
       return;
     }
@@ -30,6 +31,13 @@ export default function SearchMusic() {
       }
     };
   }, [dbState, isUpdated, setIsUpdated]);
+
+  //not sure
+  useEffect(() => {
+    console.log("effect of searchmusic");
+    return () => setIsUpdated(true);
+  }, [setIsUpdated]);
+  //not sure
 
   return (
     <div id={styles.bigContainer}>

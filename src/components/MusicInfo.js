@@ -1,4 +1,10 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import {
+  useState,
+  useLayoutEffect,
+  useEffect,
+  useRef,
+  useContext,
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../Home";
 import AddMusic from "./AddMusic";
@@ -8,6 +14,7 @@ import styles from "./MusicInfo.module.css";
 export default function MusicInfo() {
   const {
     setShowYT,
+    playingMusicId,
     setPlayingMusicId,
     setPlayingVideoId,
     setVideoOn,
@@ -23,28 +30,31 @@ export default function MusicInfo() {
   const { musicId } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log("musicInfoA");
+  useLayoutEffect(() => {
     setInfoAvailable(false);
     if (dbState === undefined || musicId === "") {
       return;
     }
-    console.log("musicInfoB");
     db.current = dbState;
     const infoReq = db.current
       .transaction("music", "readonly")
       .objectStore("music")
       .get(Number(musicId));
     infoReq.onsuccess = () => {
-      console.log(infoReq);
-      console.log(infoReq.result.title);
       setInfo(infoReq.result);
       setInfoAvailable(true);
       setIsUpdated(false);
     };
   }, [dbState, musicId, isUpdated, setIsUpdated]);
 
-  // useEffect(() => setShowYT((prev) => !prev), [setShowYT, showAddMusic]);
+  useEffect(() => {
+    if (musicId === playingMusicId) {
+      setShowYT(true);
+    } else {
+      setShowYT(false);
+    }
+    return () => setShowYT(false);
+  }, [musicId, playingMusicId, setShowYT]);
 
   return (
     <div id={styles.musicInfo}>

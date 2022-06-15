@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, createContext } from "react";
-import { useLocation, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Player from "./components/Player";
 import YT from "./components/YT";
 import Playlists from "./components/Playlists";
@@ -19,7 +19,6 @@ export default function Home() {
   //showHandle
   const [showYT, setShowYT] = useState(false); //false
   const [playlistResult, setPlaylistResult] = useState([]);
-  const location = useLocation();
   //db
   const [isUpdated, setIsUpdated] = useState(true); //false or true?
   const [dbState, setDbState] = useState();
@@ -62,14 +61,14 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    const urlArr = location.pathname.split("/");
-    if (urlArr[1] === "music" && playingMusicId === urlArr[2]) {
-      setShowYT(true);
-    } else {
-      setShowYT(false);
-    }
-  }, [location, playingMusicId]);
+  // useEffect(() => {
+  //   const urlArr = location.pathname.split("/");
+  //   if (urlArr[1] === "music" && playingMusicId === urlArr[2]) {
+  //     setShowYT(true);
+  //   } else {
+  //     setShowYT(false);
+  //   }
+  // }, [location, playingMusicId]);
 
   return (
     <AppContext.Provider
