@@ -17,10 +17,10 @@ export default function Home() {
   const [videoOn, setVideoOn] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   //showHandle
-  const [showYT, setShowYT] = useState(false); //false
+  const [showYT, setShowYT] = useState(false);
   const [playlistResult, setPlaylistResult] = useState([]);
   //db
-  const [isUpdated, setIsUpdated] = useState(true); //false or true?
+  const [isUpdated, setIsUpdated] = useState(true);
   const [dbState, setDbState] = useState();
   const db = useRef();
 
@@ -61,15 +61,7 @@ export default function Home() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const urlArr = location.pathname.split("/");
-  //   if (urlArr[1] === "music" && playingMusicId === urlArr[2]) {
-  //     setShowYT(true);
-  //   } else {
-  //     setShowYT(false);
-  //   }
-  // }, [location, playingMusicId]);
-
+  useEffect(() => console.log("dbState Changed"), [dbState]);
   return (
     <AppContext.Provider
       value={{

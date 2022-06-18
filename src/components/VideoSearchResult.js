@@ -4,7 +4,7 @@ export default function VideoSearchResult({ info, id, setVideoId, index }) {
   return (
     <div className={styles.searchResult}>
       <img
-        alt={index}
+        alt={"videoSearchResult" + index}
         src={info.thumbnails.medium.url}
         onClick={() => setVideoId(id)}
       />
