@@ -7,8 +7,8 @@ export default function YT() {
   const { playingVideoId, setPlayer, videoOn, setIsPlaying, showYT } =
     useContext(AppContext);
   const opts = {
-    width: "320", //320 384 256
-    height: "180", //180 216 144
+    width: "384",
+    height: "216",
     playerVars: {
       autoplay: 1,
       controls: 0,
@@ -25,6 +25,7 @@ export default function YT() {
     } else if (event.data === 2) {
       setIsPlaying(false);
     } else if (event.data === 0) {
+      setIsPlaying(false);
       console.log("end");
     }
   }

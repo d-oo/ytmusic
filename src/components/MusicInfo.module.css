@@ -23,8 +23,93 @@
 #musicInfo::-webkit-scrollbar-thumb:active {
   background: black;
 }
+#pageTitle {
+  position: relative;
+  left: 20px;
+  top: 10px;
+  text-align: left;
+  font-size: 18px;
+}
 #backButton {
   color: black;
   cursor: pointer;
   height: 30px;
+}
+#gridContainer {
+  position: relative;
+  left: 100px;
+  display: grid;
+  grid-template-columns: 500px 200px;
+  grid-template-rows: 40px 30px;
+}
+#title {
+  grid-column: 1/2;
+  grid-row: 1/2;
+  text-align: left;
+  font-size: 26px;
+}
+#artist {
+  grid-column: 1/2;
+  grid-row: 2/3;
+  text-align: left;
+  font-size: 18px;
+}
+#buttons {
+  grid-column: 2/3;
+  grid-row: 1/3;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+#buttons span {
+  font-size: 30px;
+}
+#addToDiv {
+  height: 30px;
+}
+#detail p {
+  position: relative;
+  left: 100px;
+  width: 700px;
+  text-align: left;
+}
+#category {
+  position: relative;
+  left: 100px;
+  background: violet;
+  border-radius: 5px;
+  width: 3rem;
+  margin-top: 20px;
+}
+#tagContainer {
+  line-height: 200%;
+}
+.tag {
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: 8px;
+  background: pink;
+  border-radius: 5px;
+}
+#wrapper {
+  position: relative;
+}
+#results {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 150px;
+  left: 0px;
+  top: 0px;
+  border: 5px solid lightsalmon;
+  border-radius: 10px;
+  background: beige;
+  overflow: auto;
+}
+.result {
+  width: 200px;
+  cursor: pointer;
+  border-bottom: 1px solid lightsalmon;
+  font-size: 18px;
 }

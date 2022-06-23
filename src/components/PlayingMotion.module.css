@@ -1,5 +1,5 @@
 .waveform {
-  --uib-size: 40px;
+  --uib-size: 20px;
   --uib-speed: 1s;
   --uib-color: black;
   --uib-line-weight: 3.5px;
@@ -13,14 +13,16 @@
 
   left: 0;
   right: 0;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .waveform__bar {
   width: var(--uib-line-weight);
   height: 100%;
   background-color: var(--uib-color);
+}
+
+.pause {
+  animation-play-state: paused !important;
 }
 
 .waveform__bar:nth-child(1) {

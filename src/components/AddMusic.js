@@ -215,6 +215,7 @@ export default function AddMusic({
   };
 
   useEffect(() => {
+    console.log(artist);
     setSearchResults("");
     setRecommendedArtist([]);
     if (artist === "") {

@@ -12,7 +12,7 @@ export default function NotFound() {
       >
         arrow_back
       </span>
-      <p>Not Found!</p>
+      <p id={styles.notFound}>Not Found!</p>
     </div>
   );
 }

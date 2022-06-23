@@ -23,32 +23,101 @@
 #bigContainer::-webkit-scrollbar-thumb:active {
   background: gray;
 }
+#searchInput {
+  width: 440px;
+  height: 30px;
+  border: 0;
+  border-radius: 5px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+#bigWrapper {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  width: 840px;
+  background: darkkhaki;
+  padding-bottom: 20px;
+}
+#funnel {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 29px solid darkkhaki;
+  background: wheat;
+}
+#funnel span {
+  padding-top: 8px;
+  font-size: 17px;
+}
+.chosen {
+  background: darkkhaki;
+}
 #flexContainer {
+  position: sticky;
+  top: 0;
+  transform: translate(29px, 0%);
   display: flex;
   align-items: center;
+  width: 772px;
   height: 30px;
-  border-bottom: 1px solid darkkhaki;
+  padding-left: 10px;
+  background: bisque;
+  margin-bottom: 10px;
+  z-index: 30;
 }
-#imgDiv {
-  width: 128px;
+#selectDiv {
+  width: 112px;
+  cursor: pointer;
 }
 #titleDiv {
-  width: 266px;
+  width: 240px;
 }
 #artistDiv {
-  width: 266px;
+  width: 240px;
 }
 #infoDiv {
-  width: 80px;
+  width: 90px;
 }
 #playDiv {
-  width: 80px;
-}
-#addToDiv {
-  width: 80px;
+  width: 90px;
 }
 #emptyArea {
   height: 100px;
+}
+#selectedMenu {
+  position: fixed;
+  border: 4px solid blueviolet;
+  border-radius: 5px;
+  bottom: 30px;
+  left: 50%;
+  transform: translate(130px, 0%);
+  background: cornflowerblue;
+}
+#addToButton {
+  font-size: 40px;
+  color: black;
+}
+#wrapper {
+  position: relative;
+}
+#results {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 150px;
+  left: 40px;
+  bottom: 0px;
+  border: 5px solid lightsalmon;
+  border-radius: 10px;
+  background: beige;
+  overflow: auto;
+}
+.result {
+  width: 200px;
+  cursor: pointer;
+  border-bottom: 1px solid lightsalmon;
+  font-size: 18px;
 }
 #addButton {
   position: fixed;

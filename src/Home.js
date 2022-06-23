@@ -18,8 +18,8 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   //showHandle
   const [showYT, setShowYT] = useState(false);
-  const [playlistResult, setPlaylistResult] = useState([]);
   //db
+  const [playlistResult, setPlaylistResult] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const [dbState, setDbState] = useState();
   const db = useRef();
@@ -32,13 +32,11 @@ export default function Home() {
     };
 
     dbReq.onerror = (event) => {
-      const error = event.target.error;
-      console.log("error", error.name);
+      console.log("error", event.target.error.name);
     };
 
     dbReq.onupgradeneeded = (event) => {
       db.current = event.target.result;
-      setDbState(event.target.result);
       if (event.oldVersion < 1) {
         let objStore = db.current.createObjectStore("music", {
           keyPath: "id",
@@ -57,6 +55,7 @@ export default function Home() {
           autoIncrement: true,
         });
         objStore.createIndex("title", "title", { unique: true });
+        objStore.createIndex("musicId", "musicId", { multiEntry: true });
       }
     };
   }, []);

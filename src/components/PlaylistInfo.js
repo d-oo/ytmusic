@@ -36,9 +36,7 @@ export default function PlaylistInfo() {
     if (playlistInfo === "") {
       return;
     }
-    console.log(playlistInfo);
     const arr = [];
-    console.log(playlistInfo.musicId.length);
     playlistInfo.musicId.forEach((item, index) => {
       const musicInfoReq = db.current
         .transaction("music", "readonly")
@@ -67,6 +65,16 @@ export default function PlaylistInfo() {
     const [reorderedItem] = copiedArr.splice(result.source.index, 1);
     copiedArr.splice(result.destination.index, 0, reorderedItem);
     setMusicInfo(copiedArr);
+    db.current
+      .transaction("playlist", "readwrite")
+      .objectStore("playlist")
+      .put({
+        title: playlistInfo.title,
+        musicId: copiedArr.map((item) => item.id),
+        totalDuration: playlistInfo.totalDuration,
+        videoCount: playlistInfo.videoCount,
+        id: Number(playlistId),
+      });
   };
 
   return (

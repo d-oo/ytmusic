@@ -3,18 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
 import styles from "./MusicSearchResult.module.css";
 
-export default function MusicSearchResult({ info, index }) {
+export default function MusicSearchResult({
+  info,
+  index,
+  selectedItem,
+  setSelectedItem,
+  setTotalDuration,
+}) {
   const {
     setPlayingMusicId,
     setPlayingVideoId,
     setVideoOn,
     setTitle,
-    playlistResult,
     dbState,
   } = useContext(AppContext);
-  const [showResult, setShowResult] = useState(false);
+  const [checked, setChecked] = useState(false);
   const db = useRef();
-  const resultRef = useRef(); //DOM Ref
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,45 +26,28 @@ export default function MusicSearchResult({ info, index }) {
   }, [dbState]);
 
   useEffect(() => {
-    if (!showResult) {
-      return;
-    }
-    const onClickOutside = (event) => {
-      if (showResult && !resultRef.current.contains(event.target)) {
-        setShowResult(false);
-      }
-    };
-    setTimeout(() => window.addEventListener("click", onClickOutside), 0);
-    return () => {
-      window.removeEventListener("click", onClickOutside);
-    };
-  }, [showResult]);
-
-  const addToPlaylist = (playlistInfo) => {
-    const updateReq = db.current
-      .transaction("playlist", "readwrite")
-      .objectStore("playlist")
-      .put({
-        title: playlistInfo.title,
-        musicId: [...playlistInfo.musicId, info.id],
-        totalDuration: playlistInfo.totalDuration + info.duration,
-        videoCount: playlistInfo.videoCount + 1,
-        id: playlistInfo.id,
-      });
-    updateReq.onsuccess = () => {
-      console.log("succefully updated!");
-      //업데이트 완료 창
-      setShowResult(false);
-    };
-  };
+    setChecked(selectedItem.includes(info.id));
+  }, [selectedItem, info.id]);
 
   return (
-    <div id={styles.flexContainer}>
+    <div
+      id={styles.flexContainer}
+      className={checked ? styles.checked : styles.notChecked}
+    >
       <img
         alt={"musicSearchResult" + index}
         src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
-        width="128"
-        height="72"
+        width="112"
+        height="63"
+        onClick={() => {
+          if (selectedItem.includes(info.id)) {
+            setSelectedItem((prev) => prev.filter((item) => item !== info.id));
+            setTotalDuration((prev) => prev - info.duration);
+          } else {
+            setSelectedItem((prev) => [...prev, info.id]);
+            setTotalDuration((prev) => prev + info.duration);
+          }
+        }}
       />
       <div id={styles.titleDiv}>{info.title}</div>
       <div id={styles.artistDiv}>{info.artist.join(", ")}</div>
@@ -86,34 +73,6 @@ export default function MusicSearchResult({ info, index }) {
         >
           play_arrow
         </span>
-      </div>
-      <div id={styles.addToDiv}>
-        <span
-          className="material-icons-round"
-          onClick={() => {
-            if (showResult) {
-              return;
-            }
-            setShowResult(true);
-          }}
-        >
-          playlist_add
-        </span>
-        <div id={styles.wrapper} ref={resultRef}>
-          {showResult ? (
-            <div id={styles.results}>
-              {playlistResult.map((item, index) => (
-                <div
-                  key={index}
-                  className={styles.result}
-                  onClick={() => addToPlaylist(item)}
-                >
-                  {item.title}
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </div>
       </div>
     </div>
   );

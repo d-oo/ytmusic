@@ -44,6 +44,7 @@
 }
 #searchDisabled {
   color: gray;
+  cursor: default;
 }
 #doneButton {
   color: white;
@@ -51,6 +52,7 @@
 }
 #doneDisabled {
   color: gray;
+  cursor: default;
 }
 #selected {
   background: darkcyan;
