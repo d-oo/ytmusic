@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
 import styles from "./MusicSearchResult.module.css";
@@ -10,20 +10,10 @@ export default function MusicSearchResult({
   setSelectedItem,
   setTotalDuration,
 }) {
-  const {
-    setPlayingMusicId,
-    setPlayingVideoId,
-    setVideoOn,
-    setTitle,
-    dbState,
-  } = useContext(AppContext);
+  const { setPlayingMusicId, setPlayingVideoId, setVideoOn, setTitle } =
+    useContext(AppContext);
   const [checked, setChecked] = useState(false);
-  const db = useRef();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    db.current = dbState;
-  }, [dbState]);
 
   useEffect(() => {
     setChecked(selectedItem.includes(info.id));

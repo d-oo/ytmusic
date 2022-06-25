@@ -3,14 +3,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AppContext } from "../Home";
 
+import PlaylistMusic from "./PlaylistMusic";
+
 import styles from "./PlaylistInfo.module.css";
 
 export default function PlaylistInfo() {
-  const { isUpdated, setIsUpdated, dbState } = useContext(AppContext);
+  const { playlistResult, isUpdated, setIsUpdated, dbState } =
+    useContext(AppContext);
+  const [selectedItem, setSelectedItem] = useState([]);
+  const [totalDuration, setTotalDuration] = useState(0);
   const [playlistInfo, setPlaylistInfo] = useState("");
   const [musicInfo, setMusicInfo] = useState([]);
+  const [showResult, setShowResult] = useState(false);
   const [infoAvailable, setInfoAvailable] = useState(false);
   const db = useRef();
+  const resultRef = useRef();
   const { playlistId } = useParams();
   const navigate = useNavigate();
 
@@ -32,9 +39,31 @@ export default function PlaylistInfo() {
   }, [dbState, playlistId, isUpdated, setIsUpdated]);
 
   useEffect(() => {
-    console.log("A");
+    setSelectedItem([]);
+    setTotalDuration(0);
+  }, [playlistId]);
+
+  useEffect(() => {
+    if (!showResult) {
+      return;
+    }
+    const onClickOutside = (event) => {
+      if (showResult && !resultRef.current.contains(event.target)) {
+        setShowResult(false);
+      }
+    };
+    setTimeout(() => window.addEventListener("click", onClickOutside), 0);
+    return () => {
+      window.removeEventListener("click", onClickOutside);
+    };
+  }, [showResult]);
+
+  useEffect(() => {
     if (playlistInfo === "") {
       return;
+    }
+    if (playlistInfo.musicId.length === 0) {
+      setMusicInfo([]);
     }
     const arr = [];
     playlistInfo.musicId.forEach((item, index) => {
@@ -50,6 +79,45 @@ export default function PlaylistInfo() {
       };
     });
   }, [playlistInfo]);
+
+  useEffect(() => {
+    return () => setIsUpdated(true);
+  }, [setIsUpdated]);
+
+  const addToPlaylist = (playlistInfo) => {
+    console.log(playlistInfo.musicId);
+    let duplicatedDuration = 0;
+    selectedItem.forEach((sItem) => {
+      if (playlistInfo.musicId.includes(sItem)) {
+        duplicatedDuration +=
+          musicInfo[musicInfo.findIndex((i) => i.id === sItem)].duration;
+      }
+    });
+    const selectedArr = [
+      ...new Set([...playlistInfo.musicId, ...selectedItem]),
+    ];
+
+    console.log(totalDuration);
+    console.log(duplicatedDuration);
+
+    const updateReq = db.current
+      .transaction("playlist", "readwrite")
+      .objectStore("playlist")
+      .put({
+        title: playlistInfo.title,
+        musicId: selectedArr,
+        totalDuration:
+          playlistInfo.totalDuration + totalDuration - duplicatedDuration,
+        videoCount: selectedArr.length,
+        id: playlistInfo.id,
+      });
+    updateReq.onsuccess = () => {
+      console.log("succefully updated!");
+      //업데이트 완료 창
+      setShowResult(false);
+      setIsUpdated(true);
+    };
+  };
 
   const sortMusic = (result) => {
     if (!result.destination) {
@@ -85,50 +153,116 @@ export default function PlaylistInfo() {
       {infoAvailable ? (
         <div>
           <div>{playlistInfo.title}</div>
-          <DragDropContext onDragEnd={sortMusic}>
-            <Droppable droppableId="music">
-              {(provided, snapshot) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  style={{
-                    backgroundColor: snapshot.isDragging ? "grey" : "lightgrey",
-                    fontSize: 18,
-                    ...provided.droppableProps.style,
-                  }}
-                >
-                  {musicInfo.map((item, index) => (
-                    <Draggable
-                      key={"drag" + index}
-                      draggableId={"drag" + index}
-                      index={index}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}
-                          style={{
-                            borderBottom: "1px solid black",
-                            backgroundColor: snapshot.isDragging
-                              ? "blue"
-                              : "skyblue",
-                            fontSize: 18,
-                            ...provided.draggableProps.style,
-                          }}
-                        >
-                          {item.videoId}
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <div id={styles.playlistResults}>
+            <div id={styles.flexContainer}>
+              <div
+                id={styles.selectDiv}
+                style={{
+                  color: selectedItem.length === 0 ? "black" : "blue",
+                }}
+                onClick={
+                  selectedItem.length === 0
+                    ? () => {
+                        let sum = 0;
+                        setSelectedItem(
+                          musicInfo.map((item) => {
+                            sum += item.duration;
+                            return item.id;
+                          })
+                        );
+                        setTotalDuration(sum);
+                      }
+                    : () => {
+                        setSelectedItem([]);
+                        setTotalDuration(0);
+                      }
+                }
+              >
+                <span className="material-icons-round">done</span>
+                {selectedItem.length === 0 ? "전체선택" : "선택해제"}
+              </div>
+              <div id={styles.titleDiv}>곡</div>
+              <div id={styles.artistDiv}>아티스트</div>
+              <div id={styles.infoDiv}>정보</div>
+              <div id={styles.playDiv}>재생</div>
+            </div>
+            <DragDropContext onDragEnd={sortMusic}>
+              <Droppable droppableId="music">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {musicInfo.map((item, index) => (
+                      <Draggable
+                        key={"drag" + index}
+                        draggableId={"drag" + index}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.dragHandleProps}
+                            {...provided.draggableProps}
+                          >
+                            <PlaylistMusic
+                              info={item}
+                              index={index}
+                              selectedItem={selectedItem}
+                              setSelectedItem={setSelectedItem}
+                              setTotalDuration={setTotalDuration}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </div>
         </div>
       ) : null}
+      {selectedItem.length === 0 ? null : (
+        <div id={styles.selectedMenu}>
+          <div id={styles.addToDiv}>
+            <span
+              className="material-icons-round"
+              id={styles.addToButton}
+              onClick={() => {
+                if (showResult) {
+                  return;
+                }
+                setShowResult(true);
+              }}
+            >
+              playlist_add
+            </span>
+            <div id={styles.wrapper} ref={resultRef}>
+              {showResult ? (
+                <div id={styles.results}>
+                  {playlistResult.map((item, index) => (
+                    <div
+                      key={index}
+                      className={styles.result}
+                      onClick={
+                        item.id === Number(playlistId)
+                          ? null
+                          : () => addToPlaylist(item)
+                      }
+                      style={
+                        item.id === Number(playlistId)
+                          ? { background: "gray", cursor: "default" }
+                          : null
+                      }
+                    >
+                      {item.title}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

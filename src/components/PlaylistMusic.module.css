@@ -1,0 +1,38 @@
+#flexContainer {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  display: flex;
+  height: 83px;
+  width: 772px;
+  align-items: center;
+  padding-left: 10px;
+  border-bottom: 1px solid red;
+}
+.checked {
+  background: pink;
+}
+.notChecked {
+  background: beige;
+}
+#flexContainer span {
+  cursor: pointer;
+}
+#titleDiv {
+  width: 240px;
+  font-size: 14px;
+}
+#artistDiv {
+  width: 240px;
+  font-size: 14px;
+}
+#infoDiv {
+  width: 90px;
+}
+#playDiv {
+  width: 90px;
+}
+img {
+  border-radius: 10px;
+  cursor: pointer;
+}

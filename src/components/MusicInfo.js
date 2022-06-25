@@ -32,6 +32,7 @@ export default function MusicInfo() {
   const [showResult, setShowResult] = useState(false);
   const [showAddMusic, setShowAddMusic] = useState(() => {});
   const [duration, setDuration] = useState({ h: 0, m: 0, s: 0 });
+  const [inPlaylist, setInPlaylist] = useState([]);
   const db = useRef();
   const resultRef = useRef();
   const { musicId } = useParams();
@@ -54,8 +55,20 @@ export default function MusicInfo() {
       });
       setInfo(infoReq.result);
       setInfoAvailable(true);
+      const IsMusicInPlaylistReq = db.current
+        .transaction("playlist", "readonly")
+        .objectStore("playlist")
+        .index("musicId")
+        .getAll(Number(musicId));
+      IsMusicInPlaylistReq.onsuccess = () => {
+        setInPlaylist(IsMusicInPlaylistReq.result.map((item) => item.id));
+      };
     };
   }, [dbState, musicId, isUpdated]);
+
+  useEffect(() => {
+    return () => setIsUpdated(true);
+  }, [setIsUpdated]);
 
   useEffect(() => {
     if (musicId === playingMusicId) {
@@ -163,15 +176,29 @@ export default function MusicInfo() {
                 <div id={styles.wrapper} ref={resultRef}>
                   {showResult ? (
                     <div id={styles.results}>
-                      {playlistResult.map((item, index) => (
-                        <div
-                          key={index}
-                          className={styles.result}
-                          onClick={() => addToPlaylist(item)}
-                        >
-                          {item.title}
-                        </div>
-                      ))}
+                      {playlistResult.map((item, index) => {
+                        if (inPlaylist.includes(item.id)) {
+                          return (
+                            <div
+                              key={index}
+                              className={styles.result}
+                              style={{ background: "gray", cursor: "default" }}
+                            >
+                              {item.title}
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div
+                              key={index}
+                              className={styles.result}
+                              onClick={() => addToPlaylist(item)}
+                            >
+                              {item.title}
+                            </div>
+                          );
+                        }
+                      })}
                     </div>
                   ) : null}
                 </div>

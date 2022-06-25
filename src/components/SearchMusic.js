@@ -53,13 +53,6 @@ export default function SearchMusic() {
     };
   }, [showResult]);
 
-  //not sure
-  useEffect(() => {
-    console.log("effect of searchmusic");
-    return () => setIsUpdated(true);
-  }, [setIsUpdated]);
-  //not sure, setIsUpdated 없애기
-
   const addToPlaylist = (playlistInfo) => {
     console.log(playlistInfo.musicId);
     let duplicatedDuration = 0;
