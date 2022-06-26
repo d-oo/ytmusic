@@ -34,9 +34,19 @@
   grid-template-rows: 1fr 1fr 1fr;
   margin-top: 20px;
 }
+#titleWrapper {
+  display: flex;
+  position: relative;
+  top: -6px;
+  left: 4px;
+  font-size: 18px;
+}
 #closeButton {
   color: white;
   cursor: pointer;
+}
+#closeButton:hover {
+  color: black;
 }
 #searchButton {
   color: white;
@@ -56,13 +66,14 @@
 }
 #selected {
   background: darkcyan;
+  border-radius: 10px;
 }
 #bigContainer input[type="text"] {
   width: 500px;
   height: 30px;
   border: 0;
   border-radius: 5px;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 .radioContainer {
   display: flex;
@@ -96,14 +107,30 @@
 .radio input:checked + label {
   background: darkcyan;
 }
-
+#noneWrapper {
+  position: absolute;
+  top: 176px;
+  left: 192px;
+  width: 500px;
+  display: flex;
+}
 .recommendContainer {
   display: flex;
   justify-content: center;
 }
-
 .recommend {
   cursor: pointer;
   padding-left: 10px;
   padding-right: 10px;
+}
+#undefinedVideo {
+  width: 320px;
+  height: 180px;
+  border-radius: 10px;
+  transform: translate(20px, 20px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: lavenderblush;
+  color: black;
 }

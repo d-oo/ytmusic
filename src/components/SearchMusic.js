@@ -194,10 +194,13 @@ export default function SearchMusic() {
       </div>
       {selectedItem.length === 0 ? null : (
         <div id={styles.selectedMenu}>
+          <div id={styles.selectedLength}>{selectedItem.length}</div>
           <div id={styles.addToDiv}>
             <span
               className="material-icons-round"
-              id={styles.addToButton}
+              id={
+                showResult ? styles.addToButtonBlack : styles.addToButtonWhite
+              }
               onClick={() => {
                 if (showResult) {
                   return;

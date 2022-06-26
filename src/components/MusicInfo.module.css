@@ -5,7 +5,7 @@
   height: 100vh;
   box-sizing: border-box;
   z-index: 20;
-  background: white;
+  background: lavender;
   overflow-y: auto;
   overflow-x: hidden;
   text-align: center;
@@ -24,16 +24,18 @@
   background: black;
 }
 #pageTitle {
+  display: flex;
   position: relative;
   left: 20px;
   top: 10px;
-  text-align: left;
   font-size: 18px;
 }
-#backButton {
-  color: black;
-  cursor: pointer;
-  height: 30px;
+#info {
+  position: relative;
+  top: 50px;
+}
+#backButton:hover {
+  color: darkviolet;
 }
 #gridContainer {
   position: relative;
@@ -41,6 +43,8 @@
   display: grid;
   grid-template-columns: 500px 200px;
   grid-template-rows: 40px 30px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 #title {
   grid-column: 1/2;
@@ -67,7 +71,7 @@
 #addToDiv {
   height: 30px;
 }
-#detail p {
+.detail {
   position: relative;
   left: 100px;
   width: 700px;
@@ -79,7 +83,6 @@
   background: violet;
   border-radius: 5px;
   width: 3rem;
-  margin-top: 20px;
 }
 #tagContainer {
   line-height: 200%;

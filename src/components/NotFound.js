@@ -13,6 +13,7 @@ export default function NotFound() {
         arrow_back
       </span>
       <p id={styles.notFound}>Not Found!</p>
+      input and recommend test
     </div>
   );
 }

@@ -15,9 +15,6 @@
   padding-top: 20px;
   cursor: pointer;
 }
-#selected {
-  background: darkcyan;
-}
 a {
   color: aliceblue;
   text-decoration: none;

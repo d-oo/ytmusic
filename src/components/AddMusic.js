@@ -50,7 +50,7 @@ export default function AddMusic({
   useEffect(() => {
     async function videoReq() {
       if (videoId === "") {
-        setVideoResult("UNDEFINED");
+        setVideoResult(<div id={styles.undefinedVideo}>UNDEFINED</div>);
         setVideoDuration("");
         return;
       }
@@ -61,7 +61,7 @@ export default function AddMusic({
         )
       ).json();
       if (json.items[0] === undefined) {
-        setVideoResult("UNDEFINED");
+        setVideoResult(<div id={styles.undefinedVideo}>UNDEFINED</div>);
       } else {
         setVideoResult(
           <div id={styles.selected}>
@@ -324,13 +324,16 @@ export default function AddMusic({
   return (
     <Modal setHandleFunction={setShowAddMusic}>
       <div id={styles.bigContainer}>
-        <span
-          className="material-icons-round"
-          id={styles.closeButton}
-          onClick={() => closeAddMusic()}
-        >
-          close
-        </span>
+        <div id={styles.titleWrapper}>
+          <span
+            className="material-icons-round"
+            id={styles.closeButton}
+            onClick={() => closeAddMusic()}
+          >
+            close
+          </span>
+          음악 추가
+        </div>
         <div className={styles.radioContainer}>
           <div className={styles.radio}>
             <input
@@ -380,8 +383,8 @@ export default function AddMusic({
           disabled={isArtistNone}
           autoComplete="off"
         />
-        <div>
-          {category === "Inst" ? (
+        {category === "Inst" ? (
+          <div id={styles.noneWrapper}>
             <label>
               <input
                 type="checkbox"
@@ -396,10 +399,11 @@ export default function AddMusic({
                   setIsArtistNone((prev) => !prev);
                 }}
               />
-              None
+              아티스트 없음
             </label>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
+
         <div className={styles.recommendContainer}>
           {recommendedArtist.map((item, index) => (
             <div

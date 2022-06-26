@@ -131,17 +131,15 @@ export default function MusicInfo() {
         음악 정보
       </div>
       {infoAvailable ? (
-        <div>
-          <div>
-            {musicId === "" ? null : (
-              <img
-                alt={`musicInfo${musicId}`}
-                src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
-                width="384"
-                height="216"
-              />
-            )}
-          </div>
+        <div id={styles.info}>
+          {musicId === "" ? null : (
+            <img
+              alt={`musicInfo${musicId}`}
+              src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
+              width="384"
+              height="216"
+            />
+          )}
           <div id={styles.gridContainer}>
             <div id={styles.title}>{info.title}</div>
             <div id={styles.artist}>{info.artist.join(", ")}</div>
@@ -219,33 +217,31 @@ export default function MusicInfo() {
               </span>
             </div>
           </div>
-          <div id={styles.detail}>
-            <div id={styles.category}>
-              {info.category === "Song" ? "가요" : "기악"}
-            </div>
-            <p>비디오 ID : {info.videoId}</p>
-            <p>
-              음악 길이 : {duration.m}분 {duration.s}초
-            </p>
-            <p id={styles.tagContainer}>
-              태그 :
-              {info.tag.map((item, index) => (
-                <span
-                  key={"infotag" + index}
-                  className={styles.tag}
-                  onClick={
-                    item === ""
-                      ? null
-                      : () => {
-                          console.log(item);
-                        }
-                  }
-                >
-                  {item}
-                </span>
-              ))}
-            </p>
+          <div id={styles.category}>
+            {info.category === "Song" ? "가요" : "기악"}
           </div>
+          <p className={styles.detail}>비디오 ID : {info.videoId}</p>
+          <p className={styles.detail}>
+            음악 길이 : {duration.m}분 {duration.s}초
+          </p>
+          <p id={styles.tagContainer} className={styles.detail}>
+            태그 :
+            {info.tag.map((item, index) => (
+              <span
+                key={"infotag" + index}
+                className={styles.tag}
+                onClick={
+                  item === ""
+                    ? null
+                    : () => {
+                        console.log(item);
+                      }
+                }
+              >
+                {item}
+              </span>
+            ))}
+          </p>
           <AddMusic
             from="MusicInfo"
             showAddMusic={showAddMusic}

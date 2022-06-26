@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AppContext } from "../Home";
 
+import PlayingMotion from "./PlayingMotion";
 import PlaylistMusic from "./PlaylistMusic";
 
 import styles from "./PlaylistInfo.module.css";
@@ -147,12 +148,22 @@ export default function PlaylistInfo() {
 
   return (
     <div id={styles.playlistInfo}>
-      <span className="material-icons-round" onClick={() => navigate(-1)}>
-        arrow_back
-      </span>
+      <div id={styles.titleWrapper}>
+        <span
+          className="material-icons-round"
+          id={styles.backButton}
+          onClick={() => navigate(-1)}
+        >
+          arrow_back
+        </span>
+        재생목록 정보
+      </div>
       {infoAvailable ? (
         <div>
-          <div>{playlistInfo.title}</div>
+          <div id={styles.playlistTitle}>
+            {playlistInfo.title}&nbsp;&nbsp;&nbsp;
+            <PlayingMotion />
+          </div>
           <div id={styles.playlistResults}>
             <div id={styles.flexContainer}>
               <div
@@ -223,10 +234,22 @@ export default function PlaylistInfo() {
       ) : null}
       {selectedItem.length === 0 ? null : (
         <div id={styles.selectedMenu}>
+          <div id={styles.selectedLength}>{selectedItem.length}</div>
+          <span
+            className="material-icons-round"
+            id={styles.deleteButton}
+            onClick={() => {
+              console.log("delete");
+            }}
+          >
+            delete
+          </span>
           <div id={styles.addToDiv}>
             <span
               className="material-icons-round"
-              id={styles.addToButton}
+              id={
+                showResult ? styles.addToButtonBlack : styles.addToButtonWhite
+              }
               onClick={() => {
                 if (showResult) {
                   return;
@@ -250,7 +273,7 @@ export default function PlaylistInfo() {
                       }
                       style={
                         item.id === Number(playlistId)
-                          ? { background: "gray", cursor: "default" }
+                          ? { background: "lightgray", cursor: "default" }
                           : null
                       }
                     >
