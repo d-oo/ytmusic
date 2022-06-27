@@ -29,6 +29,10 @@
   left: 20px;
   top: 10px;
   font-size: 18px;
+  width: 500px;
+}
+#backButton {
+  cursor: pointer;
 }
 #backButton:hover {
   color: darkviolet;
@@ -37,6 +41,7 @@
   display: flex;
   position: relative;
   align-items: center;
+  width: 500px;
   top: 35px;
   left: 59px;
   font-size: 24px;
@@ -151,4 +156,7 @@
   cursor: pointer;
   border-bottom: 1px solid lightskyblue;
   font-size: 18px;
+}
+#emptyArea {
+  height: 80px;
 }

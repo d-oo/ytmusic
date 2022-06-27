@@ -34,6 +34,9 @@
   position: relative;
   top: 50px;
 }
+#backButton {
+  cursor: pointer;
+}
 #backButton:hover {
   color: darkviolet;
 }
@@ -66,6 +69,7 @@
   align-items: center;
 }
 #buttons span {
+  cursor: pointer;
   font-size: 30px;
 }
 #addToDiv {
@@ -88,6 +92,7 @@
   line-height: 200%;
 }
 .tag {
+  cursor: pointer;
   padding-left: 8px;
   padding-right: 8px;
   margin-left: 8px;

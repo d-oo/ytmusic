@@ -13,9 +13,11 @@
 }
 .searchResult {
   padding-top: 20px;
-  cursor: pointer;
 }
 a {
   color: aliceblue;
   text-decoration: none;
+}
+.pointerCursor {
+  cursor: pointer;
 }

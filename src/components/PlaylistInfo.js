@@ -229,6 +229,7 @@ export default function PlaylistInfo() {
                 )}
               </Droppable>
             </DragDropContext>
+            <div id={styles.emptyArea}></div>
           </div>
         </div>
       ) : null}

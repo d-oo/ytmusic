@@ -19,6 +19,7 @@ export default function AddMusic({
   const [searchResults, setSearchResults] = useState("");
   const [videoResult, setVideoResult] = useState("UNDEFINED");
   const [videoId, setVideoId] = useState(""); //!=AppContext.~
+  const [isVideoValid, setIsVideoValid] = useState(false);
   const [category, setCategory] = useState("Song");
   const [tag, setTag] = useState("");
   const [videoDuration, setVideoDuration] = useState("");
@@ -51,6 +52,7 @@ export default function AddMusic({
     async function videoReq() {
       if (videoId === "") {
         setVideoResult(<div id={styles.undefinedVideo}>UNDEFINED</div>);
+        setIsVideoValid(false);
         setVideoDuration("");
         return;
       }
@@ -62,6 +64,7 @@ export default function AddMusic({
       ).json();
       if (json.items[0] === undefined) {
         setVideoResult(<div id={styles.undefinedVideo}>UNDEFINED</div>);
+        setIsVideoValid(false);
       } else {
         setVideoResult(
           <div id={styles.selected}>
@@ -73,6 +76,7 @@ export default function AddMusic({
             />
           </div>
         );
+        setIsVideoValid(true);
 
         //videoDuration converting
         const durationStr = json.items[0].contentDetails.duration;
@@ -104,7 +108,7 @@ export default function AddMusic({
 
   const searchReq = async () => {
     setLoading(true);
-    const str = title + " " + artist;
+    const str = title + " " + (isArtistNone ? "" : artist);
     const json = await (
       await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id/videoId,snippet(thumbnails,title,channelTitle))&maxResults=5&type=video&q=${str}&key=${API_KEY}`
@@ -215,7 +219,6 @@ export default function AddMusic({
   };
 
   useEffect(() => {
-    console.log(artist);
     setSearchResults("");
     setRecommendedArtist([]);
     if (artist === "") {
@@ -224,7 +227,7 @@ export default function AddMusic({
     let count = 0;
     const artistArr = artist.split(",");
     const artistArray = artistArr.map((item) =>
-      item.replace(/\./g, "").replace(/ /g, "")
+      item.replace(/\./g, "").replace(/ /g, "").toLowerCase()
     );
     const store = db.current
       .transaction("music", "readonly")
@@ -233,14 +236,18 @@ export default function AddMusic({
     cursorReq.onsuccess = () => {
       const cursor = cursorReq.result;
       if (cursor) {
-        const dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
+        const dbString = cursor.key;
+        const dbStr = dbString
+          .replace(/\./g, "")
+          .replace(/ /g, "")
+          .toLowerCase();
         const lastArtist = artistArray[artistArray.length - 1];
         if (
           dbStr.includes(lastArtist) &&
-          dbStr !== artistArr[artistArr.length - 1] &&
+          dbString !== artistArr[artistArr.length - 1] &&
           lastArtist !== ""
         ) {
-          setRecommendedArtist((prev) => [...prev, cursor.key]);
+          setRecommendedArtist((prev) => [...new Set([...prev, cursor.key])]);
           count += 1;
         }
         if (count < 5) {
@@ -274,7 +281,7 @@ export default function AddMusic({
           dbStr !== tagArr[tagArr.length - 1] &&
           lastTag !== ""
         ) {
-          setRecommendedTag((prev) => [...prev, cursor.key]);
+          setRecommendedTag((prev) => [...new Set([...prev, cursor.key])]);
           count += 1;
         }
         if (count < 5) {
@@ -321,6 +328,13 @@ export default function AddMusic({
 
   useEffect(() => setSearchResults(""), [title]);
 
+  useEffect(() => {
+    if (category === "Song" && isArtistNone) {
+      setArtist("");
+      setIsArtistNone(false);
+    }
+  }, [category, isArtistNone]);
+
   return (
     <Modal setHandleFunction={setShowAddMusic}>
       <div id={styles.bigContainer}>
@@ -345,7 +359,7 @@ export default function AddMusic({
               onChange={() => setCategory("Song")}
             />
             <label htmlFor="Song" id={styles.Song}>
-              Song
+              가요
             </label>
           </div>
           <div className={styles.radio}>
@@ -358,31 +372,37 @@ export default function AddMusic({
               onChange={() => setCategory("Inst")}
             />
             <label htmlFor="Inst" id={styles.Inst}>
-              Instrumental
+              기악
             </label>
           </div>
         </div>
-        <input
-          onChange={(event) => {
-            setTitle(event.target.value);
-          }}
-          value={title}
-          type="text"
-          placeholder="Title"
-          spellCheck="false"
-          autoComplete="off"
-        />
-        <input
-          onChange={(event) => {
-            setArtist(event.target.value);
-          }}
-          value={artist}
-          type="text"
-          placeholder="Artist"
-          spellCheck="false"
-          disabled={isArtistNone}
-          autoComplete="off"
-        />
+        <div className={styles.inputWrapper}>
+          <div className={styles.textLabel}>제목</div>
+          <input
+            onChange={(event) => {
+              setTitle(event.target.value);
+            }}
+            value={title}
+            type="text"
+            placeholder="Title"
+            spellCheck="false"
+            autoComplete="off"
+          />
+        </div>
+        <div className={styles.inputWrapper}>
+          <div className={styles.textLabel}>아티스트</div>
+          <input
+            onChange={(event) => {
+              setArtist(event.target.value);
+            }}
+            value={artist}
+            type="text"
+            placeholder="Artist"
+            spellCheck="false"
+            disabled={isArtistNone}
+            autoComplete="off"
+          />
+        </div>
         {category === "Inst" ? (
           <div id={styles.noneWrapper}>
             <label>
@@ -403,7 +423,6 @@ export default function AddMusic({
             </label>
           </div>
         ) : null}
-
         <div className={styles.recommendContainer}>
           {recommendedArtist.map((item, index) => (
             <div
@@ -419,22 +438,28 @@ export default function AddMusic({
             </div>
           ))}
         </div>
-        <input
-          onChange={(event) => setVideoId(event.target.value)}
-          value={videoId}
-          type="text"
-          placeholder="Video ID"
-          spellCheck="false"
-          autoComplete="off"
-        />
-        <input
-          onChange={(event) => setTag(event.target.value)}
-          value={tag}
-          type="text"
-          placeholder="Tag"
-          spellCheck="false"
-          autoComplete="off"
-        />
+        <div className={styles.inputWrapper}>
+          <div className={styles.textLabel}>비디오 ID</div>
+          <input
+            onChange={(event) => setVideoId(event.target.value)}
+            value={videoId}
+            type="text"
+            placeholder="Video ID"
+            spellCheck="false"
+            autoComplete="off"
+          />
+        </div>
+        <div className={styles.inputWrapper}>
+          <div className={styles.textLabel}>태그</div>
+          <input
+            onChange={(event) => setTag(event.target.value)}
+            value={tag}
+            type="text"
+            placeholder="Tag"
+            spellCheck="false"
+            autoComplete="off"
+          />
+        </div>
         <div className={styles.recommendContainer}>
           {recommendedTag.map((item, index) => (
             <div
@@ -450,45 +475,60 @@ export default function AddMusic({
             </div>
           ))}
         </div>
-        <div>
-          <span
-            className="material-icons-round"
-            id={
-              title.trim() === "" || artist.trim() === ""
-                ? styles.searchDisabled
-                : styles.searchButton
-            }
-            onClick={
-              title.trim() === "" || artist.trim() === "" ? null : searchReq
-            }
-          >
-            search
-          </span>
-        </div>
+        <span
+          className="material-icons-round"
+          id={
+            title.trim() === "" ||
+            artist.split(",").filter((item) => item.trim() === "").length !== 0
+              ? styles.searchDisabled
+              : styles.searchButton
+          }
+          onClick={
+            title.trim() === "" ||
+            artist.split(",").filter((item) => item.trim() === "").length !== 0
+              ? null
+              : searchReq
+          }
+        >
+          search
+        </span>
         {loading ? <LoadingMotion /> : null}
         <div id={styles.smallContainer}>
           {videoResult}
           {searchResults}
         </div>
-        <span
-          className="material-icons-round"
-          id={
-            title.trim() === "" ||
-            artist.trim() === "" ||
-            videoResult === "UNDEFINED"
-              ? styles.doneDisabled
-              : styles.doneButton
-          }
-          onClick={
-            title.trim() === "" ||
-            artist.trim() === "" ||
-            videoResult === "UNDEFINED"
-              ? null
-              : onSubmit
-          }
-        >
-          done
-        </span>
+        <div id={styles.doneBigWrapper}>
+          <div
+            className={styles.doneSmallWrapper}
+            id={
+              title.trim() === "" ||
+              artist.split(",").filter((item) => item.trim() === "").length !==
+                0 ||
+              (tag.split(",").filter((item) => item.trim() === "").length !==
+                0 &&
+                tag !== "") ||
+              !isVideoValid
+                ? styles.doneDisabled
+                : styles.doneDiv
+            }
+            onClick={
+              title.trim() === "" ||
+              artist.split(",").filter((item) => item.trim() === "").length !==
+                0 ||
+              (tag.split(",").filter((item) => item.trim() === "").length !==
+                0 &&
+                tag !== "") ||
+              !isVideoValid
+                ? null
+                : onSubmit
+            }
+          >
+            <span className="material-icons-round" id={styles.doneButton}>
+              done
+            </span>
+            확인
+          </div>
+        </div>
       </div>
     </Modal>
   );

@@ -1,3 +1,9 @@
 #notFound {
+  color: white;
   font-size: 30px;
+}
+#backButton {
+  color: white;
+  cursor: pointer;
+  font-size: 28px;
 }

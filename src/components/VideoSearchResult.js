@@ -4,6 +4,7 @@ export default function VideoSearchResult({ info, id, setVideoId, index }) {
   return (
     <div className={styles.searchResult}>
       <img
+        className={styles.pointerCursor}
         alt={"videoSearchResult" + index}
         src={info.thumbnails.medium.url}
         onClick={() => setVideoId(id)}
@@ -13,8 +14,12 @@ export default function VideoSearchResult({ info, id, setVideoId, index }) {
         target="_blank"
         rel="noreferrer"
       >
-        <div id={styles.title}>{info.title}</div>
-        <div id={styles.channel}>{info.channelTitle}</div>
+        <div id={styles.title} className={styles.pointerCursor}>
+          {info.title}
+        </div>
+        <div id={styles.channel} className={styles.pointerCursor}>
+          {info.channelTitle}
+        </div>
       </a>
     </div>
   );

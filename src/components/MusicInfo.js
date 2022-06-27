@@ -238,7 +238,7 @@ export default function MusicInfo() {
                       }
                 }
               >
-                {item}
+                {"#" + item}
               </span>
             ))}
           </p>

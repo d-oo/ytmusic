@@ -13,6 +13,7 @@ export default function SearchMusic() {
   const [searchBy, setSearchBy] = useState("title");
   const [category, setCategory] = useState("Song");
   const [sortBy, setSortBy] = useState("recentAdd");
+  const [searchInput, setSearchInput] = useState("");
   const db = useRef();
   const resultRef = useRef();
   const { dbState, isUpdated, setIsUpdated, playlistResult } =
@@ -24,7 +25,7 @@ export default function SearchMusic() {
       return;
     }
     db.current = dbState;
-    setResult([]);
+    const tmpResult = [];
     const cursorReq = db.current
       .transaction("music", "readonly")
       .objectStore("music")
@@ -32,8 +33,10 @@ export default function SearchMusic() {
     cursorReq.onsuccess = () => {
       const cursor = cursorReq.result;
       if (cursor) {
-        setResult((prev) => [...prev, cursor.value]);
+        tmpResult.push(cursor.value);
         cursor.continue();
+      } else {
+        setResult(tmpResult);
       }
     };
   }, [dbState, isUpdated]);
@@ -88,66 +91,105 @@ export default function SearchMusic() {
     };
   };
 
+  const searchMusic = () => {
+    console.log("SSEE");
+  };
+
   return (
     <div id={styles.bigContainer}>
-      <input type="text" placeholder="검색" id={styles.searchInput} />
-      <div id={styles.bigWrapper}>
-        <div id={styles.funnel}>
-          <div>
-            <span
-              className={searchBy === "title" ? styles.chosen : null}
-              onClick={() => setSearchBy("title")}
-            >
-              &nbsp;제목&nbsp;
-            </span>
-            <span
-              className={searchBy === "artist" ? styles.chosen : null}
-              onClick={() => setSearchBy("artist")}
-            >
-              &nbsp;아티스트&nbsp;
-            </span>
-          </div>
-          <div>
-            <span
-              className={category === "Song" ? styles.chosen : null}
-              onClick={() => setCategory("Song")}
-            >
-              &nbsp;가요&nbsp;
-            </span>
-            <span
-              className={category === "Inst" ? styles.chosen : null}
-              onClick={() => setCategory("Inst")}
-            >
-              &nbsp;기악&nbsp;
-            </span>
-          </div>
-          <div>
-            <span
-              className={
-                sortBy === "recentAdd" ? styles.chosen : styles.notChosen
-              }
-              onClick={() => setSortBy("recentAdd")}
-            >
-              &nbsp;최근 추가&nbsp;
-            </span>
-            <span
-              className={
-                sortBy === "recentPlay" ? styles.chosen : styles.notChosen
-              }
-              onClick={() => setSortBy("recentPlay")}
-            >
-              &nbsp;최근 재생&nbsp;
-            </span>
-            <span
-              className={
-                sortBy === "mostPlay" ? styles.chosen : styles.notChosen
-              }
-              onClick={() => setSortBy("mostPlay")}
-            >
-              &nbsp;최다 재생&nbsp;
-            </span>
-          </div>
+      <div id={styles.inputDiv}>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (searchInput.trim() === "") {
+              return;
+            }
+            searchMusic();
+          }}
+        >
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            placeholder="검색"
+            id={styles.searchInput}
+            spellCheck="false"
+            autoComplete="off"
+          />
+        </form>
+        <span
+          className="material-icons-round"
+          id={
+            searchInput.trim() === ""
+              ? styles.searchDisabled
+              : styles.searchButton
+          }
+          onClick={
+            searchInput.trim() === ""
+              ? null
+              : () => {
+                  searchMusic();
+                }
+          }
+        >
+          search
+        </span>
+      </div>
+      <div id={styles.funnel}>
+        <div>
+          <span
+            className={searchBy === "title" ? styles.chosen : null}
+            onClick={() => setSearchBy("title")}
+          >
+            &nbsp;제목&nbsp;
+          </span>
+          <span
+            className={searchBy === "artist" ? styles.chosen : null}
+            onClick={() => setSearchBy("artist")}
+          >
+            &nbsp;아티스트&nbsp;
+          </span>
         </div>
+        <div>
+          <span
+            className={category === "Song" ? styles.chosen : null}
+            onClick={() => setCategory("Song")}
+          >
+            &nbsp;가요&nbsp;
+          </span>
+          <span
+            className={category === "Inst" ? styles.chosen : null}
+            onClick={() => setCategory("Inst")}
+          >
+            &nbsp;기악&nbsp;
+          </span>
+        </div>
+        <div>
+          <span
+            className={
+              sortBy === "recentAdd" ? styles.chosen : styles.notChosen
+            }
+            onClick={() => setSortBy("recentAdd")}
+          >
+            &nbsp;최근 추가&nbsp;
+          </span>
+          <span
+            className={
+              sortBy === "recentPlay" ? styles.chosen : styles.notChosen
+            }
+            onClick={() => setSortBy("recentPlay")}
+          >
+            &nbsp;최근 재생&nbsp;
+          </span>
+          <span
+            className={sortBy === "mostPlay" ? styles.chosen : styles.notChosen}
+            onClick={() => setSortBy("mostPlay")}
+          >
+            &nbsp;최다 재생&nbsp;
+          </span>
+        </div>
+      </div>
+      <div id={styles.bigWrapper}>
         <div id={styles.flexContainer}>
           <div
             id={styles.selectDiv}
@@ -190,7 +232,9 @@ export default function SearchMusic() {
             />
           ))}
         </div>
-        <div id={styles.emptyArea}></div>
+        <div id={styles.emptyArea}>
+          {result.length === 0 ? "음악을 추가해 주세요" : null}
+        </div>
       </div>
       {selectedItem.length === 0 ? null : (
         <div id={styles.selectedMenu}>

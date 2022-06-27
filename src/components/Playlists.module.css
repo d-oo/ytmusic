@@ -1,17 +1,23 @@
-span {
-  cursor: pointer;
-}
 #addButton {
+  cursor: pointer;
   color: aliceblue;
 }
+#addButton:hover {
+  color: black;
+}
 #doneButton {
+  cursor: pointer;
   color: aliceblue;
 }
 #doneDisabled {
   color: gray;
 }
 #cancelButton {
+  cursor: pointer;
   color: aliceblue;
+}
+#infoButton {
+  cursor: pointer;
 }
 #newTitleInput {
   width: 250px;

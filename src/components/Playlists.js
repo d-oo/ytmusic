@@ -73,17 +73,29 @@ export default function Playlists() {
       )}
       {addNew ? (
         <div>
-          <input
-            id={styles.newTitleInput}
-            value={newTitle}
-            type="text"
-            placeholder="new playlist"
-            onChange={(event) => {
-              setNewTitle(event.target.value);
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (newTitle.trim() === "") {
+                return;
+              }
+              setAddNew(false);
+              addData();
+              setNewTitle("");
             }}
-            spellCheck="false"
-            autoComplete="off"
-          />
+          >
+            <input
+              id={styles.newTitleInput}
+              value={newTitle}
+              type="text"
+              placeholder="new playlist"
+              onChange={(event) => {
+                setNewTitle(event.target.value);
+              }}
+              spellCheck="false"
+              autoComplete="off"
+            />
+          </form>
           <span
             className="material-icons-round"
             id={
@@ -119,6 +131,7 @@ export default function Playlists() {
             {item.title} : {item.videoCount}
             <span
               className="material-icons-round"
+              id={styles.infoButton}
               onClick={() => {
                 navigate(`/playlist/${item.id}`, {
                   replace: location.pathname === `/playlist/${item.id}`,
