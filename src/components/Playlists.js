@@ -13,7 +13,7 @@ export default function Playlists() {
     setIsUpdated,
   } = useContext(AppContext);
   const [newTitle, setNewTitle] = useState("");
-  const [addNew, setAddNew] = useState(false);
+  const [showAddNew, setShowAddNew] = useState(false);
   const db = useRef();
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,16 +62,16 @@ export default function Playlists() {
 
   return (
     <div>
-      {addNew ? null : (
+      {showAddNew ? null : (
         <span
           className="material-icons-round"
           id={styles.addButton}
-          onClick={() => setAddNew(true)}
+          onClick={() => setShowAddNew(true)}
         >
           add
         </span>
       )}
-      {addNew ? (
+      {showAddNew ? (
         <div>
           <form
             onSubmit={(event) => {
@@ -79,7 +79,7 @@ export default function Playlists() {
               if (newTitle.trim() === "") {
                 return;
               }
-              setAddNew(false);
+              setShowAddNew(false);
               addData();
               setNewTitle("");
             }}
@@ -105,7 +105,7 @@ export default function Playlists() {
               newTitle.trim() === ""
                 ? null
                 : () => {
-                    setAddNew(false);
+                    setShowAddNew(false);
                     addData();
                     setNewTitle("");
                   }
@@ -117,7 +117,7 @@ export default function Playlists() {
             className="material-icons-round"
             id={styles.cancelButton}
             onClick={() => {
-              setAddNew(false);
+              setShowAddNew(false);
               setNewTitle("");
             }}
           >

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createContext } from "react";
+import { useState, useEffect, useCallback, useRef, createContext } from "react";
 import { Outlet } from "react-router-dom";
 import Player from "./components/Player";
 import YT from "./components/YT";
@@ -12,6 +12,8 @@ export default function Home() {
   //player
   const [playingMusicId, setPlayingMusicId] = useState("");
   const [playingVideoId, setPlayingVideoId] = useState("");
+  const [playingPlaylist, setPlayingPlaylist] = useState([]);
+  const [playingPlaylistId, setPlayingPlaylistId] = useState("");
   const [title, setTitle] = useState("");
   const [player, setPlayer] = useState({});
   const [videoOn, setVideoOn] = useState(false);
@@ -60,14 +62,74 @@ export default function Home() {
     };
   }, []);
 
+  const playSingle = useCallback((musicId, videoId, title) => {
+    setPlayingMusicId(musicId);
+    setPlayingVideoId(videoId);
+    setTitle(title);
+    setVideoOn(true);
+    setPlayingPlaylist([]);
+    setPlayingPlaylistId("");
+  }, []);
+
+  const playPlaylist = useCallback(
+    (musicId, listId) => {
+      const arr = [];
+      const musicList =
+        playlistResult[playlistResult.findIndex((i) => i.id === Number(listId))]
+          .musicId;
+      console.log(musicList);
+      musicList.forEach((item, index) => {
+        const musicInfoReq = db.current
+          .transaction("music", "readonly")
+          .objectStore("music")
+          .get(item);
+        musicInfoReq.onsuccess = () => {
+          arr.push(musicInfoReq.result);
+          if (index === musicList.length - 1) {
+            setPlayingPlaylistId(listId);
+            setPlayingPlaylist(arr);
+            setPlayingMusicId(musicId);
+            setPlayingVideoId(
+              arr[arr.findIndex((i) => i.id === Number(musicId))].videoId
+            );
+            setTitle(arr[arr.findIndex((i) => i.id === Number(musicId))].title);
+            setVideoOn(true);
+          }
+        };
+      });
+    },
+    [playlistResult]
+  );
+
+  const playOtherInList = useCallback(
+    (target) => {
+      switch (target) {
+        case "next":
+          console.log("asdf");
+          console.log(playingPlaylist);
+          break;
+        default:
+          console.log("etc");
+      }
+    },
+    [playingPlaylist]
+  );
+
   useEffect(() => console.log("dbState Changed"), [dbState]);
   return (
     <AppContext.Provider
       value={{
+        playSingle,
+        playPlaylist,
+        playOtherInList,
         playingMusicId,
         setPlayingMusicId,
         playingVideoId,
         setPlayingVideoId,
+        playingPlaylist,
+        setPlayingPlaylist,
+        playingPlaylistId,
+        setPlayingPlaylistId,
         player,
         setPlayer,
         showYT,

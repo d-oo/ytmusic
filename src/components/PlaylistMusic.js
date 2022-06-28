@@ -6,12 +6,12 @@ import styles from "./PlaylistMusic.module.css";
 export default function PlaylistMusic({
   info,
   index,
+  playlistInfo,
   selectedItem,
   setSelectedItem,
   setTotalDuration,
 }) {
-  const { setPlayingMusicId, setPlayingVideoId, setVideoOn, setTitle } =
-    useContext(AppContext);
+  const { playPlaylist } = useContext(AppContext);
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
@@ -55,10 +55,7 @@ export default function PlaylistMusic({
         <span
           className="material-icons-round"
           onClick={() => {
-            setPlayingVideoId(info.videoId);
-            setPlayingMusicId(String(info.id));
-            setVideoOn(true);
-            setTitle(info.title);
+            playPlaylist(String(info.id), String(playlistInfo.id));
           }}
         >
           play_arrow

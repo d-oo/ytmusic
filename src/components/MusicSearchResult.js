@@ -10,8 +10,7 @@ export default function MusicSearchResult({
   setSelectedItem,
   setTotalDuration,
 }) {
-  const { setPlayingMusicId, setPlayingVideoId, setVideoOn, setTitle } =
-    useContext(AppContext);
+  const { playSingle } = useContext(AppContext);
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
@@ -55,10 +54,7 @@ export default function MusicSearchResult({
         <span
           className="material-icons-round"
           onClick={() => {
-            setPlayingVideoId(info.videoId);
-            setPlayingMusicId(String(info.id));
-            setVideoOn(true);
-            setTitle(info.title);
+            playSingle(String(info.id), info.videoId, info.title);
           }}
         >
           play_arrow

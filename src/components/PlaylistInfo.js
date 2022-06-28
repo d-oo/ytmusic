@@ -9,8 +9,14 @@ import PlaylistMusic from "./PlaylistMusic";
 import styles from "./PlaylistInfo.module.css";
 
 export default function PlaylistInfo() {
-  const { playlistResult, isUpdated, setIsUpdated, dbState } =
-    useContext(AppContext);
+  const {
+    playingPlaylistId,
+    isPlaying,
+    playlistResult,
+    isUpdated,
+    setIsUpdated,
+    dbState,
+  } = useContext(AppContext);
   const [selectedItem, setSelectedItem] = useState([]);
   const [totalDuration, setTotalDuration] = useState(0);
   const [playlistInfo, setPlaylistInfo] = useState("");
@@ -162,7 +168,9 @@ export default function PlaylistInfo() {
         <div>
           <div id={styles.playlistTitle}>
             {playlistInfo.title}&nbsp;&nbsp;&nbsp;
-            <PlayingMotion />
+            {playlistId === playingPlaylistId ? (
+              <PlayingMotion isPaused={!isPlaying} />
+            ) : null}
           </div>
           <div id={styles.playlistResults}>
             <div id={styles.flexContainer}>
@@ -216,6 +224,7 @@ export default function PlaylistInfo() {
                             <PlaylistMusic
                               info={item}
                               index={index}
+                              playlistInfo={playlistInfo}
                               selectedItem={selectedItem}
                               setSelectedItem={setSelectedItem}
                               setTotalDuration={setTotalDuration}

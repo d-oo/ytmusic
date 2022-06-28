@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import styles from "./Modal.module.css";
 
-export default function Modal({ children, setHandleFunction }) {
+export default function Modal({ children, setHandleFunction, setModalState }) {
   const [showModal, setShowModal] = useState(false);
   const [showAni, setShowAni] = useState(false);
 
+  useEffect(() => {
+    if (setModalState === undefined) {
+      return;
+    }
+    setModalState(showAni);
+  }, [setModalState, showAni]);
   useEffect(() => {
     const handleShowModal = (isOpen) => {
       if (isOpen) {

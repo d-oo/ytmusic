@@ -14,14 +14,11 @@ import styles from "./MusicInfo.module.css";
 
 export default function MusicInfo() {
   const {
+    playSingle,
     isPlaying,
     showYT,
     setShowYT,
     playingMusicId,
-    setPlayingMusicId,
-    setPlayingVideoId,
-    setVideoOn,
-    setTitle,
     isUpdated,
     setIsUpdated,
     playlistResult,
@@ -31,6 +28,7 @@ export default function MusicInfo() {
   const [infoAvailable, setInfoAvailable] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [showAddMusic, setShowAddMusic] = useState(() => {});
+  const [modalState, setModalState] = useState(false);
   const [duration, setDuration] = useState({ h: 0, m: 0, s: 0 });
   const [inPlaylist, setInPlaylist] = useState([]);
   const db = useRef();
@@ -119,7 +117,10 @@ export default function MusicInfo() {
   };
 
   return (
-    <div id={styles.musicInfo}>
+    <div
+      id={styles.musicInfo}
+      className={modalState ? styles.highZ : styles.lowZ}
+    >
       <div id={styles.pageTitle}>
         <span
           className="material-icons-round"
@@ -134,6 +135,7 @@ export default function MusicInfo() {
         <div id={styles.info}>
           {musicId === "" ? null : (
             <img
+              id={showYT ? styles.imgHidden : null}
               alt={`musicInfo${musicId}`}
               src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
               width="384"
@@ -150,10 +152,7 @@ export default function MusicInfo() {
                 <span
                   className="material-icons-round"
                   onClick={() => {
-                    setPlayingMusicId(musicId);
-                    setPlayingVideoId(info.videoId);
-                    setVideoOn(true);
-                    setTitle(info.title);
+                    playSingle(musicId, info.videoId, info.title);
                   }}
                 >
                   play_arrow
@@ -246,6 +245,7 @@ export default function MusicInfo() {
             from="MusicInfo"
             showAddMusic={showAddMusic}
             setShowAddMusic={setShowAddMusic}
+            setModalState={setModalState}
             musicInfo={info}
           />
         </div>

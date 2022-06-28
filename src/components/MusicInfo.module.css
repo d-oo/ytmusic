@@ -4,11 +4,19 @@
   width: 900px;
   height: 100vh;
   box-sizing: border-box;
-  z-index: 20;
   background: lavender;
   overflow-y: auto;
   overflow-x: hidden;
   text-align: center;
+}
+.lowZ {
+  z-index: 20;
+}
+.highZ {
+  z-index: 21;
+}
+#imgHidden {
+  opacity: 0;
 }
 #musicInfo::-webkit-scrollbar {
   width: 5px;
@@ -110,14 +118,14 @@
   height: 150px;
   left: 0px;
   top: 0px;
-  border: 5px solid lightsalmon;
+  border: 4px solid lightskyblue;
   border-radius: 10px;
-  background: beige;
+  background: lavender;
   overflow: auto;
 }
 .result {
   width: 200px;
   cursor: pointer;
-  border-bottom: 1px solid lightsalmon;
+  border-bottom: 1px solid lightskyblue;
   font-size: 18px;
 }

@@ -10,6 +10,7 @@ export default function AddMusic({
   from,
   showAddMusic,
   setShowAddMusic,
+  setModalState,
   musicInfo,
 }) {
   const API_KEY = "AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY";
@@ -220,73 +221,79 @@ export default function AddMusic({
 
   useEffect(() => {
     setSearchResults("");
-    setRecommendedArtist([]);
-    if (artist === "") {
-      return;
-    }
+    let tmpArr = [];
     let count = 0;
     const artistArr = artist.split(",");
     const artistArray = artistArr.map((item) =>
       item.replace(/\./g, "").replace(/ /g, "").toLowerCase()
     );
+    const lastArtist = artistArray[artistArray.length - 1];
+    if (lastArtist === "") {
+      setRecommendedArtist([]);
+      return;
+    }
     const store = db.current
       .transaction("music", "readonly")
       .objectStore("music");
     const cursorReq = store.index("artist").openCursor(null, "nextunique");
     cursorReq.onsuccess = () => {
       const cursor = cursorReq.result;
-      if (cursor) {
+      if (cursor && count < 5) {
         const dbString = cursor.key;
         const dbStr = dbString
           .replace(/\./g, "")
           .replace(/ /g, "")
           .toLowerCase();
-        const lastArtist = artistArray[artistArray.length - 1];
         if (
           dbStr.includes(lastArtist) &&
           dbString !== artistArr[artistArr.length - 1] &&
           lastArtist !== ""
         ) {
-          setRecommendedArtist((prev) => [...new Set([...prev, cursor.key])]);
+          tmpArr.push(cursor.key);
           count += 1;
         }
-        if (count < 5) {
-          cursor.continue();
-        }
+        cursor.continue();
+      } else {
+        setRecommendedArtist(tmpArr);
       }
     };
   }, [artist]);
 
   useEffect(() => {
-    setRecommendedTag([]);
-    if (tag === "") {
-      return;
-    }
+    let tmpArr = [];
     let count = 0;
     const tagArr = tag.split(",");
     const tagArray = tagArr.map((item) =>
-      item.replace(/\./g, "").replace(/ /g, "")
+      item.replace(/\./g, "").replace(/ /g, "").toLowerCase()
     );
+    const lastTag = tagArray[tagArray.length - 1];
+    if (lastTag === "") {
+      setRecommendedTag([]);
+      return;
+    }
     const store = db.current
       .transaction("music", "readonly")
       .objectStore("music");
     const cursorReq = store.index("tag").openCursor(null, "nextunique");
     cursorReq.onsuccess = () => {
       const cursor = cursorReq.result;
-      if (cursor) {
-        const dbStr = cursor.key.replace(/\./g, "").replace(/ /g, "");
-        const lastTag = tagArray[tagArray.length - 1];
+      if (cursor && count < 5) {
+        const dbString = cursor.key;
+        const dbStr = dbString
+          .replace(/\./g, "")
+          .replace(/ /g, "")
+          .toLowerCase();
         if (
           dbStr.includes(lastTag) &&
-          dbStr !== tagArr[tagArr.length - 1] &&
+          dbString !== tagArr[tagArr.length - 1] &&
           lastTag !== ""
         ) {
-          setRecommendedTag((prev) => [...new Set([...prev, cursor.key])]);
+          tmpArr.push(cursor.key);
           count += 1;
         }
-        if (count < 5) {
-          cursor.continue();
-        }
+        cursor.continue();
+      } else {
+        setRecommendedTag(tmpArr);
       }
     };
   }, [tag]);
@@ -336,7 +343,7 @@ export default function AddMusic({
   }, [category, isArtistNone]);
 
   return (
-    <Modal setHandleFunction={setShowAddMusic}>
+    <Modal setHandleFunction={setShowAddMusic} setModalState={setModalState}>
       <div id={styles.bigContainer}>
         <div id={styles.titleWrapper}>
           <span
