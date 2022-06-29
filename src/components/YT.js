@@ -4,8 +4,14 @@ import { AppContext } from "../Home";
 import styles from "./YT.module.css";
 
 export default function YT() {
-  const { playingVideoId, setPlayer, videoOn, setIsPlaying, showYT } =
-    useContext(AppContext);
+  const {
+    playOtherInList,
+    playingVideoId,
+    setPlayer,
+    videoOn,
+    setIsPlaying,
+    showYT,
+  } = useContext(AppContext);
   const opts = {
     width: "384",
     height: "216",
@@ -26,7 +32,7 @@ export default function YT() {
       setIsPlaying(false);
     } else if (event.data === 0) {
       setIsPlaying(false);
-      console.log("end");
+      playOtherInList("next");
     }
   }
 

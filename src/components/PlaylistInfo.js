@@ -140,6 +140,7 @@ export default function PlaylistInfo() {
     const [reorderedItem] = copiedArr.splice(result.source.index, 1);
     copiedArr.splice(result.destination.index, 0, reorderedItem);
     setMusicInfo(copiedArr);
+    setIsUpdated(true);
     db.current
       .transaction("playlist", "readwrite")
       .objectStore("playlist")
@@ -224,7 +225,7 @@ export default function PlaylistInfo() {
                             <PlaylistMusic
                               info={item}
                               index={index}
-                              playlistInfo={playlistInfo}
+                              playlistId={playlistId}
                               selectedItem={selectedItem}
                               setSelectedItem={setSelectedItem}
                               setTotalDuration={setTotalDuration}

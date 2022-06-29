@@ -1,17 +1,20 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
+import PlayingMotion from "./PlayingMotion";
+
 import styles from "./PlaylistMusic.module.css";
 
 export default function PlaylistMusic({
   info,
   index,
-  playlistInfo,
+  playlistId,
   selectedItem,
   setSelectedItem,
   setTotalDuration,
 }) {
-  const { playPlaylist } = useContext(AppContext);
+  const { playPlaylist, playingMusicId, playingPlaylistId, isPlaying } =
+    useContext(AppContext);
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
@@ -52,14 +55,19 @@ export default function PlaylistMusic({
         </span>
       </div>
       <div id={styles.playDiv}>
-        <span
-          className="material-icons-round"
-          onClick={() => {
-            playPlaylist(String(info.id), String(playlistInfo.id));
-          }}
-        >
-          play_arrow
-        </span>
+        {playingPlaylistId === playlistId &&
+        playingMusicId === String(info.id) ? (
+          <PlayingMotion isPaused={!isPlaying} />
+        ) : (
+          <span
+            className="material-icons-round"
+            onClick={() => {
+              playPlaylist(String(info.id), playlistId);
+            }}
+          >
+            play_arrow
+          </span>
+        )}
       </div>
     </div>
   );

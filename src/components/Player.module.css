@@ -1,3 +1,7 @@
+#player {
+  background: palevioletred;
+  height: 300px;
+}
 #title {
   color: aliceblue;
   cursor: pointer;

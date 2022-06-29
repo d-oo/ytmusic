@@ -40,9 +40,9 @@
   top: -6px;
   left: 4px;
   font-size: 18px;
+  color: white;
 }
 #closeButton {
-  color: white;
   cursor: pointer;
 }
 #closeButton:hover {

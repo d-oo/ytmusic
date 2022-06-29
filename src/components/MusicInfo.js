@@ -152,7 +152,7 @@ export default function MusicInfo() {
                 <span
                   className="material-icons-round"
                   onClick={() => {
-                    playSingle(musicId, info.videoId, info.title);
+                    playSingle(musicId);
                   }}
                 >
                   play_arrow
@@ -160,6 +160,11 @@ export default function MusicInfo() {
               )}
               <div id={styles.addToDiv}>
                 <span
+                  id={
+                    showResult
+                      ? styles.addToButtonBlue
+                      : styles.addToButtonBlack
+                  }
                   className="material-icons-round"
                   onClick={() => {
                     if (showResult) {

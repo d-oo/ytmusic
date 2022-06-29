@@ -14,6 +14,10 @@ export default function Home() {
   const [playingVideoId, setPlayingVideoId] = useState("");
   const [playingPlaylist, setPlayingPlaylist] = useState([]);
   const [playingPlaylistId, setPlayingPlaylistId] = useState("");
+  const [loopMusic, setLoopMusic] = useState(false);
+  const [loopPlaylist, setLoopPlaylist] = useState(false);
+  const [shuffle, setShuffle] = useState(false);
+  const [shuffleList, setShuffleList] = useState([]);
   const [title, setTitle] = useState("");
   const [player, setPlayer] = useState({});
   const [videoOn, setVideoOn] = useState(false);
@@ -62,66 +66,114 @@ export default function Home() {
     };
   }, []);
 
-  const playSingle = useCallback((musicId, videoId, title) => {
+  useEffect(() => {
+    if (dbState === undefined || playingPlaylistId === "") {
+      return;
+    }
+    const arr = [];
+    const musicList =
+      playlistResult[
+        playlistResult.findIndex((i) => i.id === Number(playingPlaylistId))
+      ].musicId;
+    musicList.forEach((item, index) => {
+      const musicInfoReq = db.current
+        .transaction("music", "readonly")
+        .objectStore("music")
+        .get(item);
+      musicInfoReq.onsuccess = () => {
+        arr.push(musicInfoReq.result);
+        if (index === musicList.length - 1) {
+          setPlayingPlaylist(arr);
+          setVideoOn(true);
+        }
+      };
+    });
+  }, [dbState, playlistResult, playingPlaylistId]);
+
+  useEffect(() => {
+    if (dbState === undefined || playingMusicId === "") {
+      return;
+    }
+    const transaction = db.current
+      .transaction("music", "readwrite")
+      .objectStore("music");
+    const musicInfoReq = transaction.get(Number(playingMusicId));
+    musicInfoReq.onsuccess = () => {
+      const result = musicInfoReq.result;
+      setTitle(result.title);
+      setPlayingVideoId(result.videoId);
+      setVideoOn(true);
+      transaction.put({
+        title: result.title,
+        artist: result.artist,
+        videoId: result.videoId,
+        category: result.category,
+        tag: result.tag,
+        duration: result.duration,
+        playCount: result.playCount + 1,
+        recentPlay: Date.now(),
+        id: result.id,
+      });
+    };
+  }, [dbState, playingMusicId]);
+
+  const playSingle = useCallback((musicId) => {
     setPlayingMusicId(musicId);
-    setPlayingVideoId(videoId);
-    setTitle(title);
-    setVideoOn(true);
     setPlayingPlaylist([]);
     setPlayingPlaylistId("");
   }, []);
 
-  const playPlaylist = useCallback(
-    (musicId, listId) => {
-      const arr = [];
-      const musicList =
-        playlistResult[playlistResult.findIndex((i) => i.id === Number(listId))]
-          .musicId;
-      console.log(musicList);
-      musicList.forEach((item, index) => {
-        const musicInfoReq = db.current
-          .transaction("music", "readonly")
-          .objectStore("music")
-          .get(item);
-        musicInfoReq.onsuccess = () => {
-          arr.push(musicInfoReq.result);
-          if (index === musicList.length - 1) {
-            setPlayingPlaylistId(listId);
-            setPlayingPlaylist(arr);
-            setPlayingMusicId(musicId);
-            setPlayingVideoId(
-              arr[arr.findIndex((i) => i.id === Number(musicId))].videoId
-            );
-            setTitle(arr[arr.findIndex((i) => i.id === Number(musicId))].title);
-            setVideoOn(true);
-          }
-        };
-      });
-    },
-    [playlistResult]
-  );
+  const playPlaylist = useCallback((musicId, listId) => {
+    setPlayingPlaylistId(listId);
+    setPlayingMusicId(musicId);
+  }, []);
 
   const playOtherInList = useCallback(
     (target) => {
+      const currentIndex = playingPlaylist.findIndex(
+        (i) => i.id === Number(playingMusicId)
+      );
       switch (target) {
         case "next":
-          console.log("asdf");
-          console.log(playingPlaylist);
+          const nextIndex = currentIndex + 1;
+          if (playingPlaylist.length > nextIndex) {
+            setPlayingMusicId(String(playingPlaylist[nextIndex].id));
+          } else {
+            if (!loopPlaylist) {
+              setPlayingPlaylist([]);
+              setPlayingPlaylistId("");
+            }
+            console.log("when index exceed");
+          }
           break;
         default:
           console.log("etc");
       }
     },
-    [playingPlaylist]
+    [playingPlaylist, playingMusicId, loopPlaylist]
   );
 
+  const secondToTime = useCallback((totalSecond) => {
+    let h = Math.floor(totalSecond / 3600);
+    let m = Math.floor((totalSecond % 3600) / 60);
+    let s = totalSecond % 60;
+    return (
+      (h === 0 ? "" : String(h).padStart(2, "0") + ":") +
+      String(m).padStart(2, "0") +
+      ":" +
+      String(s).padStart(2, "0")
+    );
+  }, []);
+
   useEffect(() => console.log("dbState Changed"), [dbState]);
+
   return (
     <AppContext.Provider
       value={{
         playSingle,
         playPlaylist,
         playOtherInList,
+        secondToTime,
         playingMusicId,
         setPlayingMusicId,
         playingVideoId,
@@ -130,6 +182,14 @@ export default function Home() {
         setPlayingPlaylist,
         playingPlaylistId,
         setPlayingPlaylistId,
+        loopMusic,
+        setLoopMusic,
+        loopPlaylist,
+        setLoopPlaylist,
+        shuffle,
+        setShuffle,
+        shuffleList,
+        setShuffleList,
         player,
         setPlayer,
         showYT,

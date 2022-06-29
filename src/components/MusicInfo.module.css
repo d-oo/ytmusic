@@ -20,6 +20,7 @@
 }
 #musicInfo::-webkit-scrollbar {
   width: 5px;
+  display: block;
 }
 #musicInfo::-webkit-scrollbar-thumb {
   background: darkgray;
@@ -82,6 +83,12 @@
 }
 #addToDiv {
   height: 30px;
+}
+#addToButtonBlack {
+  color: black;
+}
+#addToButtonBlue {
+  color: blue;
 }
 .detail {
   position: relative;

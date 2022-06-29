@@ -118,6 +118,7 @@
 #addToButtonWhite {
   font-size: 50px;
   color: white;
+  cursor: pointer;
 }
 #addToButtonWhite:hover {
   font-size: 50px;
@@ -130,6 +131,7 @@
 #deleteButton {
   font-size: 50px;
   color: white;
+  cursor: pointer;
 }
 #deleteButton:hover {
   font-size: 50px;

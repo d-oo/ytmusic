@@ -1,11 +1,15 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
+import PlayingMotion from "./PlayingMotion";
 
 import styles from "./Playlists.module.css";
 
 export default function Playlists() {
   const {
+    playPlaylist,
+    playingPlaylistId,
+    isPlaying,
     dbState,
     playlistResult,
     setPlaylistResult,
@@ -22,14 +26,14 @@ export default function Playlists() {
     if (dbState === undefined || !isUpdated) {
       return;
     }
-    setPlaylistResult([]);
     db.current = dbState;
     const getAllReq = db.current
       .transaction("playlist", "readonly")
       .objectStore("playlist")
       .getAll();
     getAllReq.onsuccess = () => {
-      setPlaylistResult(getAllReq.result);
+      const reversedArr = [...getAllReq.result].reverse();
+      setPlaylistResult(reversedArr);
       setIsUpdated(false);
     };
   }, [dbState, isUpdated, setPlaylistResult, setIsUpdated]);
@@ -61,7 +65,7 @@ export default function Playlists() {
   };
 
   return (
-    <div>
+    <div id={styles.playlists}>
       {showAddNew ? null : (
         <span
           className="material-icons-round"
@@ -127,19 +131,42 @@ export default function Playlists() {
       ) : null}
       <div>
         {playlistResult.map((item, index) => (
-          <div key={index}>
-            {item.title} : {item.videoCount}
-            <span
-              className="material-icons-round"
-              id={styles.infoButton}
-              onClick={() => {
-                navigate(`/playlist/${item.id}`, {
-                  replace: location.pathname === `/playlist/${item.id}`,
-                });
-              }}
-            >
-              info_outline
-            </span>
+          <div className={styles.playlist} key={index}>
+            <div id={styles.listTitleDiv}>
+              <span
+                id={styles.listTitle}
+                onClick={() => {
+                  navigate(`/playlist/${item.id}`, {
+                    replace: location.pathname === `/playlist/${item.id}`,
+                  });
+                }}
+              >
+                {item.title}
+              </span>
+            </div>
+            <div>{item.videoCount}</div>
+            <div id={styles.playButtonDiv}>
+              {playingPlaylistId === String(item.id) ? (
+                <PlayingMotion isPaused={!isPlaying} />
+              ) : (
+                <span
+                  className="material-icons-round"
+                  id={
+                    item.videoCount === 0
+                      ? styles.playDisabled
+                      : styles.playButton
+                  }
+                  onClick={
+                    item.videoCount === 0
+                      ? null
+                      : () =>
+                          playPlaylist(String(item.musicId[0]), String(item.id))
+                  }
+                >
+                  play_arrow
+                </span>
+              )}
+            </div>
           </div>
         ))}
       </div>

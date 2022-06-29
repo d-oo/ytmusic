@@ -1,9 +1,37 @@
+#playlists {
+  background: thistle;
+  height: calc(100vh - 300px);
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#playlists::-webkit-scrollbar {
+  width: 5px;
+  display: block;
+}
+#playlists::-webkit-scrollbar-thumb {
+  background: darkgray;
+  border-radius: 10px;
+}
+#playlists::-webkit-scrollbar-thumb:hover {
+  background: gray;
+}
+#playlists::-webkit-scrollbar-thumb:active {
+  background: black;
+}
 #addButton {
   cursor: pointer;
   color: aliceblue;
 }
 #addButton:hover {
   color: black;
+}
+#newTitleInput {
+  width: 250px;
+  height: 25px;
+  border: 0;
+  border-radius: 5px;
+  margin-top: 20px;
 }
 #doneButton {
   cursor: pointer;
@@ -16,13 +44,29 @@
   cursor: pointer;
   color: aliceblue;
 }
-#infoButton {
+.playlist {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 36px;
+  padding-left: 30px;
+  padding-right: 20px;
+}
+#listTitleDiv {
+  width: 150px;
+  text-align: left;
+}
+#listTitle {
   cursor: pointer;
 }
-#newTitleInput {
-  width: 250px;
-  height: 25px;
-  border: 0;
-  border-radius: 5px;
-  margin-top: 20px;
+#playButtonDiv {
+  display: flex;
+  justify-content: center;
+  width: 50px;
+}
+#playButton {
+  cursor: pointer;
+}
+#playDisabled {
+  color: gray;
 }

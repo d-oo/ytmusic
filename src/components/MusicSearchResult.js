@@ -54,7 +54,7 @@ export default function MusicSearchResult({
         <span
           className="material-icons-round"
           onClick={() => {
-            playSingle(String(info.id), info.videoId, info.title);
+            playSingle(String(info.id));
           }}
         >
           play_arrow

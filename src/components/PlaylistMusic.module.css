@@ -27,9 +27,13 @@
   font-size: 14px;
 }
 #infoDiv {
+  display: flex;
+  justify-content: center;
   width: 90px;
 }
 #playDiv {
+  display: flex;
+  justify-content: center;
   width: 90px;
 }
 img {
