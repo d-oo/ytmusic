@@ -10,6 +10,10 @@ export default function Playlists() {
     playPlaylist,
     playingPlaylistId,
     isPlaying,
+    loopPlaylist,
+    setLoopPlaylist,
+    shuffle,
+    setShuffle,
     dbState,
     playlistResult,
     setPlaylistResult,
@@ -66,17 +70,8 @@ export default function Playlists() {
 
   return (
     <div id={styles.playlists}>
-      {showAddNew ? null : (
-        <span
-          className="material-icons-round"
-          id={styles.addButton}
-          onClick={() => setShowAddNew(true)}
-        >
-          add
-        </span>
-      )}
       {showAddNew ? (
-        <div>
+        <div id={styles.inputDiv}>
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -100,54 +95,90 @@ export default function Playlists() {
               autoComplete="off"
             />
           </form>
-          <span
-            className="material-icons-round"
-            id={
-              newTitle.trim() === "" ? styles.doneDisabled : styles.doneButton
-            }
-            onClick={
-              newTitle.trim() === ""
-                ? null
-                : () => {
-                    setShowAddNew(false);
-                    addData();
-                    setNewTitle("");
-                  }
-            }
-          >
-            done
-          </span>
-          <span
-            className="material-icons-round"
-            id={styles.cancelButton}
-            onClick={() => {
-              setShowAddNew(false);
-              setNewTitle("");
-            }}
-          >
-            cancel
-          </span>
+          <div id={styles.doneButtonDiv}>
+            <span
+              className="material-icons-round"
+              id={
+                newTitle.trim() === "" ? styles.doneDisabled : styles.doneButton
+              }
+              onClick={
+                newTitle.trim() === ""
+                  ? null
+                  : () => {
+                      setShowAddNew(false);
+                      addData();
+                      setNewTitle("");
+                    }
+              }
+            >
+              done
+            </span>
+          </div>
+          <div id={styles.cancelButtonDiv}>
+            <span
+              className="material-icons-round"
+              id={styles.cancelButton}
+              onClick={() => {
+                setShowAddNew(false);
+                setNewTitle("");
+              }}
+            >
+              close
+            </span>
+          </div>
         </div>
-      ) : null}
-      <div>
+      ) : (
+        <div id={styles.addDiv} onClick={() => setShowAddNew(true)}>
+          <span className="material-icons-round">add</span>새 재생목록 추가
+        </div>
+      )}
+      <div id={styles.playlistResult}>
         {playlistResult.map((item, index) => (
-          <div className={styles.playlist} key={index}>
-            <div id={styles.listTitleDiv}>
-              <span
+          <div
+            className={styles.playlist}
+            id={
+              location.pathname === `/playlist/${item.id}`
+                ? styles.playing
+                : null
+            }
+            key={index}
+          >
+            <div
+              id={styles.listTitleDiv}
+              onClick={() => {
+                navigate(`/playlist/${item.id}`, {
+                  replace: location.pathname === `/playlist/${item.id}`,
+                });
+              }}
+            >
+              {playingPlaylistId === String(item.id) ? (
+                <div id={styles.playingMotion}>
+                  <PlayingMotion isPaused={!isPlaying} />
+                </div>
+              ) : null}
+              <div
                 id={styles.listTitle}
-                onClick={() => {
-                  navigate(`/playlist/${item.id}`, {
-                    replace: location.pathname === `/playlist/${item.id}`,
-                  });
-                }}
+                className={
+                  playingPlaylistId === String(item.id)
+                    ? styles.titleShort
+                    : styles.titleLong
+                }
               >
                 {item.title}
-              </span>
+              </div>
             </div>
-            <div>{item.videoCount}</div>
+            <div id={styles.countDiv}>
+              <div>{item.videoCount}</div>곡
+            </div>
             <div id={styles.playButtonDiv}>
               {playingPlaylistId === String(item.id) ? (
-                <PlayingMotion isPaused={!isPlaying} />
+                <span
+                  className="material-icons-round"
+                  id={loopPlaylist ? styles.repeatActive : styles.repeatButton}
+                  onClick={() => setLoopPlaylist((prev) => !prev)}
+                >
+                  repeat
+                </span>
               ) : (
                 <span
                   className="material-icons-round"
@@ -166,6 +197,15 @@ export default function Playlists() {
                   play_arrow
                 </span>
               )}
+            </div>
+            <div id={styles.shuffleButtonDiv}>
+              <span
+                id={shuffle ? styles.shuffleActive : styles.shuffleButton}
+                className="material-icons-round"
+                onClick={() => setShuffle((prev) => !prev)}
+              >
+                shuffle
+              </span>
             </div>
           </div>
         ))}

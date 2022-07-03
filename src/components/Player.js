@@ -5,9 +5,13 @@ import styles from "./Player.module.css";
 
 export default function Player() {
   const {
-    playOtherInList,
+    playNext,
+    playPrevious,
     playingMusicId,
     playingPlaylist,
+    loopMusic,
+    setLoopMusic,
+    loopPlaylist,
     player,
     videoOn,
     title,
@@ -40,16 +44,31 @@ export default function Player() {
             {title}
           </div>
           <button
-            onClick={() => playOtherInList("next")}
+            onClick={() => playPrevious()}
             disabled={
+              !loopPlaylist &&
+              playingPlaylist.findIndex(
+                (i) => i.id === Number(playingMusicId)
+              ) < 1
+            }
+          >
+            previous
+          </button>
+          <button
+            onClick={() => playNext()}
+            disabled={
+              !loopPlaylist &&
               playingPlaylist.findIndex(
                 (i) => i.id === Number(playingMusicId)
               ) +
                 1 ===
-              playingPlaylist.length
+                playingPlaylist.length
             }
           >
             next
+          </button>
+          <button onClick={() => setLoopMusic((prev) => !prev)}>
+            {loopMusic ? "it's music loop" : "it's not music loop"}
           </button>
         </div>
       ) : null}

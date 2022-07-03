@@ -121,37 +121,51 @@ export default function Home() {
     setPlayingMusicId(musicId);
     setPlayingPlaylist([]);
     setPlayingPlaylistId("");
+    setLoopPlaylist(false);
+    setLoopMusic(false);
   }, []);
 
-  const playPlaylist = useCallback((musicId, listId) => {
-    setPlayingPlaylistId(listId);
-    setPlayingMusicId(musicId);
-  }, []);
-
-  const playOtherInList = useCallback(
-    (target) => {
-      const currentIndex = playingPlaylist.findIndex(
-        (i) => i.id === Number(playingMusicId)
-      );
-      switch (target) {
-        case "next":
-          const nextIndex = currentIndex + 1;
-          if (playingPlaylist.length > nextIndex) {
-            setPlayingMusicId(String(playingPlaylist[nextIndex].id));
-          } else {
-            if (!loopPlaylist) {
-              setPlayingPlaylist([]);
-              setPlayingPlaylistId("");
-            }
-            console.log("when index exceed");
-          }
-          break;
-        default:
-          console.log("etc");
+  const playPlaylist = useCallback(
+    (musicId, listId) => {
+      if (playingPlaylistId !== listId) {
+        setLoopPlaylist(false);
       }
+      setPlayingPlaylistId(listId);
+      setPlayingMusicId(musicId);
+      setLoopMusic(false);
     },
-    [playingPlaylist, playingMusicId, loopPlaylist]
+    [playingPlaylistId]
   );
+
+  const playNext = useCallback(() => {
+    setLoopMusic(false);
+    const currentIndex = playingPlaylist.findIndex(
+      (i) => i.id === Number(playingMusicId)
+    );
+    if (currentIndex < playingPlaylist.length - 1) {
+      setPlayingMusicId(String(playingPlaylist[currentIndex + 1].id));
+    } else {
+      if (loopPlaylist) {
+        setPlayingMusicId(String(playingPlaylist[0].id));
+      } else {
+        setPlayingPlaylist([]);
+        setPlayingPlaylistId("");
+      }
+      console.log("when index exceed");
+    }
+  }, [playingPlaylist, playingMusicId, loopPlaylist]);
+
+  const playPrevious = useCallback(() => {
+    setLoopMusic(false);
+    const currentIndex = playingPlaylist.findIndex(
+      (i) => i.id === Number(playingMusicId)
+    );
+    if (currentIndex > 0) {
+      setPlayingMusicId(String(playingPlaylist[currentIndex - 1].id));
+    } else if (loopPlaylist) {
+      setPlayingMusicId(String(playingPlaylist[playingPlaylist.length - 1].id));
+    }
+  }, [playingPlaylist, playingMusicId, loopPlaylist]);
 
   const secondToTime = useCallback((totalSecond) => {
     let h = Math.floor(totalSecond / 3600);
@@ -172,7 +186,8 @@ export default function Home() {
       value={{
         playSingle,
         playPlaylist,
-        playOtherInList,
+        playNext,
+        playPrevious,
         secondToTime,
         playingMusicId,
         setPlayingMusicId,

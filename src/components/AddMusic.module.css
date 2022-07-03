@@ -1,14 +1,15 @@
 #bigContainer {
   position: fixed;
-  top: 0%;
+  top: 6px;
   transition: all 0.5s;
   width: 900px;
-  height: 100vh;
+  height: calc(100vh - 12px);
   box-sizing: border-box;
   padding: 16px;
   background: cornflowerblue;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
+  border-radius: 36px 6px 6px 6px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -37,7 +38,7 @@
 #titleWrapper {
   display: flex;
   position: relative;
-  top: -6px;
+  top: 4px;
   left: 4px;
   font-size: 18px;
   color: white;
@@ -110,6 +111,7 @@
   margin-top: 30px;
 }
 .textLabel {
+  color: white;
   text-align: left;
   width: 72px;
 }
@@ -118,6 +120,7 @@
   height: 30px;
   border: 0;
   border-radius: 5px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
 }
 .radioContainer {
   display: flex;
@@ -137,6 +140,7 @@
   align-items: center;
   justify-content: center;
   font-size: 15px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
 }
 .radio label:hover {
   background: gainsboro;
@@ -184,4 +188,5 @@
   align-items: center;
   background: lavenderblush;
   color: black;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
 }

@@ -5,8 +5,10 @@ import styles from "./YT.module.css";
 
 export default function YT() {
   const {
-    playOtherInList,
+    playNext,
+    loopMusic,
     playingVideoId,
+    player,
     setPlayer,
     videoOn,
     setIsPlaying,
@@ -24,6 +26,7 @@ export default function YT() {
   };
   function onPlayerReady(event) {
     setPlayer(event.target);
+    event.target.setVolume(50);
   }
   function onPlayerStateChange(event) {
     if (event.data === 1) {
@@ -32,7 +35,11 @@ export default function YT() {
       setIsPlaying(false);
     } else if (event.data === 0) {
       setIsPlaying(false);
-      playOtherInList("next");
+      if (loopMusic) {
+        player.playVideo();
+      } else {
+        playNext();
+      }
     }
   }
 

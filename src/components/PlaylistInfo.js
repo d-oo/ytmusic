@@ -10,10 +10,10 @@ import styles from "./PlaylistInfo.module.css";
 
 export default function PlaylistInfo() {
   const {
+    secondToTime,
     playingPlaylistId,
     isPlaying,
     playlistResult,
-    isUpdated,
     setIsUpdated,
     dbState,
   } = useContext(AppContext);
@@ -29,21 +29,20 @@ export default function PlaylistInfo() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setInfoAvailable(false);
-    if (dbState === undefined || playlistId === "") {
+    if (
+      dbState === undefined ||
+      playlistId === "" ||
+      playlistResult.length === 0
+    ) {
       return;
     }
     db.current = dbState;
-    const playlistInfoReq = db.current
-      .transaction("playlist", "readonly")
-      .objectStore("playlist")
-      .get(Number(playlistId));
-    playlistInfoReq.onsuccess = () => {
-      setPlaylistInfo(playlistInfoReq.result);
-      setIsUpdated(false);
-      setInfoAvailable(true);
-    };
-  }, [dbState, playlistId, isUpdated, setIsUpdated]);
+    setPlaylistInfo(
+      playlistResult[
+        playlistResult.findIndex((i) => i.id === Number(playlistId))
+      ]
+    );
+  }, [dbState, playlistId, playlistResult]);
 
   useEffect(() => {
     setSelectedItem([]);
@@ -71,6 +70,7 @@ export default function PlaylistInfo() {
     }
     if (playlistInfo.musicId.length === 0) {
       setMusicInfo([]);
+      setInfoAvailable(true);
     }
     const arr = [];
     playlistInfo.musicId.forEach((item, index) => {
@@ -82,6 +82,7 @@ export default function PlaylistInfo() {
         arr.push(musicInfoReq.result);
         if (index === playlistInfo.musicId.length - 1) {
           setMusicInfo(arr);
+          setInfoAvailable(true);
         }
       };
     });
@@ -103,10 +104,6 @@ export default function PlaylistInfo() {
     const selectedArr = [
       ...new Set([...playlistInfo.musicId, ...selectedItem]),
     ];
-
-    console.log(totalDuration);
-    console.log(duplicatedDuration);
-
     const updateReq = db.current
       .transaction("playlist", "readwrite")
       .objectStore("playlist")
@@ -140,8 +137,7 @@ export default function PlaylistInfo() {
     const [reorderedItem] = copiedArr.splice(result.source.index, 1);
     copiedArr.splice(result.destination.index, 0, reorderedItem);
     setMusicInfo(copiedArr);
-    setIsUpdated(true);
-    db.current
+    const putReq = db.current
       .transaction("playlist", "readwrite")
       .objectStore("playlist")
       .put({
@@ -151,6 +147,9 @@ export default function PlaylistInfo() {
         videoCount: playlistInfo.videoCount,
         id: Number(playlistId),
       });
+    putReq.onsuccess = () => {
+      setIsUpdated(true);
+    };
   };
 
   return (
@@ -167,11 +166,17 @@ export default function PlaylistInfo() {
       </div>
       {infoAvailable ? (
         <div>
-          <div id={styles.playlistTitle}>
-            {playlistInfo.title}&nbsp;&nbsp;&nbsp;
-            {playlistId === playingPlaylistId ? (
-              <PlayingMotion isPaused={!isPlaying} />
-            ) : null}
+          <div id={styles.infoWrapper}>
+            <div id={styles.playlistTitle}>
+              {playlistInfo.title}
+              {playlistId === playingPlaylistId ? (
+                <div id={styles.playingMotion}>
+                  <PlayingMotion isPaused={!isPlaying} />
+                </div>
+              ) : null}
+            </div>
+            {playlistInfo.videoCount}곡 /{" "}
+            {secondToTime(playlistInfo.totalDuration)}
           </div>
           <div id={styles.playlistResults}>
             <div id={styles.flexContainer}>

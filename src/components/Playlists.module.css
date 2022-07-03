@@ -1,9 +1,11 @@
 #playlists {
   background: thistle;
-  height: calc(100vh - 300px);
+  height: calc(100vh - 288px);
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;
+  border-radius: 6px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.4);
 }
 #playlists::-webkit-scrollbar {
   width: 5px;
@@ -19,19 +21,43 @@
 #playlists::-webkit-scrollbar-thumb:active {
   background: black;
 }
-#addButton {
+#addDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 175px;
+  height: 28px;
+  border-radius: 10px;
+  margin-top: 18px;
+  margin-left: 60px;
+  margin-bottom: 6px;
   cursor: pointer;
-  color: aliceblue;
 }
-#addButton:hover {
-  color: black;
+#addDiv:hover {
+  color: white;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+}
+#inputDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  margin-bottom: 6px;
+  margin-left: 18px;
+  margin-right: 20px;
+  height: 28px;
 }
 #newTitleInput {
-  width: 250px;
+  width: 189px;
   height: 25px;
   border: 0;
   border-radius: 5px;
-  margin-top: 20px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+}
+#doneButtonDiv {
+  display: flex;
+  justify-content: center;
+  width: 30px;
 }
 #doneButton {
   cursor: pointer;
@@ -39,6 +65,11 @@
 }
 #doneDisabled {
   color: gray;
+}
+#cancelButtonDiv {
+  display: flex;
+  justify-content: center;
+  width: 30px;
 }
 #cancelButton {
   cursor: pointer;
@@ -49,24 +80,82 @@
   justify-content: space-between;
   align-items: center;
   height: 36px;
-  padding-left: 30px;
-  padding-right: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-bottom: 1px solid darkgray;
+  font-size: 14px;
+}
+#playing {
+  background: darkgray;
+  margin-left: 12px;
+  padding-left: 8px;
+  margin-right: 12px;
+  padding-right: 8px;
+  border-radius: 8px;
 }
 #listTitleDiv {
-  width: 150px;
-  text-align: left;
+  display: flex;
+  align-items: center;
+  width: 147px;
+  cursor: pointer;
 }
 #listTitle {
-  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.titleShort {
+  width: 120px;
+}
+.titleLong {
+  width: 147px;
+}
+#playingMotion {
+  width: 27px;
+}
+#countDiv {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 40px;
 }
 #playButtonDiv {
   display: flex;
   justify-content: center;
-  width: 50px;
+  width: 30px;
 }
 #playButton {
   cursor: pointer;
 }
 #playDisabled {
   color: gray;
+}
+#shuffleButtonDiv {
+  display: flex;
+  justify-content: center;
+  width: 30px;
+}
+#repeatButton {
+  cursor: pointer;
+}
+#repeatButton:hover {
+  color: blue;
+}
+#repeatActive {
+  cursor: pointer;
+  color: blue;
+}
+#shuffleButton {
+  cursor: pointer;
+}
+#shuffleButton:hover {
+  color: blue;
+}
+#shuffleActive {
+  cursor: pointer;
+  color: blue;
+}
+#playlistResult {
+  margin-bottom: 20px;
 }

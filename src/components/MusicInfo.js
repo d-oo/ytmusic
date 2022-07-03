@@ -134,13 +134,19 @@ export default function MusicInfo() {
       {infoAvailable ? (
         <div id={styles.info}>
           {musicId === "" ? null : (
-            <img
-              id={showYT ? styles.imgHidden : null}
-              alt={`musicInfo${musicId}`}
-              src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
-              width="384"
-              height="216"
-            />
+            <a
+              href={`https://www.youtube.com/watch?v=${info.videoId}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                id={showYT ? styles.imgHidden : styles.thumbnail}
+                alt={`musicInfo${musicId}`}
+                src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
+                width="384"
+                height="216"
+              />
+            </a>
           )}
           <div id={styles.gridContainer}>
             <div id={styles.title}>{info.title}</div>
@@ -221,13 +227,17 @@ export default function MusicInfo() {
               </span>
             </div>
           </div>
-          <div id={styles.category}>
+          <div
+            id={info.category === "Song" ? styles.song : styles.inst}
+            className={styles.category}
+          >
             {info.category === "Song" ? "가요" : "기악"}
           </div>
           <p className={styles.detail}>비디오 ID : {info.videoId}</p>
           <p className={styles.detail}>
             음악 길이 : {duration.m}분 {duration.s}초
           </p>
+          <p className={styles.detail}>재생 횟수 : {info.playCount}회</p>
           <p id={styles.tagContainer} className={styles.detail}>
             태그 :
             {info.tag.map((item, index) => (

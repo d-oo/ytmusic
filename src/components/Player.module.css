@@ -1,8 +1,10 @@
 #player {
-  background: palevioletred;
-  height: 300px;
+  background: lightsteelblue;
+  height: 270px;
+  border-radius: 6px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.4);
 }
 #title {
-  color: aliceblue;
+  color: darkblue;
   cursor: pointer;
 }
