@@ -8,3 +8,33 @@
   color: darkblue;
   cursor: pointer;
 }
+#buttons {
+  display: flex;
+  margin-left: 32px;
+  margin-right: 32px;
+  justify-content: space-between;
+}
+#buttons span {
+  font-size: 40px;
+  cursor: pointer;
+}
+#loopButton:hover {
+  color: blue;
+}
+#loopActive {
+  color: blue;
+}
+#prevButton:hover {
+  color: blue;
+}
+#prevDisabled {
+  color: gray;
+  cursor: default !important;
+}
+#nextButton:hover {
+  color: blue;
+}
+#nextDisabled {
+  color: gray;
+  cursor: default !important;
+}

@@ -5,7 +5,7 @@
   height: calc(100vh - 12px);
   box-sizing: border-box;
   background: lavender;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   text-align: center;
   border-radius: 6px;
@@ -19,20 +19,6 @@
 }
 #imgHidden {
   opacity: 0;
-}
-#musicInfo::-webkit-scrollbar {
-  width: 5px;
-  display: block;
-}
-#musicInfo::-webkit-scrollbar-thumb {
-  background: darkgray;
-  border-radius: 10px;
-}
-#musicInfo::-webkit-scrollbar-thumb:hover {
-  background: gray;
-}
-#musicInfo::-webkit-scrollbar-thumb:active {
-  background: black;
 }
 #pageTitle {
   display: flex;

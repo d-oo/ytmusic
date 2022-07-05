@@ -8,6 +8,7 @@ import styles from "./Playlists.module.css";
 export default function Playlists() {
   const {
     playPlaylist,
+    playShuffle,
     playingPlaylistId,
     isPlaying,
     loopPlaylist,
@@ -200,9 +201,21 @@ export default function Playlists() {
             </div>
             <div id={styles.shuffleButtonDiv}>
               <span
-                id={shuffle ? styles.shuffleActive : styles.shuffleButton}
+                id={
+                  item.videoCount === 0
+                    ? styles.shuffleDisabled
+                    : shuffle && playingPlaylistId === String(item.id)
+                    ? styles.shuffleActive
+                    : styles.shuffleButton
+                }
                 className="material-icons-round"
-                onClick={() => setShuffle((prev) => !prev)}
+                onClick={
+                  item.videoCount === 0
+                    ? null
+                    : playingPlaylistId === String(item.id)
+                    ? () => setShuffle((prev) => !prev)
+                    : () => playShuffle(String(item.id), item.musicId)
+                }
               >
                 shuffle
               </span>

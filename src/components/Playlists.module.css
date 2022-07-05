@@ -156,6 +156,9 @@
   cursor: pointer;
   color: blue;
 }
+#shuffleDisabled {
+  color: gray;
+}
 #playlistResult {
   margin-bottom: 20px;
 }

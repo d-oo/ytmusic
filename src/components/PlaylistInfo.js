@@ -258,7 +258,7 @@ export default function PlaylistInfo() {
               console.log("delete");
             }}
           >
-            delete
+            playlist_remove
           </span>
           <div id={styles.addToDiv}>
             <span

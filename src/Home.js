@@ -101,6 +101,7 @@ export default function Home() {
     musicInfoReq.onsuccess = () => {
       const result = musicInfoReq.result;
       setTitle(result.title);
+      //setthumbnail, artist
       setPlayingVideoId(result.videoId);
       setVideoOn(true);
       transaction.put({
@@ -117,12 +118,32 @@ export default function Home() {
     };
   }, [dbState, playingMusicId]);
 
+  useEffect(() => {
+    if (shuffle) {
+      const array = [...playingPlaylist];
+      let len = array.length,
+        t,
+        i;
+      while (len) {
+        i = Math.floor(Math.random() * len--);
+        t = array[len];
+        array[len] = array[i];
+        array[i] = t;
+      }
+      setShuffleList(array);
+    } else {
+      setShuffleList([]);
+    }
+  }, [shuffle, playingPlaylist]);
+
   const playSingle = useCallback((musicId) => {
     setPlayingMusicId(musicId);
     setPlayingPlaylist([]);
     setPlayingPlaylistId("");
     setLoopPlaylist(false);
     setLoopMusic(false);
+    setShuffle(false);
+    setShuffleList([]);
   }, []);
 
   const playPlaylist = useCallback(
@@ -133,39 +154,56 @@ export default function Home() {
       setPlayingPlaylistId(listId);
       setPlayingMusicId(musicId);
       setLoopMusic(false);
+      setShuffle(false);
+      setShuffleList([]);
     },
     [playingPlaylistId]
   );
 
+  const playShuffle = useCallback((listId, musicArr) => {
+    setLoopPlaylist(false);
+    setPlayingPlaylistId(listId);
+    setShuffle(true);
+    const randomMusic = musicArr[Math.floor(Math.random() * musicArr.length)];
+    setPlayingMusicId(String(randomMusic));
+  }, []);
+
   const playNext = useCallback(() => {
+    let arr;
     setLoopMusic(false);
-    const currentIndex = playingPlaylist.findIndex(
-      (i) => i.id === Number(playingMusicId)
-    );
-    if (currentIndex < playingPlaylist.length - 1) {
-      setPlayingMusicId(String(playingPlaylist[currentIndex + 1].id));
+    if (shuffle) {
+      arr = shuffleList;
     } else {
-      if (loopPlaylist) {
-        setPlayingMusicId(String(playingPlaylist[0].id));
-      } else {
-        setPlayingPlaylist([]);
-        setPlayingPlaylistId("");
-      }
-      console.log("when index exceed");
+      arr = playingPlaylist;
     }
-  }, [playingPlaylist, playingMusicId, loopPlaylist]);
+    const currentIndex = arr.findIndex((i) => i.id === Number(playingMusicId));
+    if (currentIndex < arr.length - 1) {
+      setPlayingMusicId(String(arr[currentIndex + 1].id));
+    } else if (loopPlaylist || shuffle) {
+      setPlayingMusicId(String(arr[0].id));
+    } else {
+      setPlayingPlaylist([]);
+      setPlayingPlaylistId("");
+      setShuffle(false);
+      setShuffleList([]);
+    }
+  }, [playingPlaylist, playingMusicId, loopPlaylist, shuffle, shuffleList]);
 
   const playPrevious = useCallback(() => {
+    let arr;
     setLoopMusic(false);
-    const currentIndex = playingPlaylist.findIndex(
-      (i) => i.id === Number(playingMusicId)
-    );
-    if (currentIndex > 0) {
-      setPlayingMusicId(String(playingPlaylist[currentIndex - 1].id));
-    } else if (loopPlaylist) {
-      setPlayingMusicId(String(playingPlaylist[playingPlaylist.length - 1].id));
+    if (shuffle) {
+      arr = shuffleList;
+    } else {
+      arr = playingPlaylist;
     }
-  }, [playingPlaylist, playingMusicId, loopPlaylist]);
+    const currentIndex = arr.findIndex((i) => i.id === Number(playingMusicId));
+    if (currentIndex > 0) {
+      setPlayingMusicId(String(arr[currentIndex - 1].id));
+    } else if (loopPlaylist || shuffle) {
+      setPlayingMusicId(String(arr[arr.length - 1].id));
+    }
+  }, [playingPlaylist, playingMusicId, loopPlaylist, shuffle, shuffleList]);
 
   const secondToTime = useCallback((totalSecond) => {
     let h = Math.floor(totalSecond / 3600);
@@ -186,6 +224,7 @@ export default function Home() {
       value={{
         playSingle,
         playPlaylist,
+        playShuffle,
         playNext,
         playPrevious,
         secondToTime,

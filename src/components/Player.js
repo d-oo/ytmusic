@@ -12,6 +12,7 @@ export default function Player() {
     loopMusic,
     setLoopMusic,
     loopPlaylist,
+    shuffle,
     player,
     videoOn,
     title,
@@ -32,7 +33,6 @@ export default function Player() {
     <div id={styles.player}>
       {videoOn ? (
         <div>
-          <button onClick={playOrPause}>{isPlaying ? "Pause" : "Play"}</button>
           <div
             id={styles.title}
             onClick={() =>
@@ -43,33 +43,69 @@ export default function Player() {
           >
             {title}
           </div>
-          <button
-            onClick={() => playPrevious()}
-            disabled={
-              !loopPlaylist &&
-              playingPlaylist.findIndex(
-                (i) => i.id === Number(playingMusicId)
-              ) < 1
-            }
-          >
-            previous
-          </button>
-          <button
-            onClick={() => playNext()}
-            disabled={
-              !loopPlaylist &&
-              playingPlaylist.findIndex(
-                (i) => i.id === Number(playingMusicId)
-              ) +
-                1 ===
-                playingPlaylist.length
-            }
-          >
-            next
-          </button>
-          <button onClick={() => setLoopMusic((prev) => !prev)}>
-            {loopMusic ? "it's music loop" : "it's not music loop"}
-          </button>
+          <div id={styles.buttons}>
+            <span
+              className="material-icons-round"
+              id={loopMusic ? styles.loopActive : styles.loopButton}
+              onClick={() => setLoopMusic((prev) => !prev)}
+            >
+              loop
+            </span>
+            <span
+              className="material-icons-round"
+              id={
+                !loopPlaylist &&
+                !shuffle &&
+                playingPlaylist.findIndex(
+                  (i) => i.id === Number(playingMusicId)
+                ) < 1
+                  ? styles.prevDisabled
+                  : styles.prevButton
+              }
+              onClick={
+                !loopPlaylist &&
+                !shuffle &&
+                playingPlaylist.findIndex(
+                  (i) => i.id === Number(playingMusicId)
+                ) < 1
+                  ? null
+                  : () => playPrevious()
+              }
+            >
+              skip_previous
+            </span>
+            <span className="material-icons-round" onClick={playOrPause}>
+              {isPlaying ? "pause" : "play_arrow"}
+            </span>
+            <span
+              className="material-icons-round"
+              id={
+                !loopPlaylist &&
+                !shuffle &&
+                playingPlaylist.findIndex(
+                  (i) => i.id === Number(playingMusicId)
+                ) +
+                  1 ===
+                  playingPlaylist.length
+                  ? styles.nextDisabled
+                  : styles.nextButton
+              }
+              onClick={
+                !loopPlaylist &&
+                !shuffle &&
+                playingPlaylist.findIndex(
+                  (i) => i.id === Number(playingMusicId)
+                ) +
+                  1 ===
+                  playingPlaylist.length
+                  ? null
+                  : () => playNext()
+              }
+            >
+              skip_next
+            </span>
+            <span className="material-icons-round">queue_music</span>
+          </div>
         </div>
       ) : null}
     </div>
