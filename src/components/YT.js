@@ -7,7 +7,7 @@ export default function YT() {
   const {
     playNext,
     loopMusic,
-    playingVideoId,
+    playingMusicInfo,
     player,
     setPlayer,
     videoOn,
@@ -47,7 +47,7 @@ export default function YT() {
     <div className={showYT ? null : styles.hidden} id={styles.yt}>
       {videoOn ? (
         <YouTube
-          videoId={playingVideoId}
+          videoId={playingMusicInfo.videoId}
           opts={opts}
           onReady={onPlayerReady}
           onStateChange={onPlayerStateChange}

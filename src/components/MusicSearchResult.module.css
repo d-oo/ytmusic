@@ -37,7 +37,7 @@
   justify-content: center;
   width: 90px;
 }
-img {
+#thumbnail {
   border-radius: 10px;
   cursor: pointer;
 }

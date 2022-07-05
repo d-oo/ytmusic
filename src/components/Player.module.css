@@ -4,9 +4,38 @@
   border-radius: 6px;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.4);
 }
+#titleWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
 #title {
   color: darkblue;
   cursor: pointer;
+}
+#artist {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+#thumbnail {
+  height: 124px;
+}
+#img {
+  position: relative;
+  top: 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+}
+#emptyThumbnail {
+  position: relative;
+  top: 12px;
+  margin-left: 54px;
+  width: 192px;
+  height: 108px;
+  background: lightgray;
+  border-radius: 10px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
 }
 #buttons {
   display: flex;
@@ -24,6 +53,10 @@
 #loopActive {
   color: blue;
 }
+#loopDisabled {
+  color: gray;
+  cursor: default !important;
+}
 #prevButton:hover {
   color: blue;
 }
@@ -35,6 +68,20 @@
   color: blue;
 }
 #nextDisabled {
+  color: gray;
+  cursor: default !important;
+}
+#playPauseButton:hover {
+  color: blue;
+}
+#playDisabled {
+  color: gray;
+  cursor: default !important;
+}
+#playlistButton:hover {
+  color: blue;
+}
+#playlistDisabled {
   color: gray;
   cursor: default !important;
 }

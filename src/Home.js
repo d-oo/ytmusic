@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, createContext } from "react";
 import { Outlet } from "react-router-dom";
 import Player from "./components/Player";
 import YT from "./components/YT";
+import Alert from "./components/Alert";
 import Playlists from "./components/Playlists";
 
 import styles from "./Home.module.css";
@@ -11,14 +12,13 @@ export const AppContext = createContext();
 export default function Home() {
   //player
   const [playingMusicId, setPlayingMusicId] = useState("");
-  const [playingVideoId, setPlayingVideoId] = useState("");
+  const [playingMusicInfo, setPlayingMusicInfo] = useState("");
   const [playingPlaylist, setPlayingPlaylist] = useState([]);
   const [playingPlaylistId, setPlayingPlaylistId] = useState("");
   const [loopMusic, setLoopMusic] = useState(false);
   const [loopPlaylist, setLoopPlaylist] = useState(false);
   const [shuffle, setShuffle] = useState(false);
   const [shuffleList, setShuffleList] = useState([]);
-  const [title, setTitle] = useState("");
   const [player, setPlayer] = useState({});
   const [videoOn, setVideoOn] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -84,7 +84,6 @@ export default function Home() {
         arr.push(musicInfoReq.result);
         if (index === musicList.length - 1) {
           setPlayingPlaylist(arr);
-          setVideoOn(true);
         }
       };
     });
@@ -100,9 +99,7 @@ export default function Home() {
     const musicInfoReq = transaction.get(Number(playingMusicId));
     musicInfoReq.onsuccess = () => {
       const result = musicInfoReq.result;
-      setTitle(result.title);
-      //setthumbnail, artist
-      setPlayingVideoId(result.videoId);
+      setPlayingMusicInfo(result);
       setVideoOn(true);
       transaction.put({
         title: result.title,
@@ -230,8 +227,8 @@ export default function Home() {
         secondToTime,
         playingMusicId,
         setPlayingMusicId,
-        playingVideoId,
-        setPlayingVideoId,
+        playingMusicInfo,
+        setPlayingMusicInfo,
         playingPlaylist,
         setPlayingPlaylist,
         playingPlaylistId,
@@ -250,8 +247,6 @@ export default function Home() {
         setShowYT,
         videoOn,
         setVideoOn,
-        title,
-        setTitle,
         isPlaying,
         setIsPlaying,
         playlistResult,
@@ -276,7 +271,9 @@ export default function Home() {
           <Playlists />
         </div>
         <div id={styles.mainContent}>
+          <Alert message="addPlaylistF" />
           <YT />
+
           <Outlet />
         </div>
       </div>

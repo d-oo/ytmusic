@@ -24,6 +24,7 @@ export default function MusicSearchResult({
       className={checked ? styles.checked : styles.notChecked}
     >
       <img
+        id={styles.thumbnail}
         alt={"musicSearchResult" + index}
         src={`https://i.ytimg.com/vi/${info.videoId}/mqdefault.jpg`}
         width="112"
