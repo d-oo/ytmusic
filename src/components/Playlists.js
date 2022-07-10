@@ -7,6 +7,7 @@ import styles from "./Playlists.module.css";
 
 export default function Playlists() {
   const {
+    setHandleScroll,
     playPlaylist,
     playShuffle,
     playingPlaylistId,
@@ -24,8 +25,20 @@ export default function Playlists() {
   const [newTitle, setNewTitle] = useState("");
   const [showAddNew, setShowAddNew] = useState(false);
   const db = useRef();
+  const itemRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    console.log("a");
+    if (itemRef.current === undefined) {
+      return;
+    }
+    console.log("b");
+    setHandleScroll(
+      () => () => itemRef.current.scrollIntoView({ behavior: "smooth" })
+    );
+  }, [setHandleScroll, playingPlaylistId]);
 
   useEffect(() => {
     if (dbState === undefined || !isUpdated) {
@@ -143,6 +156,7 @@ export default function Playlists() {
                 : null
             }
             key={index}
+            ref={playingPlaylistId === String(item.id) ? itemRef : null}
           >
             <div
               id={styles.listTitleDiv}

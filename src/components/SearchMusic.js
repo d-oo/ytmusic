@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { useLocation } from "react-router-dom";
 import { AppContext } from "../Home";
 import AddMusic from "./AddMusic";
 import MusicSearchResult from "./MusicSearchResult";
@@ -14,14 +15,22 @@ export default function SearchMusic() {
   const [category, setCategory] = useState("Song");
   const [sortBy, setSortBy] = useState("recentAdd");
   const [searchInput, setSearchInput] = useState("");
+  const location = useLocation();
   const db = useRef();
   const resultRef = useRef();
-  const { dbState, isUpdated, setIsUpdated, playlistResult } =
-    useContext(AppContext);
+  const scrollRef = useRef();
+  const {
+    searchScroll,
+    setSearchScroll,
+    dbState,
+    isUpdated,
+    setIsUpdated,
+    playlistResult,
+  } = useContext(AppContext);
 
   useEffect(() => {
     console.log("SearchMusicEffect");
-    if (dbState === undefined || !isUpdated) {
+    if (dbState === undefined) {
       return;
     }
     db.current = dbState;
@@ -39,7 +48,7 @@ export default function SearchMusic() {
         setResult(tmpResult);
       }
     };
-  }, [dbState, isUpdated]);
+  }, [dbState, isUpdated, location]);
 
   useEffect(() => {
     if (!showResult) {
@@ -96,7 +105,13 @@ export default function SearchMusic() {
   };
 
   return (
-    <div id={styles.bigContainer}>
+    <div
+      id={styles.bigContainer}
+      ref={scrollRef}
+      onScroll={(event) => {
+        setSearchScroll(event.target.scrollTop);
+      }}
+    >
       <div id={styles.inputDiv}>
         <form
           onSubmit={(event) => {
@@ -284,6 +299,19 @@ export default function SearchMusic() {
         showAddMusic={showAddMusic}
         setShowAddMusic={setShowAddMusic}
       />
+      <span
+        id={searchScroll > 200 ? styles.upButton : styles.upDisabled}
+        className="material-icons-round"
+        onClick={() => {
+          scrollRef.current.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth",
+          });
+        }}
+      >
+        arrow_upward
+      </span>
     </div>
   );
 }

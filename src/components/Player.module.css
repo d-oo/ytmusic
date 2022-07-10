@@ -16,7 +16,6 @@
 }
 #artist {
   font-size: 14px;
-  margin-bottom: 6px;
 }
 #thumbnail {
   height: 124px;
@@ -84,4 +83,31 @@
 #playlistDisabled {
   color: gray;
   cursor: default !important;
+}
+#volumeWrapper {
+  display: flex;
+  align-items: center;
+}
+#volumeButton {
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 6px;
+}
+#volumeButton:hover {
+  color: blue;
+}
+#volumeSlider {
+  display: flex;
+  align-items: center;
+}
+#time {
+  display: flex;
+  width: 240px;
+  margin-left: 30px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+.MuiSlider-root.Mui-disabled {
+  color: black;
 }

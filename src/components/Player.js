@@ -1,12 +1,22 @@
-import { useContext } from "react";
+import {
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
+import Slider from "@mui/material/Slider";
 import styles from "./Player.module.css";
 
 export default function Player() {
   const {
+    handleScroll,
     playNext,
-    playPrevious,
+    playPrev,
+    secondToTime,
     playingMusicId,
     playingMusicInfo,
     playingPlaylist,
@@ -15,20 +25,81 @@ export default function Player() {
     setLoopMusic,
     loopPlaylist,
     shuffle,
+    shuffleList,
     player,
     videoOn,
     isPlaying,
+    setIsPlaying,
+    isMute,
+    setIsMute,
+    volume,
+    setVolume,
   } = useContext(AppContext);
+  const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+  const interval = useRef();
 
-  function playOrPause() {
+  useEffect(() => {
+    if (!videoOn) {
+      return;
+    }
+    if (isPlaying) {
+      clearInterval(interval.current);
+      setTimer(player.getCurrentTime());
+      interval.current = setInterval(
+        () => setTimer(player.getCurrentTime()),
+        1000
+      );
+    } else {
+      clearInterval(interval.current);
+    }
+  }, [videoOn, isPlaying, player]);
+
+  const playOrPause = useCallback(() => {
     if (isPlaying === true) {
       player.pauseVideo();
     } else {
       player.playVideo();
     }
-  }
+  }, [isPlaying, player]);
+
+  const disablePrev = useMemo(() => {
+    let arr;
+    if (shuffle) {
+      arr = shuffleList;
+    } else {
+      arr = playingPlaylist;
+    }
+    return (
+      !loopPlaylist && arr.findIndex((i) => i.id === Number(playingMusicId)) < 1
+    );
+  }, [shuffle, shuffleList, playingPlaylist, loopPlaylist, playingMusicId]);
+
+  const disableNext = useMemo(() => {
+    let arr;
+    if (shuffle) {
+      arr = shuffleList;
+    } else {
+      arr = playingPlaylist;
+    }
+    return (
+      !loopPlaylist &&
+      arr.findIndex((i) => i.id === Number(playingMusicId)) + 1 === arr.length
+    );
+  }, [shuffle, shuffleList, playingPlaylist, loopPlaylist, playingMusicId]);
+
+  const volumeQuality = useMemo(() => {
+    if (isMute) {
+      return "off";
+    } else if (volume === 0) {
+      return "mute";
+    } else if (volume > 0 && volume <= 50) {
+      return "down";
+    } else {
+      return "up";
+    }
+  }, [volume, isMute]);
 
   return (
     <div id={styles.player}>
@@ -79,22 +150,8 @@ export default function Player() {
         </span>
         <span
           className="material-icons-round"
-          id={
-            !loopPlaylist &&
-            !shuffle &&
-            playingPlaylist.findIndex((i) => i.id === Number(playingMusicId)) <
-              1
-              ? styles.prevDisabled
-              : styles.prevButton
-          }
-          onClick={
-            !loopPlaylist &&
-            !shuffle &&
-            playingPlaylist.findIndex((i) => i.id === Number(playingMusicId)) <
-              1
-              ? null
-              : () => playPrevious()
-          }
+          id={disablePrev ? styles.prevDisabled : styles.prevButton}
+          onClick={disablePrev ? null : () => playPrev()}
         >
           skip_previous
         </span>
@@ -107,24 +164,8 @@ export default function Player() {
         </span>
         <span
           className="material-icons-round"
-          id={
-            !loopPlaylist &&
-            !shuffle &&
-            playingPlaylist.findIndex((i) => i.id === Number(playingMusicId)) +
-              1 ===
-              playingPlaylist.length
-              ? styles.nextDisabled
-              : styles.nextButton
-          }
-          onClick={
-            !loopPlaylist &&
-            !shuffle &&
-            playingPlaylist.findIndex((i) => i.id === Number(playingMusicId)) +
-              1 ===
-              playingPlaylist.length
-              ? null
-              : () => playNext()
-          }
+          id={disableNext ? styles.nextDisabled : styles.nextButton}
+          onClick={disableNext ? null : () => playNext()}
         >
           skip_next
         </span>
@@ -135,14 +176,113 @@ export default function Player() {
               ? styles.playlistDisabled
               : styles.playlistButton
           }
+          onClick={playingPlaylistId === "" ? null : handleScroll}
         >
           queue_music
         </span>
       </div>
-      <button onClick={() => console.log(player.getVolume())}>
-        volume get
-      </button>
-      <button onClick={() => player.setVolume(50)}>setVolume</button>
+      <Slider
+        aria-label="progress"
+        valueLabelDisplay="auto"
+        defaultValue={0}
+        value={timer}
+        onChange={(event) => {
+          setIsPlaying(false);
+          setTimer(event.target.value);
+        }}
+        onChangeCommitted={(_, newValue) => {
+          setTimer(newValue);
+          player.seekTo(newValue);
+        }}
+        max={playingMusicInfo.duration}
+        scale={secondToTime}
+        sx={{
+          color: "red",
+          width: "240px",
+          paddingTop: "6px",
+          paddingBottom: "6px",
+          "& .MuiSlider-thumb": {
+            "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible": {
+              boxShadow: "inherit",
+            },
+          },
+          "& .Mui-disabled": {
+            color: "gray",
+          },
+          "& .MuiSlider-rail": {
+            color: videoOn ? "currentColor" : "gray",
+          },
+        }}
+        size="small"
+        disabled={!videoOn}
+      />
+      <div id={styles.time}>
+        <div id={styles.volumeWrapper}>
+          <span
+            id={styles.volumeButton}
+            className="material-icons-round"
+            onClick={() => {
+              if (isMute) {
+                setIsMute(false);
+                window.localStorage.setItem("mute", false);
+                if (player !== "") {
+                  player.unMute();
+                  player.setVolume(volume);
+                }
+              } else {
+                setIsMute(true);
+                window.localStorage.setItem("mute", true);
+                if (player !== "") {
+                  player.mute();
+                }
+              }
+            }}
+          >
+            volume_{volumeQuality}
+          </span>
+          <div id={styles.volumeSlider}>
+            <Slider
+              aria-label="progress"
+              valueLabelDisplay="auto"
+              defaultValue={50}
+              value={volume}
+              onChange={(event) => {
+                setVolume(event.target.value);
+                setIsMute(false);
+                window.localStorage.setItem("mute", false);
+                if (player === "") {
+                  return;
+                }
+                if (isMute) {
+                  player.unMute();
+                  player.setVolume(volume);
+                }
+                player.setVolume(event.target.value);
+              }}
+              onChangeCommitted={(_, newValue) => {
+                window.localStorage.setItem("volume", newValue);
+              }}
+              max={100}
+              sx={{
+                color: "blue",
+                width: "60px",
+                paddingTop: "6px",
+                paddingBottom: "6px",
+                "& .MuiSlider-thumb": {
+                  height: "9px",
+                  width: "9px",
+                  "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible": {
+                    boxShadow: "inherit",
+                  },
+                },
+              }}
+              size="small"
+            />
+          </div>
+        </div>
+        {secondToTime(timer)} /{" "}
+        {videoOn ? secondToTime(playingMusicInfo.duration) : "00:00"}
+      </div>
     </div>
   );
 }

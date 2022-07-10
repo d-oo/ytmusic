@@ -65,10 +65,6 @@ export default function MusicInfo() {
   }, [dbState, musicId, isUpdated]);
 
   useEffect(() => {
-    return () => setIsUpdated(true);
-  }, [setIsUpdated]);
-
-  useEffect(() => {
     if (musicId === playingMusicId) {
       setShowYT(true);
     } else {

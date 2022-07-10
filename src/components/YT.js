@@ -12,6 +12,8 @@ export default function YT() {
     setPlayer,
     videoOn,
     setIsPlaying,
+    volume,
+    isMute,
     showYT,
   } = useContext(AppContext);
   const opts = {
@@ -26,7 +28,10 @@ export default function YT() {
   };
   function onPlayerReady(event) {
     setPlayer(event.target);
-    event.target.setVolume(50);
+    event.target.setVolume(volume);
+    if (isMute) {
+      event.target.mute();
+    }
   }
   function onPlayerStateChange(event) {
     if (event.data === 1) {

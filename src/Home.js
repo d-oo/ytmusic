@@ -10,6 +10,9 @@ import styles from "./Home.module.css";
 export const AppContext = createContext();
 
 export default function Home() {
+  //scroll
+  const [searchScroll, setSearchScroll] = useState(0);
+  const [handleScroll, setHandleScroll] = useState(null);
   //player
   const [playingMusicId, setPlayingMusicId] = useState("");
   const [playingMusicInfo, setPlayingMusicInfo] = useState("");
@@ -19,11 +22,15 @@ export default function Home() {
   const [loopPlaylist, setLoopPlaylist] = useState(false);
   const [shuffle, setShuffle] = useState(false);
   const [shuffleList, setShuffleList] = useState([]);
-  const [player, setPlayer] = useState({});
+  const [player, setPlayer] = useState("");
   const [videoOn, setVideoOn] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMute, setIsMute] = useState(false);
+  const [volume, setVolume] = useState(50);
   //showHandle
   const [showYT, setShowYT] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   //db
   const [playlistResult, setPlaylistResult] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
@@ -31,6 +38,8 @@ export default function Home() {
   const db = useRef();
 
   useEffect(() => {
+    setVolume(Number(window.localStorage.getItem("volume")));
+    setIsMute(JSON.parse(window.localStorage.getItem("mute")));
     const dbReq = indexedDB.open("database", 1);
     dbReq.onsuccess = (event) => {
       db.current = event.target.result;
@@ -117,6 +126,7 @@ export default function Home() {
 
   useEffect(() => {
     if (shuffle) {
+      console.log(playingPlaylist);
       const array = [...playingPlaylist];
       let len = array.length,
         t,
@@ -159,6 +169,7 @@ export default function Home() {
 
   const playShuffle = useCallback((listId, musicArr) => {
     setLoopPlaylist(false);
+    setLoopMusic(false);
     setPlayingPlaylistId(listId);
     setShuffle(true);
     const randomMusic = musicArr[Math.floor(Math.random() * musicArr.length)];
@@ -176,7 +187,7 @@ export default function Home() {
     const currentIndex = arr.findIndex((i) => i.id === Number(playingMusicId));
     if (currentIndex < arr.length - 1) {
       setPlayingMusicId(String(arr[currentIndex + 1].id));
-    } else if (loopPlaylist || shuffle) {
+    } else if (loopPlaylist) {
       setPlayingMusicId(String(arr[0].id));
     } else {
       setPlayingPlaylist([]);
@@ -186,7 +197,7 @@ export default function Home() {
     }
   }, [playingPlaylist, playingMusicId, loopPlaylist, shuffle, shuffleList]);
 
-  const playPrevious = useCallback(() => {
+  const playPrev = useCallback(() => {
     let arr;
     setLoopMusic(false);
     if (shuffle) {
@@ -197,7 +208,7 @@ export default function Home() {
     const currentIndex = arr.findIndex((i) => i.id === Number(playingMusicId));
     if (currentIndex > 0) {
       setPlayingMusicId(String(arr[currentIndex - 1].id));
-    } else if (loopPlaylist || shuffle) {
+    } else if (loopPlaylist) {
       setPlayingMusicId(String(arr[arr.length - 1].id));
     }
   }, [playingPlaylist, playingMusicId, loopPlaylist, shuffle, shuffleList]);
@@ -205,7 +216,7 @@ export default function Home() {
   const secondToTime = useCallback((totalSecond) => {
     let h = Math.floor(totalSecond / 3600);
     let m = Math.floor((totalSecond % 3600) / 60);
-    let s = totalSecond % 60;
+    let s = Math.round(totalSecond % 60);
     return (
       (h === 0 ? "" : String(h).padStart(2, "0") + ":") +
       String(m).padStart(2, "0") +
@@ -214,17 +225,25 @@ export default function Home() {
     );
   }, []);
 
-  useEffect(() => console.log("dbState Changed"), [dbState]);
+  const alertFor = useCallback((message) => {
+    setShowAlert(true);
+    setAlertMessage(message);
+  }, []);
 
   return (
     <AppContext.Provider
       value={{
+        searchScroll,
+        setSearchScroll,
+        handleScroll,
+        setHandleScroll,
         playSingle,
         playPlaylist,
         playShuffle,
         playNext,
-        playPrevious,
+        playPrev,
         secondToTime,
+        alertFor,
         playingMusicId,
         setPlayingMusicId,
         playingMusicInfo,
@@ -243,8 +262,14 @@ export default function Home() {
         setShuffleList,
         player,
         setPlayer,
+        isMute,
+        setIsMute,
+        volume,
+        setVolume,
         showYT,
         setShowYT,
+        showAlert,
+        setShowAlert,
         videoOn,
         setVideoOn,
         isPlaying,
@@ -271,9 +296,8 @@ export default function Home() {
           <Playlists />
         </div>
         <div id={styles.mainContent}>
-          <Alert message="addPlaylistF" />
+          <Alert message={alertMessage} />
           <YT />
-
           <Outlet />
         </div>
       </div>

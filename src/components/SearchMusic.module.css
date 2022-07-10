@@ -206,11 +206,33 @@
   right: 13vw;
   color: white;
   background: violet;
-  border-radius: 100%;
+  border-radius: 50%;
   padding: 10px;
   cursor: pointer;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
 }
 #addButton:hover {
   color: black;
+}
+#upButton {
+  transition: opacity 0.3s, visibility 0.3s;
+  visibility: visible;
+  opacity: 1;
+  position: fixed;
+  bottom: 10vh;
+  right: 13vw;
+  color: white;
+  background: pink;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+}
+#upButton:hover {
+  color: black;
+}
+#upDisabled {
+  transition: opacity 0.3s, visibility 0.3s;
+  visibility: hidden;
+  opacity: 0;
 }

@@ -88,10 +88,6 @@ export default function PlaylistInfo() {
     });
   }, [playlistInfo]);
 
-  useEffect(() => {
-    return () => setIsUpdated(true);
-  }, [setIsUpdated]);
-
   const addToPlaylist = (playlistInfo) => {
     console.log(playlistInfo.musicId);
     let duplicatedDuration = 0;

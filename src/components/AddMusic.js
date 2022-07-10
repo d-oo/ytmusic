@@ -353,7 +353,7 @@ export default function AddMusic({
           >
             close
           </span>
-          음악 추가
+          {from === "MusicInfo" ? "음악 수정" : "음악 추가"}
         </div>
         <div className={styles.radioContainer}>
           <div className={styles.radio}>

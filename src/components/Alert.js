@@ -1,7 +1,16 @@
-import { useMemo } from "react";
+import { useRef, useEffect, useContext, useMemo } from "react";
+import { AppContext } from "../Home";
+
 import styles from "./Alert.module.css";
 
 export default function Alert({ message }) {
+  const { showAlert, setShowAlert } = useContext(AppContext);
+  const timeOut = useRef();
+  useEffect(() => {
+    if (showAlert) {
+      timeOut.current = setTimeout(() => setShowAlert(false), 3000);
+    }
+  }, [showAlert, setShowAlert]);
   const sentence = useMemo(() => {
     switch (message) {
       case "addMusic":
@@ -26,6 +35,10 @@ export default function Alert({ message }) {
         return "해당 비디오 ID를 사용하는 음악이 이미 존재합니다.";
       case "addPlaylistF":
         return "해당 제목의 재생목록이 이미 존재합니다.";
+      case "deleteMusicF":
+        return "재생 중인 음악은 데이터베이스에서 삭제할 수 없습니다.";
+      case "deletePlaylistF":
+        return "재생 중인 재생목록은 데이터베이스에서 삭제할 수 없습니다.";
       case "otherError":
         return "기타 오류 발생 메시지 여기에 적어야 됨";
       default:
@@ -33,10 +46,21 @@ export default function Alert({ message }) {
     }
   }, [message]);
   return (
-    <div id={styles.alert}>
-      <span className="material-icons-round">close</span>
-      <br />
-      {sentence}
+    <div
+      id={styles.alert}
+      className={showAlert ? styles.showing : styles.notShowing}
+    >
+      <span
+        id={styles.closeButton}
+        className="material-icons-round"
+        onClick={() => {
+          setShowAlert(false);
+          clearTimeout(timeOut.current);
+        }}
+      >
+        close
+      </span>
+      <div id={styles.sentence}>{sentence}</div>
     </div>
   );
 }

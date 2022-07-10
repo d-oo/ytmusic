@@ -1,13 +1,33 @@
 #alert {
   position: fixed;
   background: skyblue;
-  color: white;
-  font-size: 16px;
+  color: black;
+  font-size: 15px;
   bottom: 2vh;
   right: 1vw;
   z-index: 30;
   width: 240px;
-  height: 100px;
+  height: 80px;
   border-radius: 10px;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+  text-align: left;
+}
+#closeButton {
+  cursor: pointer;
+  color: red;
+  font-size: 18px;
+  margin-top: 3px;
+  margin-left: 3px;
+}
+#sentence {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.notShowing {
+  transition: all 1.2s;
+  visibility: hidden;
+  opacity: 0;
+}
+.showing {
+  transition: all 0.2s;
 }
