@@ -2,7 +2,7 @@
   --uib-size: 20px;
   --uib-speed: 1s;
   --uib-color: black;
-  --uib-line-weight: 3.5px;
+  --uib-line-weight: 3px;
 
   display: flex;
   flex-flow: row nowrap;
@@ -17,6 +17,7 @@
 
 .waveform__bar {
   width: var(--uib-line-weight);
+  border-radius: 2px;
   height: 100%;
   background-color: var(--uib-color);
 }

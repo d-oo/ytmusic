@@ -28,7 +28,7 @@ export default function AddMusic({
   const [recommendedArtist, setRecommendedArtist] = useState([]);
   const [recommendedTag, setRecommendedTag] = useState([]);
   const db = useRef();
-  const { dbState, setIsUpdated } = useContext(AppContext);
+  const { dbState, setIsUpdated, alertFor } = useContext(AppContext);
 
   useEffect(() => {
     db.current = dbState;
@@ -164,16 +164,14 @@ export default function AddMusic({
       });
     addReq.onsuccess = () => {
       setIsUpdated(true);
-      console.log("succefully added!");
-      //이 부분에 추가 완료 알림창 띄움
+      alertFor("addMusic");
       reset();
     };
     addReq.onerror = () => {
       if (addReq.error.name === "ConstraintError") {
-        console.log("already existing video ID");
-        //이 부분에 해당 비디오를 사용하는 음악이 이미 존재한다는 알림창 띄움
+        alertFor("addMusicF");
       } else {
-        console.log(addReq.error);
+        alertFor(addReq.error);
       }
     };
   };
@@ -205,16 +203,14 @@ export default function AddMusic({
       });
     putReq.onsuccess = () => {
       setIsUpdated(true);
-      console.log("succefully updated!");
-      //이 부분에 업데이트 완료 알림창 띄움
+      alertFor("updateMusic");
       closeAddMusic();
     };
     putReq.onerror = () => {
       if (putReq.error.name === "ConstraintError") {
-        console.log("already existing video ID");
-        //이 부분에 해당 비디오를 사용하는 음악이 이미 존재한다는 알림창 띄움
+        alertFor("addMusicF");
       } else {
-        console.log(putReq.error);
+        alertFor(putReq.error);
       }
     };
   };

@@ -9,6 +9,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../Home";
 import Slider from "@mui/material/Slider";
+import Tooltip from "@mui/material/Tooltip";
 import styles from "./Player.module.css";
 
 export default function Player() {
@@ -89,6 +90,52 @@ export default function Player() {
     );
   }, [shuffle, shuffleList, playingPlaylist, loopPlaylist, playingMusicId]);
 
+  const prevMusic = useMemo(() => {
+    let arr;
+    if (shuffle) {
+      arr = shuffleList;
+    } else {
+      arr = playingPlaylist;
+    }
+    const currentIndex = arr.findIndex((i) => i.id === Number(playingMusicId));
+    if (currentIndex > 0) {
+      return (
+        arr[currentIndex - 1].title +
+        " - " +
+        arr[currentIndex - 1].artist.join(", ")
+      );
+    } else if (loopPlaylist) {
+      return (
+        arr[arr.length - 1].title +
+        " - " +
+        arr[arr.length - 1].artist.join(", ")
+      );
+    } else {
+      return "없음";
+    }
+  }, [shuffle, shuffleList, playingPlaylist, loopPlaylist, playingMusicId]);
+
+  const nextMusic = useMemo(() => {
+    let arr;
+    if (shuffle) {
+      arr = shuffleList;
+    } else {
+      arr = playingPlaylist;
+    }
+    const currentIndex = arr.findIndex((i) => i.id === Number(playingMusicId));
+    if (currentIndex + 1 < arr.length) {
+      return (
+        arr[currentIndex + 1].title +
+        " - " +
+        arr[currentIndex + 1].artist.join(", ")
+      );
+    } else if (loopPlaylist) {
+      return arr[0].title + " - " + arr[0].artist.join(", ");
+    } else {
+      return "없음";
+    }
+  }, [shuffle, shuffleList, playingPlaylist, loopPlaylist, playingMusicId]);
+
   const volumeQuality = useMemo(() => {
     if (isMute) {
       return "off";
@@ -148,13 +195,15 @@ export default function Player() {
         >
           loop
         </span>
-        <span
-          className="material-icons-round"
-          id={disablePrev ? styles.prevDisabled : styles.prevButton}
-          onClick={disablePrev ? null : () => playPrev()}
-        >
-          skip_previous
-        </span>
+        <Tooltip title={prevMusic} placement="left" arrow>
+          <span
+            className="material-icons-round"
+            id={disablePrev ? styles.prevDisabled : styles.prevButton}
+            onClick={disablePrev ? null : () => playPrev()}
+          >
+            skip_previous
+          </span>
+        </Tooltip>
         <span
           className="material-icons-round"
           id={videoOn ? styles.playPauseButton : styles.playDisabled}
@@ -162,13 +211,15 @@ export default function Player() {
         >
           {isPlaying ? "pause" : "play_arrow"}
         </span>
-        <span
-          className="material-icons-round"
-          id={disableNext ? styles.nextDisabled : styles.nextButton}
-          onClick={disableNext ? null : () => playNext()}
-        >
-          skip_next
-        </span>
+        <Tooltip title={nextMusic} placement="right" arrow>
+          <span
+            className="material-icons-round"
+            id={disableNext ? styles.nextDisabled : styles.nextButton}
+            onClick={disableNext ? null : () => playNext()}
+          >
+            skip_next
+          </span>
+        </Tooltip>
         <span
           className="material-icons-round"
           id={

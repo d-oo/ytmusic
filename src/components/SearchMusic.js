@@ -26,6 +26,7 @@ export default function SearchMusic() {
     isUpdated,
     setIsUpdated,
     playlistResult,
+    alertFor,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -66,7 +67,6 @@ export default function SearchMusic() {
   }, [showResult]);
 
   const addToPlaylist = (playlistInfo) => {
-    console.log(playlistInfo.musicId);
     let duplicatedDuration = 0;
     selectedItem.forEach((sItem) => {
       if (playlistInfo.musicId.includes(sItem)) {
@@ -77,9 +77,6 @@ export default function SearchMusic() {
     const selectedArr = [
       ...new Set([...playlistInfo.musicId, ...selectedItem]),
     ];
-
-    console.log(totalDuration);
-    console.log(duplicatedDuration);
 
     const updateReq = db.current
       .transaction("playlist", "readwrite")
@@ -93,8 +90,7 @@ export default function SearchMusic() {
         id: playlistInfo.id,
       });
     updateReq.onsuccess = () => {
-      console.log("succefully updated!");
-      //업데이트 완료 창
+      alertFor("addToPlaylist");
       setShowResult(false);
       setIsUpdated(true);
     };
@@ -288,6 +284,19 @@ export default function SearchMusic() {
         </div>
       )}
       <span
+        id={searchScroll > 200 ? styles.upActive : styles.upDisabled}
+        className={`material-icons-round ${styles.upButton}`}
+        onClick={() => {
+          scrollRef.current.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth",
+          });
+        }}
+      >
+        arrow_upward
+      </span>
+      <span
         className="material-icons-round"
         id={styles.addButton}
         onClick={() => showAddMusic(true)}
@@ -299,19 +308,6 @@ export default function SearchMusic() {
         showAddMusic={showAddMusic}
         setShowAddMusic={setShowAddMusic}
       />
-      <span
-        id={searchScroll > 200 ? styles.upButton : styles.upDisabled}
-        className="material-icons-round"
-        onClick={() => {
-          scrollRef.current.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth",
-          });
-        }}
-      >
-        arrow_upward
-      </span>
     </div>
   );
 }

@@ -152,20 +152,13 @@ export default function Playlists() {
             className={styles.playlist}
             id={
               location.pathname === `/playlist/${item.id}`
-                ? styles.playing
+                ? styles.viewing
                 : null
             }
             key={index}
             ref={playingPlaylistId === String(item.id) ? itemRef : null}
           >
-            <div
-              id={styles.listTitleDiv}
-              onClick={() => {
-                navigate(`/playlist/${item.id}`, {
-                  replace: location.pathname === `/playlist/${item.id}`,
-                });
-              }}
-            >
+            <div id={styles.listTitleDiv}>
               {playingPlaylistId === String(item.id) ? (
                 <div id={styles.playingMotion}>
                   <PlayingMotion isPaused={!isPlaying} />
@@ -178,6 +171,11 @@ export default function Playlists() {
                     ? styles.titleShort
                     : styles.titleLong
                 }
+                onClick={() => {
+                  navigate(`/playlist/${item.id}`, {
+                    replace: location.pathname === `/playlist/${item.id}`,
+                  });
+                }}
               >
                 {item.title}
               </div>

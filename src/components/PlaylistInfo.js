@@ -10,12 +10,15 @@ import styles from "./PlaylistInfo.module.css";
 
 export default function PlaylistInfo() {
   const {
+    playSingle,
     secondToTime,
     playingPlaylistId,
+    playingMusicId,
     isPlaying,
     playlistResult,
     setIsUpdated,
     dbState,
+    alertFor,
   } = useContext(AppContext);
   const [selectedItem, setSelectedItem] = useState([]);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -88,33 +91,52 @@ export default function PlaylistInfo() {
     });
   }, [playlistInfo]);
 
-  const addToPlaylist = (playlistInfo) => {
-    console.log(playlistInfo.musicId);
+  const addToPlaylist = (paramInfo) => {
+    console.log(paramInfo.musicId);
     let duplicatedDuration = 0;
     selectedItem.forEach((sItem) => {
-      if (playlistInfo.musicId.includes(sItem)) {
+      if (paramInfo.musicId.includes(sItem)) {
         duplicatedDuration +=
           musicInfo[musicInfo.findIndex((i) => i.id === sItem)].duration;
       }
     });
-    const selectedArr = [
-      ...new Set([...playlistInfo.musicId, ...selectedItem]),
-    ];
+    const selectedArr = [...new Set([...paramInfo.musicId, ...selectedItem])];
+    const updateReq = db.current
+      .transaction("playlist", "readwrite")
+      .objectStore("playlist")
+      .put({
+        title: paramInfo.title,
+        musicId: selectedArr,
+        totalDuration:
+          paramInfo.totalDuration + totalDuration - duplicatedDuration,
+        videoCount: selectedArr.length,
+        id: paramInfo.id,
+      });
+    updateReq.onsuccess = () => {
+      alertFor("addToPlaylist");
+      setShowResult(false);
+      setIsUpdated(true);
+    };
+  };
+
+  const deleteFromPlaylist = () => {
+    if (selectedItem.includes(Number(playingMusicId))) {
+      playSingle(Number(playingMusicId));
+    }
     const updateReq = db.current
       .transaction("playlist", "readwrite")
       .objectStore("playlist")
       .put({
         title: playlistInfo.title,
-        musicId: selectedArr,
-        totalDuration:
-          playlistInfo.totalDuration + totalDuration - duplicatedDuration,
-        videoCount: selectedArr.length,
+        musicId: playlistInfo.musicId.filter((i) => !selectedItem.includes(i)),
+        totalDuration: playlistInfo.totalDuration - totalDuration,
+        videoCount: playlistInfo.videoCount - selectedItem.length,
         id: playlistInfo.id,
       });
     updateReq.onsuccess = () => {
-      console.log("succefully updated!");
-      //업데이트 완료 창
-      setShowResult(false);
+      setSelectedItem([]);
+      setTotalDuration(0);
+      alertFor("deleteFromPlaylist");
       setIsUpdated(true);
     };
   };
@@ -250,9 +272,7 @@ export default function PlaylistInfo() {
           <span
             className="material-icons-round"
             id={styles.deleteButton}
-            onClick={() => {
-              console.log("delete");
-            }}
+            onClick={deleteFromPlaylist}
           >
             playlist_remove
           </span>

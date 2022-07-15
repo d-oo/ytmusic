@@ -8,18 +8,24 @@
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.4);
 }
 #playlists::-webkit-scrollbar {
-  width: 5px;
+  width: 9px;
   display: block;
 }
 #playlists::-webkit-scrollbar-thumb {
   background: darkgray;
   border-radius: 10px;
+  background-clip: padding-box;
+  border: 3px solid transparent;
 }
 #playlists::-webkit-scrollbar-thumb:hover {
   background: gray;
+  background-clip: padding-box;
+  border: 3px solid transparent;
 }
 #playlists::-webkit-scrollbar-thumb:active {
   background: black;
+  background-clip: padding-box;
+  border: 3px solid transparent;
 }
 #addDiv {
   display: flex;
@@ -85,7 +91,7 @@
   border-bottom: 1px solid darkgray;
   font-size: 14px;
 }
-#playing {
+#viewing {
   background: darkgray;
   margin-left: 12px;
   padding-left: 8px;
@@ -97,13 +103,13 @@
   display: flex;
   align-items: center;
   width: 147px;
-  cursor: pointer;
 }
 #listTitle {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
+  cursor: pointer;
 }
 .titleShort {
   width: 120px;

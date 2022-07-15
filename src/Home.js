@@ -189,6 +189,7 @@ export default function Home() {
       setPlayingMusicId(String(arr[currentIndex + 1].id));
     } else if (loopPlaylist) {
       setPlayingMusicId(String(arr[0].id));
+      console.log(String(arr[0].id));
     } else {
       setPlayingPlaylist([]);
       setPlayingPlaylistId("");
@@ -214,9 +215,12 @@ export default function Home() {
   }, [playingPlaylist, playingMusicId, loopPlaylist, shuffle, shuffleList]);
 
   const secondToTime = useCallback((totalSecond) => {
+    if (isNaN(totalSecond)) {
+      return "00:00";
+    }
     let h = Math.floor(totalSecond / 3600);
     let m = Math.floor((totalSecond % 3600) / 60);
-    let s = Math.round(totalSecond % 60);
+    let s = Math.floor(totalSecond % 60);
     return (
       (h === 0 ? "" : String(h).padStart(2, "0") + ":") +
       String(m).padStart(2, "0") +

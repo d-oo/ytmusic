@@ -23,6 +23,7 @@ export default function MusicInfo() {
     setIsUpdated,
     playlistResult,
     dbState,
+    alertFor,
   } = useContext(AppContext);
   const [info, setInfo] = useState("");
   const [infoAvailable, setInfoAvailable] = useState(false);
@@ -41,12 +42,20 @@ export default function MusicInfo() {
     if (dbState === undefined || musicId === "") {
       return;
     }
+    if (isNaN(musicId)) {
+      navigate("/wrongmusic", { replace: true });
+      return;
+    }
     db.current = dbState;
     const infoReq = db.current
       .transaction("music", "readonly")
       .objectStore("music")
       .get(Number(musicId));
     infoReq.onsuccess = () => {
+      if (infoReq.result === undefined) {
+        navigate("/wrongmusic", { replace: true });
+        return;
+      }
       setDuration({
         m: Math.floor(infoReq.result.duration / 60),
         s: infoReq.result.duration % 60,
@@ -62,7 +71,7 @@ export default function MusicInfo() {
         setInPlaylist(IsMusicInPlaylistReq.result.map((item) => item.id));
       };
     };
-  }, [dbState, musicId, isUpdated]);
+  }, [dbState, musicId, isUpdated, navigate]);
 
   useEffect(() => {
     if (musicId === playingMusicId) {
@@ -105,11 +114,46 @@ export default function MusicInfo() {
         id: playlistInfo.id,
       });
     updateReq.onsuccess = () => {
-      console.log("succefully updated!");
-      //업데이트 완료 창
-      setShowResult(false);
+      alertFor("addToPlaylistSingle");
+      // setShowResult(false);
       setIsUpdated(true);
     };
+  };
+
+  const deleteMusic = () => {
+    if (playingMusicId === musicId) {
+      alertFor("deleteMusicF");
+      return;
+    }
+    const deleteReq = db.current
+      .transaction("music", "readwrite")
+      .objectStore("music")
+      .delete(Number(musicId));
+    deleteReq.onsuccess = () => {
+      alertFor("deleteMusic");
+      navigate(-1);
+    };
+    inPlaylist.forEach((item, index) => {
+      const transaction = db.current
+        .transaction("playlist", "readwrite")
+        .objectStore("playlist");
+      const getReq = transaction.get(item);
+      getReq.onsuccess = () => {
+        const getResult = getReq.result;
+        const updateReq = transaction.put({
+          title: getResult.title,
+          musicId: getResult.musicId.filter((i) => i !== Number(musicId)),
+          totalDuration: getResult.totalDuration - info.duration,
+          videoCount: getResult.videoCount - 1,
+          id: getResult.id,
+        });
+        updateReq.onsuccess = () => {
+          if (index === inPlaylist.length - 1) {
+            setIsUpdated(true);
+          }
+        };
+      };
+    });
   };
 
   return (
@@ -209,16 +253,17 @@ export default function MusicInfo() {
               </div>
               <span
                 className="material-icons-round"
-                onClick={() => showAddMusic(true)}
+                onClick={() => {
+                  if (musicId === playingMusicId) {
+                    alertFor("updateMusicF");
+                    return;
+                  }
+                  showAddMusic(true);
+                }}
               >
                 edit
               </span>
-              <span
-                className="material-icons-round"
-                onClick={() => {
-                  console.log("delete");
-                }}
-              >
+              <span className="material-icons-round" onClick={deleteMusic}>
                 delete
               </span>
             </div>

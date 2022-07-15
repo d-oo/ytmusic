@@ -10,7 +10,7 @@
 }
 #bigContainer::-webkit-scrollbar {
   display: block;
-  width: 5px;
+  width: 13px;
 }
 #bigContainer::-webkit-scrollbar-track {
   display: none;
@@ -18,12 +18,18 @@
 #bigContainer::-webkit-scrollbar-thumb {
   background: white;
   border-radius: 10px;
+  background-clip: padding-box;
+  border: 4px solid transparent;
 }
 #bigContainer::-webkit-scrollbar-thumb:hover {
   background: darkgray;
+  background-clip: padding-box;
+  border: 4px solid transparent;
 }
 #bigContainer::-webkit-scrollbar-thumb:active {
   background: gray;
+  background-clip: padding-box;
+  border: 4px solid transparent;
 }
 #inputDiv {
   display: flex;
@@ -147,8 +153,7 @@
   position: fixed;
   border-radius: 5px;
   bottom: 30px;
-  left: 50%;
-  transform: translate(125px, 0%);
+  transform: translate(425px, 0%);
   background: cornflowerblue;
 }
 #selectedLength {
@@ -203,7 +208,7 @@
 #addButton {
   position: fixed;
   bottom: 3vh;
-  right: 13vw;
+  right: 33vw;
   color: white;
   background: violet;
   border-radius: 50%;
@@ -214,13 +219,11 @@
 #addButton:hover {
   color: black;
 }
-#upButton {
-  transition: opacity 0.3s, visibility 0.3s;
-  visibility: visible;
-  opacity: 1;
+.upButton {
+  transition: all 0.3s;
   position: fixed;
   bottom: 10vh;
-  right: 13vw;
+  right: 33vw;
   color: white;
   background: pink;
   border-radius: 50%;
@@ -228,11 +231,16 @@
   cursor: pointer;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
 }
-#upButton:hover {
+#upActive {
+  /* transition: opacity 0.3s, visibility 0.3s; */
+  visibility: visible;
+  opacity: 1;
+}
+#upActive:hover {
   color: black;
 }
 #upDisabled {
-  transition: opacity 0.3s, visibility 0.3s;
+  /* transition: opacity 0.3s, visibility 0.3s; */
   visibility: hidden;
   opacity: 0;
 }

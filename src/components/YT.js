@@ -5,6 +5,8 @@ import styles from "./YT.module.css";
 
 export default function YT() {
   const {
+    playingMusicId,
+    setPlayingMusicId,
     playNext,
     loopMusic,
     playingMusicInfo,
@@ -41,7 +43,10 @@ export default function YT() {
     } else if (event.data === 0) {
       setIsPlaying(false);
       if (loopMusic) {
-        player.playVideo();
+        const tmp = playingMusicId;
+        setPlayingMusicId("");
+        setTimeout(() => setPlayingMusicId(tmp));
+        setTimeout(() => player.playVideo());
       } else {
         playNext();
       }

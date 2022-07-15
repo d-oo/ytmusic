@@ -25,24 +25,24 @@ export default function Alert({ message }) {
         return "음악이 재생목록에 추가되었습니다.";
       case "deleteFromPlaylist":
         return "음악이 재생목록에서 삭제되었습니다.";
-      case "addPlaylist":
+      case "addPlaylist": //########//
         return "재생목록이 추가되었습니다.";
-      case "updatePlaylist":
+      case "updatePlaylist": //########//
         return "재생목록 정보가 수정되었습니다.";
-      case "deletePlaylist":
+      case "deletePlaylist": //########//
         return "재생목록이 삭제되었습니다.";
       case "addMusicF":
         return "해당 비디오 ID를 사용하는 음악이 이미 존재합니다.";
-      case "addPlaylistF":
+      case "addPlaylistF": //########//
         return "해당 제목의 재생목록이 이미 존재합니다.";
+      case "updateMusicF":
+        return "재생 중인 음악은 수정할 수 없습니다.";
       case "deleteMusicF":
         return "재생 중인 음악은 데이터베이스에서 삭제할 수 없습니다.";
-      case "deletePlaylistF":
+      case "deletePlaylistF": //########//
         return "재생 중인 재생목록은 데이터베이스에서 삭제할 수 없습니다.";
-      case "otherError":
-        return "기타 오류 발생 메시지 여기에 적어야 됨";
-      default:
-        return "etc";
+      default: //########//
+        return `기타 오류: ${message}`;
     }
   }, [message]);
   return (
@@ -60,6 +60,7 @@ export default function Alert({ message }) {
       >
         close
       </span>
+      &nbsp;
       <div id={styles.sentence}>{sentence}</div>
     </div>
   );

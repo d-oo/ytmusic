@@ -1,14 +1,17 @@
 #alert {
+  display: flex;
+  align-items: center;
   position: fixed;
-  background: skyblue;
-  color: black;
-  font-size: 15px;
+  background: black;
+  color: white;
+  font-size: 14px;
   bottom: 2vh;
   right: 1vw;
   z-index: 30;
-  width: 240px;
-  height: 80px;
-  border-radius: 10px;
+  height: 40px;
+  padding-left: 9px;
+  padding-right: 9px;
+  border-radius: 9px;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
   text-align: left;
 }
@@ -16,12 +19,13 @@
   cursor: pointer;
   color: red;
   font-size: 18px;
-  margin-top: 3px;
-  margin-left: 3px;
 }
 #sentence {
   padding-left: 3px;
   padding-right: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .notShowing {
   transition: all 1.2s;
@@ -30,4 +34,5 @@
 }
 .showing {
   transition: all 0.2s;
+  opacity: 0.8;
 }
