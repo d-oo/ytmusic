@@ -1,6 +1,12 @@
 import styles from "./VideoSearchResult.module.css";
 
-export default function VideoSearchResult({ info, id, setVideoId, index }) {
+export default function VideoSearchResult({
+  info,
+  id,
+  setVideoId,
+  index,
+  isSelected,
+}) {
   return (
     <div className={styles.searchResult}>
       <img
@@ -10,6 +16,7 @@ export default function VideoSearchResult({ info, id, setVideoId, index }) {
         onClick={() => setVideoId(id)}
       />
       <a
+        id={isSelected ? styles.linkWhite : styles.linkBlack}
         href={`https://www.youtube.com/watch?v=${id}`}
         target="_blank"
         rel="noreferrer"

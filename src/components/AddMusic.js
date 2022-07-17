@@ -74,6 +74,7 @@ export default function AddMusic({
               id={videoId}
               setVideoId={setVideoId}
               index={7}
+              isSelected={true}
             />
           </div>
         );
@@ -123,6 +124,7 @@ export default function AddMusic({
           id={item.id.videoId}
           setVideoId={setVideoId}
           index={index}
+          isSelected={false}
         />
       ))
     );

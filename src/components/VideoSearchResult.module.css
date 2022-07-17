@@ -9,13 +9,17 @@
 }
 #channel {
   font-size: 12px;
-  color: darkgray;
+  color: #808e95;
 }
 .searchResult {
   padding-top: 20px;
 }
-a {
-  color: aliceblue;
+#linkBlack {
+  color: black;
+  text-decoration: none;
+}
+#linkWhite {
+  color: white;
   text-decoration: none;
 }
 #thumbnail {

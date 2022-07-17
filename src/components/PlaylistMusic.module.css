@@ -7,14 +7,14 @@
   width: 772px;
   align-items: center;
   padding-left: 10px;
-  border-bottom: 1px solid wheat;
+  border-bottom: 1px solid #d1c4e9;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
 }
 .checked {
-  background: pink;
+  background: #ffc1e3;
 }
 .notChecked {
-  background: beige;
+  background: #fff7ff;
 }
 #flexContainer span {
   cursor: pointer;

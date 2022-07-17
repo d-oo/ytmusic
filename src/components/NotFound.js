@@ -5,20 +5,22 @@ export default function NotFound() {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <div>
-      <span
-        className="material-icons-round"
-        id={styles.backButton}
-        onClick={() => navigate(-1)}
-      >
-        arrow_back
-      </span>
-      <p id={styles.notFound}>Not Found!</p>
-      {location.pathname === "/wrongmusic"
-        ? "Wrong Music ID"
-        : location.pathname === "/wrongplaylist"
-        ? "Wrong Playlist ID"
-        : "Wrong Page"}
+    <div id={styles.notFoundPage}>
+      <div id={styles.smallWrapper}>
+        <span
+          className="material-icons-round"
+          id={styles.backButton}
+          onClick={() => navigate(-1)}
+        >
+          arrow_back
+        </span>
+        <p id={styles.notFound}>Not Found!</p>
+        {location.pathname === "/wrongmusic"
+          ? "Wrong Music ID"
+          : location.pathname === "/wrongplaylist"
+          ? "Wrong Playlist ID"
+          : "Wrong Page"}
+      </div>
     </div>
   );
 }

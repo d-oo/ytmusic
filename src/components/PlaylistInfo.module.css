@@ -1,10 +1,9 @@
 #playlistInfo {
-  top: 0%;
   width: 900px;
   height: calc(100vh - 12px);
   box-sizing: border-box;
   z-index: 20;
-  background: lightcyan;
+  background: #e3efff;
   overflow-y: auto;
   overflow-x: hidden;
   text-align: center;
@@ -43,7 +42,7 @@
   cursor: pointer;
 }
 #backButton:hover {
-  color: darkviolet;
+  color: blue;
 }
 #infoWrapper {
   position: relative;
@@ -102,7 +101,7 @@
   position: relative;
   margin-top: 10px;
   left: 45px;
-  background: wheat;
+  background: #d1c4e9;
   width: 810px;
   padding-bottom: 14px;
   border-radius: 10px;
@@ -118,7 +117,7 @@
   width: 772px;
   height: 30px;
   padding-left: 10px;
-  background: bisque;
+  background: #ede0f6;
   margin-bottom: 10px;
   z-index: 30;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
@@ -153,7 +152,7 @@
   border-radius: 5px;
   bottom: 30px;
   transform: translate(400px, 0%);
-  background: cornflowerblue;
+  background: #64c1ff;
 }
 #selectedLength {
   display: flex;
@@ -167,7 +166,7 @@
   top: -21px;
   color: white;
   font-size: 18px;
-  background: blue;
+  background: #0091ea;
 }
 #addToButtonWhite {
   font-size: 50px;

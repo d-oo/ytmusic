@@ -1,5 +1,5 @@
 #player {
-  background: lightsteelblue;
+  background: #e6ceff;
   height: 270px;
   border-radius: 6px;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.4);
@@ -13,9 +13,11 @@
 #title {
   color: darkblue;
   cursor: pointer;
+  margin-top: 4px;
 }
 #artist {
   font-size: 14px;
+  margin-bottom: 4px;
 }
 #thumbnail {
   height: 124px;

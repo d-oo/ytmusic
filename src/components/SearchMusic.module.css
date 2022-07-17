@@ -2,7 +2,7 @@
   width: 900px;
   height: calc(100vh - 12px);
   box-sizing: border-box;
-  background: wheat;
+  background: #f3e5f5;
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 6px;
@@ -78,7 +78,7 @@
   left: 50%;
   transform: translate(-50%, 0%);
   width: 810px;
-  background: darkkhaki;
+  background: #d1c4e9;
   padding-bottom: 20px;
   padding-top: 10px;
   border-bottom-left-radius: 10px;
@@ -94,14 +94,14 @@
   transform: translate(-50%, 0%);
   justify-self: center;
   justify-content: space-between;
-  background: wheat;
+  background: #f3e5f5;
 }
 #funnel span {
   cursor: pointer;
   padding-top: 3px;
 }
 .chosen {
-  background: darkkhaki;
+  background: #d1c4e9;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
@@ -114,7 +114,7 @@
   width: 772px;
   height: 30px;
   padding-left: 10px;
-  background: bisque;
+  background: #ede7f6;
   z-index: 30;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
 }
@@ -154,7 +154,7 @@
   border-radius: 5px;
   bottom: 30px;
   transform: translate(425px, 0%);
-  background: cornflowerblue;
+  background: #64c1ff;
 }
 #selectedLength {
   display: flex;
@@ -168,7 +168,7 @@
   top: -23px;
   color: white;
   font-size: 18px;
-  background: blue;
+  background: #0091ea;
 }
 #addToButtonWhite {
   font-size: 50px;
@@ -210,7 +210,7 @@
   bottom: 3vh;
   right: 33vw;
   color: white;
-  background: violet;
+  background: #0064b7;
   border-radius: 50%;
   padding: 10px;
   cursor: pointer;
@@ -220,19 +220,18 @@
   color: black;
 }
 .upButton {
-  transition: all 0.3s;
+  transition: opacity 0.3s, visibility 0.3s;
   position: fixed;
   bottom: 10vh;
   right: 33vw;
   color: white;
-  background: pink;
+  background: #64c1ff;
   border-radius: 50%;
   padding: 10px;
   cursor: pointer;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
 }
 #upActive {
-  /* transition: opacity 0.3s, visibility 0.3s; */
   visibility: visible;
   opacity: 1;
 }
@@ -240,7 +239,6 @@
   color: black;
 }
 #upDisabled {
-  /* transition: opacity 0.3s, visibility 0.3s; */
   visibility: hidden;
   opacity: 0;
 }

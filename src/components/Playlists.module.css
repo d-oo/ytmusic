@@ -1,5 +1,5 @@
 #playlists {
-  background: thistle;
+  background: #d1d9ff;
   height: calc(100vh - 288px);
   box-sizing: border-box;
   overflow-y: auto;
@@ -67,7 +67,7 @@
 }
 #doneButton {
   cursor: pointer;
-  color: aliceblue;
+  color: white;
 }
 #doneDisabled {
   color: gray;
@@ -79,7 +79,7 @@
 }
 #cancelButton {
   cursor: pointer;
-  color: aliceblue;
+  color: white;
 }
 .playlist {
   display: flex;
@@ -88,11 +88,11 @@
   height: 36px;
   margin-left: 20px;
   margin-right: 20px;
-  border-bottom: 1px solid darkgray;
+  border-bottom: 1px solid #9fa8da;
   font-size: 14px;
 }
 #viewing {
-  background: darkgray;
+  background: #9fa8da;
   margin-left: 12px;
   padding-left: 8px;
   margin-right: 12px;

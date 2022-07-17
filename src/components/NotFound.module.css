@@ -1,9 +1,23 @@
+#notFoundPage {
+  width: 900px;
+  height: calc(100vh - 12px);
+  background: #fce4ec;
+  border-radius: 6px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.4);
+}
+#smallWrapper {
+  position: relative;
+  top: 60px;
+}
 #notFound {
-  color: white;
+  color: black;
   font-size: 30px;
 }
 #backButton {
-  color: white;
+  color: black;
   cursor: pointer;
   font-size: 28px;
+}
+#backButton:hover {
+  color: blue;
 }

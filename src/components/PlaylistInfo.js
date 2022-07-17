@@ -82,6 +82,8 @@ export default function PlaylistInfo() {
     }
     if (playlistInfo.musicId.length === 0) {
       setMusicInfo([]);
+      setPlaylistTitle(playlistInfo.title);
+      setShowInput(false);
       setInfoAvailable(true);
     }
     const arr = [];
@@ -96,6 +98,7 @@ export default function PlaylistInfo() {
           setMusicInfo(arr);
           setInfoAvailable(true);
           setPlaylistTitle(playlistInfo.title);
+          setShowInput(false);
         }
       };
     });

@@ -4,7 +4,7 @@
   width: 900px;
   height: calc(100vh - 12px);
   box-sizing: border-box;
-  background: lavender;
+  background: #dde8ff;
   overflow-y: hidden;
   overflow-x: hidden;
   text-align: center;
@@ -91,15 +91,14 @@
 .category {
   position: relative;
   left: 100px;
-  background: violet;
   border-radius: 5px;
   width: 3rem;
 }
 #song {
-  background: violet;
+  background: #e7b9ff;
 }
 #inst {
-  background: turquoise;
+  background: #64ffda;
 }
 #tagContainer {
   position: relative;
@@ -112,7 +111,7 @@
   padding-left: 8px;
   padding-right: 8px;
   margin-left: 8px;
-  background: pink;
+  background: #ffb2dd;
   border-radius: 5px;
 }
 #wrapper {
