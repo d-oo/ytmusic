@@ -12,7 +12,7 @@ export const AppContext = createContext();
 export default function Home() {
   //scroll
   const [searchScroll, setSearchScroll] = useState(0);
-  const [handleScroll, setHandleScroll] = useState(null);
+  const [handlePlaylistScroll, setHandlePlaylistScroll] = useState(null);
   //player
   const [playingMusicId, setPlayingMusicId] = useState("");
   const [playingMusicInfo, setPlayingMusicInfo] = useState("");
@@ -27,6 +27,7 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [volume, setVolume] = useState(50);
+  const playingMusicIdRef = useRef("");
   //showHandle
   const [showYT, setShowYT] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -44,10 +45,6 @@ export default function Home() {
     dbReq.onsuccess = (event) => {
       db.current = event.target.result;
       setDbState(event.target.result);
-    };
-
-    dbReq.onerror = (event) => {
-      console.log("error", event.target.error.name);
     };
 
     dbReq.onupgradeneeded = (event) => {
@@ -102,6 +99,7 @@ export default function Home() {
     if (dbState === undefined || playingMusicId === "") {
       return;
     }
+    playingMusicIdRef.current = playingMusicId;
     const transaction = db.current
       .transaction("music", "readwrite")
       .objectStore("music");
@@ -126,7 +124,9 @@ export default function Home() {
 
   useEffect(() => {
     if (shuffle) {
-      console.log(playingPlaylist);
+      if (playingPlaylist.length === 0) {
+        return;
+      }
       const array = [...playingPlaylist];
       let len = array.length,
         t,
@@ -137,6 +137,12 @@ export default function Home() {
         array[len] = array[i];
         array[i] = t;
       }
+      const tmpIndex = array.findIndex(
+        (i) => i.id === Number(playingMusicIdRef.current)
+      );
+      t = array[tmpIndex];
+      array[tmpIndex] = array[0];
+      array[0] = t;
       setShuffleList(array);
     } else {
       setShuffleList([]);
@@ -158,8 +164,8 @@ export default function Home() {
       if (playingPlaylistId !== listId) {
         setLoopPlaylist(false);
       }
-      setPlayingPlaylistId(listId);
       setPlayingMusicId(musicId);
+      setPlayingPlaylistId(listId);
       setLoopMusic(false);
       setShuffle(false);
       setShuffleList([]);
@@ -168,12 +174,12 @@ export default function Home() {
   );
 
   const playShuffle = useCallback((listId, musicArr) => {
+    const randomMusic = musicArr[Math.floor(Math.random() * musicArr.length)];
+    setPlayingMusicId(String(randomMusic));
     setLoopPlaylist(false);
     setLoopMusic(false);
     setPlayingPlaylistId(listId);
     setShuffle(true);
-    const randomMusic = musicArr[Math.floor(Math.random() * musicArr.length)];
-    setPlayingMusicId(String(randomMusic));
   }, []);
 
   const playNext = useCallback(() => {
@@ -189,7 +195,6 @@ export default function Home() {
       setPlayingMusicId(String(arr[currentIndex + 1].id));
     } else if (loopPlaylist) {
       setPlayingMusicId(String(arr[0].id));
-      console.log(String(arr[0].id));
     } else {
       setPlayingPlaylist([]);
       setPlayingPlaylistId("");
@@ -239,8 +244,8 @@ export default function Home() {
       value={{
         searchScroll,
         setSearchScroll,
-        handleScroll,
-        setHandleScroll,
+        handlePlaylistScroll,
+        setHandlePlaylistScroll,
         playSingle,
         playPlaylist,
         playShuffle,

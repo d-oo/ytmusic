@@ -15,7 +15,6 @@ import styles from "./MusicInfo.module.css";
 export default function MusicInfo() {
   const {
     playSingle,
-    isPlaying,
     showYT,
     setShowYT,
     playingMusicId,
@@ -115,7 +114,6 @@ export default function MusicInfo() {
       });
     updateReq.onsuccess = () => {
       alertFor("addToPlaylistSingle");
-      // setShowResult(false);
       setIsUpdated(true);
     };
   };
@@ -193,7 +191,7 @@ export default function MusicInfo() {
             <div id={styles.artist}>{info.artist.join(", ")}</div>
             <div id={styles.buttons}>
               {showYT ? (
-                <PlayingMotion isPaused={!isPlaying} />
+                <PlayingMotion />
               ) : (
                 <span
                   className="material-icons-round"
@@ -228,9 +226,12 @@ export default function MusicInfo() {
                         if (inPlaylist.includes(item.id)) {
                           return (
                             <div
-                              key={index}
+                              key={index + "MinfoPresult"}
                               className={styles.result}
-                              style={{ background: "gray", cursor: "default" }}
+                              style={{
+                                background: "lightgray",
+                                cursor: "default",
+                              }}
                             >
                               {item.title}
                             </div>

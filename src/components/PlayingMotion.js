@@ -1,32 +1,35 @@
+import { useContext } from "react";
+import { AppContext } from "../Home";
 import styles from "./PlayingMotion.module.css";
 
-export default function PlayingMotion({ isPaused }) {
+export default function PlayingMotion() {
+  const { isPlaying } = useContext(AppContext);
   return (
     <div className={styles.waveform}>
       <div
         className={
-          isPaused
+          !isPlaying
             ? `${styles.waveform__bar} ${styles.pause}`
             : styles.waveform__bar
         }
       ></div>
       <div
         className={
-          isPaused
+          !isPlaying
             ? `${styles.waveform__bar} ${styles.pause}`
             : styles.waveform__bar
         }
       ></div>
       <div
         className={
-          isPaused
+          !isPlaying
             ? `${styles.waveform__bar} ${styles.pause}`
             : styles.waveform__bar
         }
       ></div>
       <div
         className={
-          isPaused
+          !isPlaying
             ? `${styles.waveform__bar} ${styles.pause}`
             : styles.waveform__bar
         }

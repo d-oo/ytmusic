@@ -14,7 +14,7 @@ import styles from "./Player.module.css";
 
 export default function Player() {
   const {
-    handleScroll,
+    handlePlaylistScroll,
     playNext,
     playPrev,
     secondToTime,
@@ -227,7 +227,7 @@ export default function Player() {
               ? styles.playlistDisabled
               : styles.playlistButton
           }
-          onClick={playingPlaylistId === "" ? null : handleScroll}
+          onClick={playingPlaylistId === "" ? null : handlePlaylistScroll}
         >
           queue_music
         </span>

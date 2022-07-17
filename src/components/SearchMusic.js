@@ -30,7 +30,6 @@ export default function SearchMusic() {
   } = useContext(AppContext);
 
   useEffect(() => {
-    console.log("SearchMusicEffect");
     if (dbState === undefined) {
       return;
     }
@@ -244,7 +243,7 @@ export default function SearchMusic() {
           ))}
         </div>
         <div id={styles.emptyArea}>
-          {result.length === 0 ? "음악을 추가해 주세요" : null}
+          {result.length === 0 ? "+ 버튼을 눌러 음악을 추가해 주세요" : null}
         </div>
       </div>
       {selectedItem.length === 0 ? null : (

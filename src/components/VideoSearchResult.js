@@ -15,7 +15,7 @@ export default function VideoSearchResult({ info, id, setVideoId, index }) {
         rel="noreferrer"
       >
         <div id={styles.title} className={styles.pointerCursor}>
-          {info.title}
+          {info.title.replace(/&#39;/g, "'")}
         </div>
         <div id={styles.channel} className={styles.pointerCursor}>
           {info.channelTitle}

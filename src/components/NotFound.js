@@ -1,17 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./NotFound.module.css";
 
-import { useState, useEffect } from "react";
-
 export default function NotFound() {
-  const [tmp, setTmp] = useState("");
-  const [arr, setArr] = useState([]);
-  useEffect(() => {
-    console.log(tmp);
-    setArr([]);
-    setArr((prev) => [...prev, tmp]);
-  }, [tmp]);
   const navigate = useNavigate();
+  const location = useLocation();
   return (
     <div>
       <span
@@ -22,26 +14,11 @@ export default function NotFound() {
         arrow_back
       </span>
       <p id={styles.notFound}>Not Found!</p>
-      input and recommend test
-      <div style={{ color: "white" }}>
-        <input
-          type="text"
-          value={tmp}
-          onChange={(event) => {
-            setTmp(event.target.value);
-          }}
-          onKeyUp={() => {
-            // console.log("keyup");
-            // console.log(tmp);
-          }}
-        />
-        <br />
-        {tmp}
-        <br />
-        {arr.map((item, index) => (
-          <div key={index}>{item}</div>
-        ))}
-      </div>
+      {location.pathname === "/wrongmusic"
+        ? "Wrong Music ID"
+        : location.pathname === "/wrongplaylist"
+        ? "Wrong Playlist ID"
+        : "Wrong Page"}
     </div>
   );
 }

@@ -13,7 +13,7 @@ export default function PlaylistMusic({
   setSelectedItem,
   setTotalDuration,
 }) {
-  const { playPlaylist, playingMusicId, playingPlaylistId, isPlaying } =
+  const { playPlaylist, playingMusicId, playingPlaylistId } =
     useContext(AppContext);
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ export default function PlaylistMusic({
       <div id={styles.playDiv}>
         {playingPlaylistId === playlistId &&
         playingMusicId === String(info.id) ? (
-          <PlayingMotion isPaused={!isPlaying} />
+          <PlayingMotion />
         ) : (
           <span
             className="material-icons-round"

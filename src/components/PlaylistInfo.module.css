@@ -39,11 +39,6 @@
   font-size: 18px;
   width: 500px;
 }
-#playingMotion {
-  display: flex;
-  justify-content: flex-end;
-  width: 32px;
-}
 #backButton {
   cursor: pointer;
 }
@@ -64,6 +59,44 @@
   align-items: center;
   width: 500px;
   font-size: 24px;
+}
+#playingMotion {
+  display: flex;
+  justify-content: flex-start;
+  width: 32px;
+}
+#removeWrapper {
+  display: flex;
+  width: 32px;
+  justify-content: flex-start;
+}
+#removeButton {
+  cursor: pointer;
+}
+#editWrapper {
+  display: flex;
+  width: 32px;
+  justify-content: flex-end;
+}
+#editButton {
+  cursor: pointer;
+}
+#doneButton {
+  cursor: pointer;
+}
+#doneDisabled {
+  color: gray;
+}
+#cancelButton {
+  cursor: pointer;
+}
+#titleInput {
+  height: 26px;
+  font-size: 20px;
+}
+#doneCloseWrapper {
+  display: flex;
+  align-items: center;
 }
 #playlistResults {
   position: relative;
@@ -181,5 +214,8 @@
   font-size: 18px;
 }
 #emptyArea {
-  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
 }

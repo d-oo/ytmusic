@@ -171,7 +171,7 @@ export default function AddMusic({
       if (addReq.error.name === "ConstraintError") {
         alertFor("addMusicF");
       } else {
-        alertFor(addReq.error);
+        alertFor(addReq.error.name);
       }
     };
   };
@@ -210,7 +210,7 @@ export default function AddMusic({
       if (putReq.error.name === "ConstraintError") {
         alertFor("addMusicF");
       } else {
-        alertFor(putReq.error);
+        alertFor(putReq.error.name);
       }
     };
   };

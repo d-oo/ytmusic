@@ -7,11 +7,10 @@ import styles from "./Playlists.module.css";
 
 export default function Playlists() {
   const {
-    setHandleScroll,
+    setHandlePlaylistScroll,
     playPlaylist,
     playShuffle,
     playingPlaylistId,
-    isPlaying,
     loopPlaylist,
     setLoopPlaylist,
     shuffle,
@@ -21,6 +20,7 @@ export default function Playlists() {
     setPlaylistResult,
     isUpdated,
     setIsUpdated,
+    alertFor,
   } = useContext(AppContext);
   const [newTitle, setNewTitle] = useState("");
   const [showAddNew, setShowAddNew] = useState(false);
@@ -30,15 +30,13 @@ export default function Playlists() {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("a");
     if (itemRef.current === undefined) {
       return;
     }
-    console.log("b");
-    setHandleScroll(
+    setHandlePlaylistScroll(
       () => () => itemRef.current.scrollIntoView({ behavior: "smooth" })
     );
-  }, [setHandleScroll, playingPlaylistId]);
+  }, [setHandlePlaylistScroll, playingPlaylistId]);
 
   useEffect(() => {
     if (dbState === undefined || !isUpdated) {
@@ -68,16 +66,14 @@ export default function Playlists() {
         videoCount: 0,
       });
     addReq.onsuccess = () => {
-      console.log("succefully added playlist!");
+      alertFor("addPlaylist");
       setIsUpdated(true);
-      //이 부분에 추가 완료 알림창 띄움
     };
     addReq.onerror = () => {
       if (addReq.error.name === "ConstraintError") {
-        console.log("already existing playlist title");
-        //이 부분에 해당 제목의 재생목록이 이미 존재한다는 알림창 띄움
+        alertFor("addPlaylistF");
       } else {
-        console.log(addReq.error);
+        alertFor(addReq.error.name);
       }
     };
   };
@@ -147,6 +143,11 @@ export default function Playlists() {
         </div>
       )}
       <div id={styles.playlistResult}>
+        {playlistResult.length === 0 ? (
+          <div style={{ fontSize: "14px", marginTop: "40px" }}>
+            재생목록을 추가해주세요
+          </div>
+        ) : null}
         {playlistResult.map((item, index) => (
           <div
             className={styles.playlist}
@@ -161,7 +162,7 @@ export default function Playlists() {
             <div id={styles.listTitleDiv}>
               {playingPlaylistId === String(item.id) ? (
                 <div id={styles.playingMotion}>
-                  <PlayingMotion isPaused={!isPlaying} />
+                  <PlayingMotion />
                 </div>
               ) : null}
               <div

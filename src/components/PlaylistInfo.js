@@ -14,7 +14,6 @@ export default function PlaylistInfo() {
     secondToTime,
     playingPlaylistId,
     playingMusicId,
-    isPlaying,
     playlistResult,
     setIsUpdated,
     dbState,
@@ -25,6 +24,8 @@ export default function PlaylistInfo() {
   const [playlistInfo, setPlaylistInfo] = useState("");
   const [musicInfo, setMusicInfo] = useState([]);
   const [showResult, setShowResult] = useState(false);
+  const [showInput, setShowInput] = useState(false);
+  const [playlistTitle, setPlaylistTitle] = useState("");
   const [infoAvailable, setInfoAvailable] = useState(false);
   const db = useRef();
   const resultRef = useRef();
@@ -39,13 +40,21 @@ export default function PlaylistInfo() {
     ) {
       return;
     }
+    if (isNaN(playlistId)) {
+      navigate("/wrongplaylist", { replace: true });
+      return;
+    }
     db.current = dbState;
-    setPlaylistInfo(
+    const info =
       playlistResult[
         playlistResult.findIndex((i) => i.id === Number(playlistId))
-      ]
-    );
-  }, [dbState, playlistId, playlistResult]);
+      ];
+    if (info === undefined) {
+      navigate("/wrongplaylist", { replace: true });
+      return;
+    }
+    setPlaylistInfo(info);
+  }, [dbState, playlistId, playlistResult, navigate]);
 
   useEffect(() => {
     setSelectedItem([]);
@@ -86,13 +95,13 @@ export default function PlaylistInfo() {
         if (index === playlistInfo.musicId.length - 1) {
           setMusicInfo(arr);
           setInfoAvailable(true);
+          setPlaylistTitle(playlistInfo.title);
         }
       };
     });
   }, [playlistInfo]);
 
   const addToPlaylist = (paramInfo) => {
-    console.log(paramInfo.musicId);
     let duplicatedDuration = 0;
     selectedItem.forEach((sItem) => {
       if (paramInfo.musicId.includes(sItem)) {
@@ -170,6 +179,35 @@ export default function PlaylistInfo() {
     };
   };
 
+  const editTitle = () => {
+    const putReq = db.current
+      .transaction("playlist", "readwrite")
+      .objectStore("playlist")
+      .put({
+        title: playlistTitle,
+        musicId: playlistInfo.musicId,
+        totalDuration: playlistInfo.totalDuration,
+        videoCount: playlistInfo.videoCount,
+        id: Number(playlistId),
+      });
+    putReq.onsuccess = () => {
+      alertFor("updatePlaylist");
+      setIsUpdated(true);
+    };
+  };
+
+  const deletePlaylist = () => {
+    const deleteReq = db.current
+      .transaction("playlist", "readwrite")
+      .objectStore("playlist")
+      .delete(Number(playlistId));
+    deleteReq.onsuccess = () => {
+      alertFor("deletePlaylist");
+      navigate(-1);
+      setIsUpdated(true);
+    };
+  };
+
   return (
     <div id={styles.playlistInfo}>
       <div id={styles.titleWrapper}>
@@ -186,12 +224,90 @@ export default function PlaylistInfo() {
         <div>
           <div id={styles.infoWrapper}>
             <div id={styles.playlistTitle}>
-              {playlistInfo.title}
               {playlistId === playingPlaylistId ? (
                 <div id={styles.playingMotion}>
-                  <PlayingMotion isPaused={!isPlaying} />
+                  <PlayingMotion />
                 </div>
-              ) : null}
+              ) : (
+                <div id={styles.removeWrapper}>
+                  <span
+                    id={styles.removeButton}
+                    className="material-icons-round"
+                    onClick={deletePlaylist}
+                  >
+                    delete
+                  </span>
+                </div>
+              )}
+              {showInput ? (
+                <div id={styles.inputDiv}>
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      if (playlistTitle.trim() === "") {
+                        return;
+                      }
+                      setShowInput(false);
+                      editTitle();
+                      setPlaylistTitle(playlistTitle.trim());
+                    }}
+                  >
+                    <input
+                      id={styles.titleInput}
+                      value={playlistTitle}
+                      onChange={(event) => setPlaylistTitle(event.target.value)}
+                      type="text"
+                      spellCheck="false"
+                      autoComplete="off"
+                    />
+                  </form>
+                </div>
+              ) : (
+                playlistInfo.title
+              )}
+              {showInput ? (
+                <div id={styles.doneCloseWrapper}>
+                  <span
+                    id={
+                      playlistTitle.trim() === ""
+                        ? styles.doneDisabled
+                        : styles.doneButton
+                    }
+                    onClick={
+                      playlistTitle.trim() === ""
+                        ? null
+                        : () => {
+                            setShowInput(false);
+                            editTitle();
+                            setPlaylistTitle(playlistTitle.trim());
+                          }
+                    }
+                    className="material-icons-round"
+                  >
+                    done
+                  </span>
+                  <span
+                    id={styles.cancelButton}
+                    className="material-icons-round"
+                    onClick={() => {
+                      setPlaylistTitle(playlistInfo.title);
+                      setShowInput(false);
+                    }}
+                  >
+                    close
+                  </span>
+                </div>
+              ) : (
+                <div id={styles.editWrapper}>
+                  <span
+                    id={styles.editButton}
+                    className="material-icons-round"
+                    onClick={() => setShowInput(true)}
+                  >
+                    edit
+                  </span>
+                </div>
+              )}
             </div>
             {playlistInfo.videoCount}곡 /{" "}
             {secondToTime(playlistInfo.totalDuration)}
@@ -262,7 +378,9 @@ export default function PlaylistInfo() {
                 )}
               </Droppable>
             </DragDropContext>
-            <div id={styles.emptyArea}></div>
+            <div id={styles.emptyArea}>
+              {musicInfo.length === 0 ? "재생목록에 곡을 추가해주세요" : null}
+            </div>
           </div>
         </div>
       ) : null}
