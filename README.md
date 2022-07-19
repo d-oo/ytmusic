@@ -1,36 +1,29 @@
-# Getting Started with Create React App
+# ytmusic
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend - React/HTML/CSS/JS\
+Youtube Data API\
+React-Youtube(Youtube Iframe API)\
+React-Beautiful-DND\
+MUI(Material User Interface)\
+Indexed Database(Web Interface)
 
-## Available Scripts
+## Youtube로 음악을 듣는다면, ytmusic을 사용해보세요
 
-In the project directory, you can run:
+[http://localhost:3000](http://localhost:3000)
 
-### `npm start`
+### `시작 - 음악 추가`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Lorem ipsum
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Lorem ipsum
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+no content yet
 
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-ㅁㄴㅇㄹ
+ok
