@@ -42,6 +42,7 @@
   display: flex;
   margin-left: 32px;
   margin-right: 32px;
+  margin-bottom: 4px;
   justify-content: space-between;
 }
 #buttons span {

@@ -1,21 +1,23 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { useLocation } from "react-router-dom";
 import { AppContext } from "../Home";
 import AddMusic from "./AddMusic";
 import MusicSearchResult from "./MusicSearchResult";
 import styles from "./SearchMusic.module.css";
 
 export default function SearchMusic() {
+  const [dataEmpty, setDataEmpty] = useState(false);
   const [showAddMusic, setShowAddMusic] = useState(() => {});
+  const [loadCount, setLoadCount] = useState(1);
+  const [loadEnd, setLoadEnd] = useState(false);
   const [result, setResult] = useState([]); //Musics Search Result
   const [showResult, setShowResult] = useState(false);
   const [selectedItem, setSelectedItem] = useState([]);
   const [totalDuration, setTotalDuration] = useState(0);
-  const [searchBy, setSearchBy] = useState("title");
+  const [searchBy, setSearchBy] = useState(false); //"title", "artist"
   const [category, setCategory] = useState("Song");
-  const [sortBy, setSortBy] = useState("recentAdd");
+  const [sortBy, setSortBy] = useState("recentAdd"); //"recentAdd", "recentPlay", "mostPlay", false
   const [searchInput, setSearchInput] = useState("");
-  const location = useLocation();
+  const [searchInputDone, setSearchInputDone] = useState("");
   const db = useRef();
   const resultRef = useRef();
   const scrollRef = useRef();
@@ -34,21 +36,200 @@ export default function SearchMusic() {
       return;
     }
     db.current = dbState;
-    const tmpResult = [];
-    const cursorReq = db.current
+    const transaction = db.current
       .transaction("music", "readonly")
-      .objectStore("music")
-      .openCursor();
-    cursorReq.onsuccess = () => {
-      const cursor = cursorReq.result;
-      if (cursor) {
-        tmpResult.push(cursor.value);
-        cursor.continue();
-      } else {
-        setResult(tmpResult);
+      .objectStore("music");
+
+    const tmpResult = [];
+    let count = 0;
+
+    //검색어가 없을 때
+    if (searchInputDone.trim() === "") {
+      const countReq = transaction.count();
+      countReq.onsuccess = () => {
+        if (countReq.result === 0) {
+          setDataEmpty(true);
+        }
+      };
+      if (searchBy) {
+        setSearchBy(false);
+        setSortBy("recentAdd");
+        return;
       }
-    };
-  }, [dbState, isUpdated, location]);
+      if (sortBy === "recentAdd") {
+        const cursorReq = transaction.openCursor();
+        cursorReq.onsuccess = () => {
+          const cursor = cursorReq.result;
+          if (cursor && count < 20 * loadCount) {
+            if (cursor.value.category === category) {
+              tmpResult.push(cursor.value);
+              count++;
+            }
+            cursor.continue();
+          } else {
+            if (!cursor) {
+              setLoadEnd(true);
+            }
+            setResult(tmpResult);
+          }
+        };
+      } else if (sortBy === "recentPlay") {
+        const cursorReq = transaction
+          .index("recentPlay")
+          .openCursor(null, "prev");
+        cursorReq.onsuccess = () => {
+          const cursor = cursorReq.result;
+          if (cursor && count < 20 * loadCount) {
+            if (
+              cursor.value.recentPlay !== 0 &&
+              cursor.value.category === category
+            ) {
+              tmpResult.push(cursor.value);
+              count++;
+            }
+            cursor.continue();
+          } else {
+            if (!cursor) {
+              setLoadEnd(true);
+            }
+            setResult(tmpResult);
+          }
+        };
+      } else if (sortBy === "mostPlay") {
+        const cursorReq = transaction
+          .index("playCount")
+          .openCursor(null, "prev");
+        cursorReq.onsuccess = () => {
+          const cursor = cursorReq.result;
+          if (cursor && count < 20 * loadCount) {
+            if (cursor.value.category === category) {
+              tmpResult.push(cursor.value);
+              count++;
+            }
+            cursor.continue();
+          } else {
+            if (!cursor) {
+              setLoadEnd(true);
+            }
+            setResult(tmpResult);
+          }
+        };
+      }
+    }
+
+    //검색어가 있을 때
+    else {
+      if (sortBy) {
+        setSearchBy("title");
+        setSortBy(false);
+        return;
+      }
+      const sharp = searchInputDone[0] === "#";
+      const inputStr = searchInputDone
+        .replace(/\./g, "")
+        .replace(/ /g, "")
+        .toLowerCase();
+      setSearchInput(searchInputDone.trim());
+      if (searchBy === "title") {
+        if (sharp) {
+          const cursorReq = transaction.index("tag").openCursor();
+          cursorReq.onsuccess = () => {
+            const cursor = cursorReq.result;
+            if (cursor && count < 20 * loadCount) {
+              const dbStr = cursor.key
+                .replace(/\./g, "")
+                .replace(/ /g, "")
+                .toLowerCase();
+              if (
+                cursor.value.category === category &&
+                dbStr === inputStr.slice(1)
+              ) {
+                tmpResult.push(cursor.value);
+                count++;
+              }
+              cursor.continue();
+            } else {
+              if (!cursor) {
+                setLoadEnd(true);
+              }
+              setResult(tmpResult);
+            }
+          };
+        } else {
+          const cursorReq = transaction.openCursor();
+          cursorReq.onsuccess = () => {
+            const cursor = cursorReq.result;
+            if (cursor && count < 20 * loadCount) {
+              const dbStr = cursor.value.title
+                .replace(/\./g, "")
+                .replace(/ /g, "")
+                .toLowerCase();
+              if (
+                cursor.value.category === category &&
+                dbStr.includes(inputStr)
+              ) {
+                if (dbStr === inputStr) {
+                  tmpResult.unshift(cursor.value);
+                } else {
+                  tmpResult.push(cursor.value);
+                }
+                count++;
+              }
+              cursor.continue();
+            } else {
+              if (!cursor) {
+                setLoadEnd(true);
+              }
+              setResult(tmpResult);
+            }
+          };
+        }
+      } else if (searchBy === "artist") {
+        const cursorReq = transaction.index("artist").openCursor();
+        cursorReq.onsuccess = () => {
+          const cursor = cursorReq.result;
+          if (cursor && count < 20 * loadCount) {
+            const dbStr = cursor.key
+              .replace(/\./g, "")
+              .replace(/ /g, "")
+              .toLowerCase();
+            if (
+              cursor.value.category === category &&
+              (sharp ? dbStr === inputStr.slice(1) : dbStr.includes(inputStr))
+            ) {
+              if (!tmpResult.some((i) => i.id === cursor.value.id)) {
+                tmpResult.push(cursor.value);
+                count++;
+              }
+            }
+            cursor.continue();
+          } else {
+            if (!cursor) {
+              setLoadEnd(true);
+            }
+            console.log(count);
+            setResult(tmpResult);
+          }
+        };
+      }
+    }
+  }, [
+    dbState,
+    isUpdated,
+    searchInputDone,
+    searchBy,
+    sortBy,
+    category,
+    loadCount,
+  ]);
+
+  useEffect(() => {
+    console.log("setloadcount");
+    setLoadCount(1);
+    setLoadEnd(false);
+    setSelectedItem([]);
+    setTotalDuration(0);
+  }, [searchInputDone, searchBy, sortBy, category]);
 
   useEffect(() => {
     if (!showResult) {
@@ -95,10 +276,6 @@ export default function SearchMusic() {
     };
   };
 
-  const searchMusic = () => {
-    console.log("SSEE");
-  };
-
   return (
     <div
       id={styles.bigContainer}
@@ -111,10 +288,7 @@ export default function SearchMusic() {
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            if (searchInput.trim() === "") {
-              return;
-            }
-            searchMusic();
+            setSearchInputDone(searchInput);
           }}
         >
           <input
@@ -129,37 +303,13 @@ export default function SearchMusic() {
         </form>
         <span
           className="material-icons-round"
-          id={
-            searchInput.trim() === ""
-              ? styles.searchDisabled
-              : styles.searchButton
-          }
-          onClick={
-            searchInput.trim() === ""
-              ? null
-              : () => {
-                  searchMusic();
-                }
-          }
+          id={styles.searchButton}
+          onClick={() => setSearchInputDone(searchInput)}
         >
           search
         </span>
       </div>
       <div id={styles.funnel}>
-        <div>
-          <span
-            className={searchBy === "title" ? styles.chosen : null}
-            onClick={() => setSearchBy("title")}
-          >
-            &nbsp;제목&nbsp;
-          </span>
-          <span
-            className={searchBy === "artist" ? styles.chosen : null}
-            onClick={() => setSearchBy("artist")}
-          >
-            &nbsp;아티스트&nbsp;
-          </span>
-        </div>
         <div>
           <span
             className={category === "Song" ? styles.chosen : null}
@@ -174,30 +324,49 @@ export default function SearchMusic() {
             &nbsp;기악&nbsp;
           </span>
         </div>
-        <div>
-          <span
-            className={
-              sortBy === "recentAdd" ? styles.chosen : styles.notChosen
-            }
-            onClick={() => setSortBy("recentAdd")}
-          >
-            &nbsp;최근 추가&nbsp;
-          </span>
-          <span
-            className={
-              sortBy === "recentPlay" ? styles.chosen : styles.notChosen
-            }
-            onClick={() => setSortBy("recentPlay")}
-          >
-            &nbsp;최근 재생&nbsp;
-          </span>
-          <span
-            className={sortBy === "mostPlay" ? styles.chosen : styles.notChosen}
-            onClick={() => setSortBy("mostPlay")}
-          >
-            &nbsp;최다 재생&nbsp;
-          </span>
-        </div>
+        {searchBy ? (
+          <div>
+            <span
+              className={searchBy === "title" ? styles.chosen : null}
+              onClick={() => setSearchBy("title")}
+            >
+              &nbsp;제목&nbsp;
+            </span>
+            <span
+              className={searchBy === "artist" ? styles.chosen : null}
+              onClick={() => setSearchBy("artist")}
+            >
+              &nbsp;아티스트&nbsp;
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span
+              className={
+                sortBy === "recentAdd" ? styles.chosen : styles.notChosen
+              }
+              onClick={() => setSortBy("recentAdd")}
+            >
+              &nbsp;최근 추가&nbsp;
+            </span>
+            <span
+              className={
+                sortBy === "recentPlay" ? styles.chosen : styles.notChosen
+              }
+              onClick={() => setSortBy("recentPlay")}
+            >
+              &nbsp;최근 재생&nbsp;
+            </span>
+            <span
+              className={
+                sortBy === "mostPlay" ? styles.chosen : styles.notChosen
+              }
+              onClick={() => setSortBy("mostPlay")}
+            >
+              &nbsp;최다 재생&nbsp;
+            </span>
+          </div>
+        )}
       </div>
       <div id={styles.bigWrapper}>
         <div id={styles.flexContainer}>
@@ -243,7 +412,16 @@ export default function SearchMusic() {
           ))}
         </div>
         <div id={styles.emptyArea}>
-          {result.length === 0 ? "+ 버튼을 눌러 음악을 추가해 주세요" : null}
+          {dataEmpty
+            ? "+ 버튼을 눌러 음악을 추가해주세요"
+            : result.length === 0
+            ? "검색 결과가 없습니다"
+            : null}
+          {loadEnd ? null : (
+            <button onClick={() => setLoadCount((prev) => prev + 1)}>
+              load more
+            </button>
+          )}
         </div>
       </div>
       {selectedItem.length === 0 ? null : (

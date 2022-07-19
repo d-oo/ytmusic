@@ -40,6 +40,8 @@ export default function AddMusic({
       setArtist(musicInfo.artist.join(","));
       setVideoId(musicInfo.videoId);
       setTag(musicInfo.tag.join(","));
+      setCategory(musicInfo.category);
+      setIsArtistNone(musicInfo.artist.join(",") === "None");
     }
   }, [from, musicInfo]);
 
@@ -159,7 +161,7 @@ export default function AddMusic({
         artist: artistArray,
         videoId: videoId,
         category: category,
-        tag: tagArray,
+        tag: tagArray[0] === "" ? [] : tagArray,
         duration: videoDuration,
         playCount: 0,
         recentPlay: 0,
@@ -197,7 +199,7 @@ export default function AddMusic({
         artist: artistArray,
         videoId: videoId,
         category: category,
-        tag: tagArray,
+        tag: tagArray[0] === "" ? [] : tagArray,
         duration: videoDuration,
         playCount: musicInfo.playCount,
         recentPlay: musicInfo.recentPlay,
@@ -308,6 +310,8 @@ export default function AddMusic({
       setArtist(musicInfo.artist.join(","));
       setVideoId(musicInfo.videoId);
       setTag(musicInfo.tag.join(","));
+      setCategory(musicInfo.category);
+      setIsArtistNone(musicInfo.artist.join(",") === "None");
     } else {
       setTitle("");
       setArtist("");
@@ -319,7 +323,6 @@ export default function AddMusic({
 
   const closeAddMusic = () => {
     reset();
-    setCategory("Song");
     showAddMusic(false);
   };
 
@@ -414,6 +417,7 @@ export default function AddMusic({
               <input
                 type="checkbox"
                 value={isArtistNone}
+                checked={isArtistNone}
                 autoComplete="off"
                 onChange={() => {
                   if (!isArtistNone) {

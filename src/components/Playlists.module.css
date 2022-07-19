@@ -12,18 +12,18 @@
   display: block;
 }
 #playlists::-webkit-scrollbar-thumb {
-  background: darkgray;
+  background: white;
   border-radius: 10px;
   background-clip: padding-box;
   border: 3px solid transparent;
 }
 #playlists::-webkit-scrollbar-thumb:hover {
-  background: gray;
+  background: darkgray;
   background-clip: padding-box;
   border: 3px solid transparent;
 }
 #playlists::-webkit-scrollbar-thumb:active {
-  background: black;
+  background: gray;
   background-clip: padding-box;
   border: 3px solid transparent;
 }

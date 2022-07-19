@@ -149,7 +149,7 @@
   border: 2.5px solid transparent;
 }
 #results::-webkit-scrollbar-thumb:active {
-  background: black;
+  background: darkslategray;
   background-clip: padding-box;
   border: 2.5px solid transparent;
 }
