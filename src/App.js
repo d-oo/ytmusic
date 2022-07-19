@@ -11,7 +11,7 @@ export default function App() {
     window.alert("IndexedDB not available");
   }
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<Home />}>
           <Route path="/" element={<SearchMusic />} />
