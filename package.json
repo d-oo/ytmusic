@@ -27,7 +27,7 @@
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build"
   },
-  "hompage": "https://d-oo.github.io/ytmusic/",
+  "homepage": "https://d-oo.github.io/ytmusic",
   "eslintConfig": {
     "extends": [
       "react-app",
