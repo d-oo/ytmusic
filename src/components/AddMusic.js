@@ -13,7 +13,6 @@ export default function AddMusic({
   setModalState,
   musicInfo,
 }) {
-  const API_KEY = "AIzaSyB2FZm66fL_kpyY_qcaNqvFFmODsbVTrNY";
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(""); //!=AppContext.~
   const [artist, setArtist] = useState("");
@@ -62,7 +61,7 @@ export default function AddMusic({
       setLoading(true);
       const json = await (
         await fetch(
-          `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&fields=items(snippet(thumbnails,title,channelTitle),contentDetails/duration)&type=video&id=${videoId}&key=${API_KEY}`
+          `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&fields=items(snippet(thumbnails,title,channelTitle),contentDetails/duration)&type=video&id=${videoId}&key=${process.env.REACT_APP_API_KEY}`
         )
       ).json();
       if (json.items[0] === undefined) {
@@ -115,7 +114,7 @@ export default function AddMusic({
     const str = title + " " + (isArtistNone ? "" : artist);
     const json = await (
       await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id/videoId,snippet(thumbnails,title,channelTitle))&maxResults=5&type=video&q=${str}&key=${API_KEY}`
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id/videoId,snippet(thumbnails,title,channelTitle))&maxResults=5&type=video&q=${str}&key=${process.env.REACT_APP_API_KEY}`
       )
     ).json();
     setSearchResults(

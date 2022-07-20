@@ -49,6 +49,8 @@ export default function SearchMusic() {
       countReq.onsuccess = () => {
         if (countReq.result === 0) {
           setDataEmpty(true);
+        } else {
+          setDataEmpty(false);
         }
       };
       if (searchBy) {
