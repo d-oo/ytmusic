@@ -9,7 +9,10 @@ Indexed Database(Web Interface)
 
 ## Youtube로 음악을 듣는다면, ytmusic을 사용해보세요
 
-[주소](https://d-oo.github.io/ytmusic/)
+[주소](https://d-oo.github.io/ytmusic/)\
+**※모바일 환경에서 정상작동하지 않습니다. PC 환경에서 접속해주세요.**\
+**※아직 반응형 웹 디자인을 적용하지 않았습니다. 브라우저 창이 최대 크기가 아니면 디자인이 깨질 우려가 있습니다.**\
+**※데이터베이스를 서버가 아닌 자신의 브라우저에 저장합니다.**\
 
 ### `시작 - 음악 추가`
 
