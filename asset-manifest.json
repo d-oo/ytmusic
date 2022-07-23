@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/ytmusic/static/css/main.94f448c6.css",
-    "main.js": "/ytmusic/static/js/main.60547119.js",
+    "main.css": "/ytmusic/static/css/main.a6e640af.css",
+    "main.js": "/ytmusic/static/js/main.59e7292a.js",
     "index.html": "/ytmusic/index.html",
-    "main.94f448c6.css.map": "/ytmusic/static/css/main.94f448c6.css.map",
-    "main.60547119.js.map": "/ytmusic/static/js/main.60547119.js.map"
+    "main.a6e640af.css.map": "/ytmusic/static/css/main.a6e640af.css.map",
+    "main.59e7292a.js.map": "/ytmusic/static/js/main.59e7292a.js.map"
   },
   "entrypoints": [
-    "static/css/main.94f448c6.css",
-    "static/js/main.60547119.js"
+    "static/css/main.a6e640af.css",
+    "static/js/main.59e7292a.js"
   ]
 }
