@@ -67,7 +67,10 @@
 }
 #doneButton {
   cursor: pointer;
-  color: white;
+  color: black;
+}
+#doneButton:hover {
+  color: blue;
 }
 #doneDisabled {
   color: gray;
@@ -79,7 +82,10 @@
 }
 #cancelButton {
   cursor: pointer;
-  color: white;
+  color: black;
+}
+#cancelButton:hover {
+  color: coral;
 }
 .playlist {
   display: flex;

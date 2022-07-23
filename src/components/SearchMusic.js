@@ -233,6 +233,20 @@ export default function SearchMusic() {
     setTotalDuration(0);
   }, [searchInputDone, searchBy, sortBy, category]);
 
+  // useEffect(() => {
+  //   setTimeout(
+  //     () =>
+  //       scrollRef.current.scrollTo({
+  //         top: searchScroll,
+  //         left: 0,
+  //         behavior: "smooth",
+  //       }),
+  //     500
+  //   );
+  //   console.log(scrollRef.current);
+  //   console.log(searchScroll);
+  // }, []);
+
   useEffect(() => {
     if (!showResult) {
       return;
@@ -420,9 +434,13 @@ export default function SearchMusic() {
             ? "검색 결과가 없습니다"
             : null}
           {loadEnd ? null : (
-            <button onClick={() => setLoadCount((prev) => prev + 1)}>
-              load more
-            </button>
+            <span
+              id={styles.loadButton}
+              onClick={() => setLoadCount((prev) => prev + 1)}
+            >
+              <div>더 보기</div>
+              <span className="material-icons-round">expand_more</span>
+            </span>
           )}
         </div>
       </div>

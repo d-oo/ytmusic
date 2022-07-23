@@ -283,17 +283,7 @@ export default function MusicInfo() {
           <p id={styles.tagContainer} className={styles.detail}>
             태그 :
             {info.tag.map((item, index) => (
-              <span
-                key={"infotag" + index}
-                className={styles.tag}
-                onClick={
-                  item === ""
-                    ? null
-                    : () => {
-                        console.log(item);
-                      }
-                }
-              >
+              <span key={"infotag" + index} className={styles.tag}>
                 {"#" + item}
               </span>
             ))}

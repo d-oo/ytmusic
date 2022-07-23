@@ -39,7 +39,6 @@ export default function Home() {
   const db = useRef();
 
   useEffect(() => {
-    console.log(process.env);
     setVolume(Number(window.localStorage.getItem("volume")));
     setIsMute(JSON.parse(window.localStorage.getItem("mute")));
     const dbReq = indexedDB.open("database", 1);
@@ -297,7 +296,7 @@ export default function Home() {
       />
       <div
         id={styles.container}
-        // onContextMenu={(event) => event.preventDefault()}
+        onContextMenu={(event) => event.preventDefault()}
       >
         <div id={styles.player}>
           <Player />
