@@ -340,13 +340,19 @@ export default function SearchMusic() {
         <div>
           <span
             className={category === "Song" ? styles.chosen : null}
-            onClick={() => setCategory("Song")}
+            onClick={() => {
+              setCategory("Song");
+              loadReset();
+            }}
           >
             &nbsp;가요&nbsp;
           </span>
           <span
             className={category === "Inst" ? styles.chosen : null}
-            onClick={() => setCategory("Inst")}
+            onClick={() => {
+              setCategory("Inst");
+              loadReset();
+            }}
           >
             &nbsp;기악&nbsp;
           </span>
