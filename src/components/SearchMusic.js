@@ -53,10 +53,10 @@ export default function SearchMusic() {
         return;
       }
       if (sortBy === "recentAdd") {
-        const cursorReq = transaction.openCursor();
+        const cursorReq = transaction.openCursor(null, "prev");
         cursorReq.onsuccess = () => {
           const cursor = cursorReq.result;
-          if (cursor && count < 23 * loadCount) {
+          if (cursor && count < 20 * loadCount) {
             if (cursor.value.category === category) {
               tmpResult.push(cursor.value);
               count++;
@@ -152,7 +152,7 @@ export default function SearchMusic() {
             }
           };
         } else {
-          const cursorReq = transaction.openCursor();
+          const cursorReq = transaction.openCursor(null, "prev");
           cursorReq.onsuccess = () => {
             const cursor = cursorReq.result;
             if (cursor && count < 20 * loadCount) {
