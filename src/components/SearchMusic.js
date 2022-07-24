@@ -7,6 +7,7 @@ import styles from "./SearchMusic.module.css";
 export default function SearchMusic() {
   const [dataEmpty, setDataEmpty] = useState(false);
   const [showAddMusic, setShowAddMusic] = useState(() => {});
+  const [searchScroll, setSearchScroll] = useState(0);
   const [loadCount, setLoadCount] = useState(1);
   const [loadEnd, setLoadEnd] = useState(false);
   const [result, setResult] = useState([]); //Musics Search Result
@@ -21,15 +22,8 @@ export default function SearchMusic() {
   const db = useRef();
   const resultRef = useRef();
   const scrollRef = useRef();
-  const {
-    searchScroll,
-    setSearchScroll,
-    dbState,
-    isUpdated,
-    setIsUpdated,
-    playlistResult,
-    alertFor,
-  } = useContext(AppContext);
+  const { dbState, isUpdated, setIsUpdated, playlistResult, alertFor } =
+    useContext(AppContext);
 
   useEffect(() => {
     if (dbState === undefined) {
@@ -62,7 +56,7 @@ export default function SearchMusic() {
         const cursorReq = transaction.openCursor();
         cursorReq.onsuccess = () => {
           const cursor = cursorReq.result;
-          if (cursor && count < 20 * loadCount) {
+          if (cursor && count < 23 * loadCount) {
             if (cursor.value.category === category) {
               tmpResult.push(cursor.value);
               count++;
@@ -209,7 +203,6 @@ export default function SearchMusic() {
             if (!cursor) {
               setLoadEnd(true);
             }
-            console.log(count);
             setResult(tmpResult);
           }
         };
@@ -226,26 +219,31 @@ export default function SearchMusic() {
   ]);
 
   useEffect(() => {
-    console.log("setloadcount");
-    setLoadCount(1);
-    setLoadEnd(false);
-    setSelectedItem([]);
-    setTotalDuration(0);
-  }, [searchInputDone, searchBy, sortBy, category]);
-
-  // useEffect(() => {
-  //   setTimeout(
-  //     () =>
-  //       scrollRef.current.scrollTo({
-  //         top: searchScroll,
-  //         left: 0,
-  //         behavior: "smooth",
-  //       }),
-  //     500
-  //   );
-  //   console.log(scrollRef.current);
-  //   console.log(searchScroll);
-  // }, []);
+    window.addEventListener("beforeunload", () => sessionStorage.clear());
+    let breakEffect = false;
+    const scrollSession = sessionStorage.getItem("scroll");
+    const loadSession = sessionStorage.getItem("load");
+    if (scrollSession === null || scrollSession === "0") {
+      sessionStorage.setItem("scroll", 0);
+      breakEffect = true;
+    }
+    if (loadSession === null) {
+      sessionStorage.setItem("load", 1);
+      breakEffect = true;
+    }
+    if (breakEffect) {
+      return;
+    }
+    setLoadCount(Number(loadSession));
+    setTimeout(
+      () =>
+        scrollRef.current.scrollTo({
+          top: Number(scrollSession),
+          left: 0,
+        }),
+      300
+    );
+  }, []);
 
   useEffect(() => {
     if (!showResult) {
@@ -261,6 +259,14 @@ export default function SearchMusic() {
       window.removeEventListener("click", onClickOutside);
     };
   }, [showResult]);
+
+  const loadReset = () => {
+    setLoadCount(1);
+    sessionStorage.setItem("load", 1);
+    setLoadEnd(false);
+    setSelectedItem([]);
+    setTotalDuration(0);
+  };
 
   const addToPlaylist = (playlistInfo) => {
     let duplicatedDuration = 0;
@@ -298,6 +304,7 @@ export default function SearchMusic() {
       ref={scrollRef}
       onScroll={(event) => {
         setSearchScroll(event.target.scrollTop);
+        sessionStorage.setItem("scroll", event.target.scrollTop);
       }}
     >
       <div id={styles.inputDiv}>
@@ -305,6 +312,7 @@ export default function SearchMusic() {
           onSubmit={(event) => {
             event.preventDefault();
             setSearchInputDone(searchInput);
+            loadReset();
           }}
         >
           <input
@@ -320,7 +328,10 @@ export default function SearchMusic() {
         <span
           className="material-icons-round"
           id={styles.searchButton}
-          onClick={() => setSearchInputDone(searchInput)}
+          onClick={() => {
+            setSearchInputDone(searchInput);
+            loadReset();
+          }}
         >
           search
         </span>
@@ -344,13 +355,19 @@ export default function SearchMusic() {
           <div>
             <span
               className={searchBy === "title" ? styles.chosen : null}
-              onClick={() => setSearchBy("title")}
+              onClick={() => {
+                setSearchBy("title");
+                loadReset();
+              }}
             >
               &nbsp;제목&nbsp;
             </span>
             <span
               className={searchBy === "artist" ? styles.chosen : null}
-              onClick={() => setSearchBy("artist")}
+              onClick={() => {
+                setSearchBy("artist");
+                loadReset();
+              }}
             >
               &nbsp;아티스트&nbsp;
             </span>
@@ -361,7 +378,10 @@ export default function SearchMusic() {
               className={
                 sortBy === "recentAdd" ? styles.chosen : styles.notChosen
               }
-              onClick={() => setSortBy("recentAdd")}
+              onClick={() => {
+                setSortBy("recentAdd");
+                loadReset();
+              }}
             >
               &nbsp;최근 추가&nbsp;
             </span>
@@ -369,7 +389,10 @@ export default function SearchMusic() {
               className={
                 sortBy === "recentPlay" ? styles.chosen : styles.notChosen
               }
-              onClick={() => setSortBy("recentPlay")}
+              onClick={() => {
+                setSortBy("recentPlay");
+                loadReset();
+              }}
             >
               &nbsp;최근 재생&nbsp;
             </span>
@@ -377,7 +400,10 @@ export default function SearchMusic() {
               className={
                 sortBy === "mostPlay" ? styles.chosen : styles.notChosen
               }
-              onClick={() => setSortBy("mostPlay")}
+              onClick={() => {
+                setSortBy("mostPlay");
+                loadReset();
+              }}
             >
               &nbsp;최다 재생&nbsp;
             </span>
@@ -436,7 +462,10 @@ export default function SearchMusic() {
           {loadEnd ? null : (
             <span
               id={styles.loadButton}
-              onClick={() => setLoadCount((prev) => prev + 1)}
+              onClick={() => {
+                setLoadCount((prev) => prev + 1);
+                sessionStorage.setItem("load", loadCount + 1);
+              }}
             >
               <div>더 보기</div>
               <span className="material-icons-round">expand_more</span>

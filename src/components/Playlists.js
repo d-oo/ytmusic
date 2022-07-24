@@ -174,7 +174,7 @@ export default function Playlists() {
                 }
                 onClick={() => {
                   navigate(`/playlist/${item.id}`, {
-                    replace: location.pathname === `/playlist/${item.id}`,
+                    replace: location.pathname.split("/")[1] === "playlist",
                   });
                 }}
               >

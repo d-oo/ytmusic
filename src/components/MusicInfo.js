@@ -1,10 +1,4 @@
-import {
-  useState,
-  useLayoutEffect,
-  useEffect,
-  useRef,
-  useContext,
-} from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../Home";
 import AddMusic from "./AddMusic";
@@ -36,7 +30,7 @@ export default function MusicInfo() {
   const { musicId } = useParams();
   const navigate = useNavigate();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setInfoAvailable(false);
     if (dbState === undefined || musicId === "") {
       return;
