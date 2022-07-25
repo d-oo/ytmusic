@@ -105,6 +105,13 @@ export default function Player() {
         arr[currentIndex - 1].artist.join(", ")
       );
     } else if (loopPlaylist) {
+      if (shuffle && arr.length === 0) {
+        return "없음";
+      }
+      console.log("shuffle");
+      console.log(shuffle);
+      console.log("arr");
+      console.log(arr);
       return (
         arr[arr.length - 1].title +
         " - " +
@@ -130,6 +137,9 @@ export default function Player() {
         arr[currentIndex + 1].artist.join(", ")
       );
     } else if (loopPlaylist) {
+      if (shuffle && arr.length === 0) {
+        return "없음";
+      }
       return arr[0].title + " - " + arr[0].artist.join(", ");
     } else {
       return "없음";
