@@ -15,6 +15,10 @@ code {
     monospace;
 }
 
+unusedcss {
+  color: red;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
